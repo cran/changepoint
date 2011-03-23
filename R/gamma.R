@@ -279,7 +279,8 @@ multiple.meanvar.gamma=function(data,shape=1,mul.method="PELT",penalty="SIC",val
 		}
 		else if(mul.method=="BinSeg"){
 			out=binseg.meanvar.gamma(data,shape,Q,value)
-			cpts=c(sort(out$cps[1,1:out$op.cpts]),n)
+			if(out$op.cpts==0){cpts=n}
+			else{cpts=c(sort(out$cps[1,1:out$op.cpts]),n)}
 		}
 		else if(mul.method=="SegNeigh"){
 			out=segneigh.meanvar.gamma(data,shape,Q,value)
@@ -318,15 +319,18 @@ multiple.meanvar.gamma=function(data,shape=1,mul.method="PELT",penalty="SIC",val
 		else if(mul.method=="BinSeg"){
 			for(i in 1:rep){
 				out=c(out,list(binseg.meanvar.gamma(data[i,],shape[i],Q,value)))
-				if(class==TRUE){cpts[[i]]=c(sort(out$cps[1,1:out$op.cpts]),n)}
+				if(class==TRUE){
+					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
+					else{cpts[[i]]=c(sort(out[[i]]$cps[1,1:out[[i]]$op.cpts]),n)}
+				}
 			}
 		}
 		else if(mul.method=="SegNeigh"){
 			for(i in 1:rep){
 				out=c(out,list(segneigh.meanvar.gamma(data[i,],shape[i],Q,value)))
 				if(class==TRUE){
-					if(out$op.cpts==0){cpts[[i]]=n}
-					else{cpts[[i]]=c(sort(out$cps[out$op.cpts+1,][out$cps[out$op.cpts+1,]>0]),n)}
+					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
+					else{cpts[[i]]=c(sort(out[[i]]$cps[out[[i]]$op.cpts+1,][out[[i]]$cps[out[[i]]$op.cpts+1,]>0]),n)}
 				}
 			}
 		}

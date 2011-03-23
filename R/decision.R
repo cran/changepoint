@@ -1,6 +1,13 @@
-decision<-function(tau,null,alt,penalty="SIC",n=0,diffparam=1,value=0){
-	if((length(tau)!=length(null))||(length(tau)!=length(alt))){
-		stop("Lengths of tau, null and alt do not match")
+decision<-function(tau,null,alt=NA,penalty="SIC",n=0,diffparam=1,value=0){
+	if(is.na(alt)){
+		if(length(tau)!=length(null)){
+			stop("Lengths of tau and null do not match")
+		}
+	}
+	else{
+		if((length(tau)!=length(null))||(length(tau)!=length(alt))){
+			stop("Lengths of tau, null and alt do not match")
+		}
 	}
 	if((penalty=="SIC") || (penalty=="BIC")){
 		value=diffparam*log(n)
@@ -24,7 +31,8 @@ decision<-function(tau,null,alt,penalty="SIC",n=0,diffparam=1,value=0){
 		}
 	}
 	single.decision=function(tau,null,alt,n=0,diffparam=1,value=0){
-		teststat=null-alt
+		if(is.na(alt)){teststat=null}
+		else{teststat=null-alt}
 		if(teststat>=value){return(tau)}
 		else{return(n)}
 	}

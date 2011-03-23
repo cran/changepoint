@@ -26,7 +26,7 @@ cpt.mean(data,penalty="SIC",value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,p
 	The maximum number of changepoints to search for using the "BinSeg" method.  The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
 }
   \item{dist}{
-	The assumed distribution of the data.  Currently only "Normal" is supported.
+	The assumed distribution of the data.  Currently only "Normal" and "CUSUM" supported.
 }
   \item{class}{
 	Logical.  If TRUE then an object of class \code{cpt} is returned.
@@ -60,6 +60,8 @@ cpt.mean(data,penalty="SIC",value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,p
 \references{
 Change in Normal mean: Hinkley, D. V. (1970) Inference About the Change-Point in a Sequence of Random Variables, \emph{Biometrika} \bold{57}, 1--17
 
+CUSUM Test: M. Csorgo, L. Horvath (1997) Limit Theorems in Change-Point Analysis, \emph{Wiley}
+
 PELT Algorithm: Killick, R. and Fearnhead, P. and Eckley, I.A. (2011) An exact linear time search algorithm for multiple changepoint detection, \emph{Submitted}
 
 Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, \emph{Biometrics} \bold{30(3)}, 507--512
@@ -72,7 +74,7 @@ Rebecca Killick
 
 
 \seealso{
-\code{\link{cpt.var}},\code{\link{cpt.meanvar}},\code{\link{cpt.reg}},\code{\link{plot-methods}},\code{\linkS4class{cpt}}
+\code{\link{cpt.var}},\code{\link{cpt.meanvar}},\code{\link{plot-methods}},\code{\linkS4class{cpt}}
 }
 \examples{
 # Example of a change in mean at 100 in simulated normal data
@@ -81,6 +83,7 @@ x=c(rnorm(100,0,1),rnorm(100,10,1))
 cpt.mean(x,penalty="SIC",method="AMOC",class=FALSE) # returns 100 to show that the null hypothesis was rejected and the change in mean is at 100
 ans=cpt.mean(x,penalty="Asymptotic",value=0.01,method="AMOC") 
 cpts(ans)# returns 100 to show that the null hypothesis was rejected, the change in mean is at 100 and we are 99% confident of this result
+ans=cpt.mean(x,penalty="Manual",value=0.8,method="AMOC",dist="CUSUM") # returns 101 as the changepoint location
 
 # Example of multiple changes in mean at 50,100,150 in simulated normal data
 set.seed(1)

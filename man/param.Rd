@@ -29,7 +29,7 @@ Rebecca Killick
 
 
 \seealso{
-\code{\link{param-methods}},\code{\link{cpt.reg}},\code{\link{cpt.mean}},\code{\link{cpt.var}},\code{\link{cpt.meanvar}}
+\code{\link{param-methods}},\code{\link{cpt.mean}},\code{\link{cpt.var}},\code{\link{cpt.meanvar}}
 }
 \examples{
 set.seed(1)
