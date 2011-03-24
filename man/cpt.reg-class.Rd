@@ -78,7 +78,7 @@ Rebecca Killick
 }
 
 \seealso{
-\code{\link{plot-methods}},\code{\link{cpts-methods}},\code{\linkS4class{cpt}},\code{\link{cpt.reg}}
+\code{\link{plot-methods}},\code{\link{cpts-methods}},\code{\linkS4class{cpt}}
 }
 \examples{
 showClass("cpt.reg")
@@ -87,15 +87,6 @@ x=new("cpt.reg") # creates a new object with the cpt.reg class defaults
 data.set(x)  # retrieves the data.set slot from x
 data.set(x)<-matrix(1:10,nrow=5,ncol=2) # replaces the data.set slot from x with a matrix
 
-# single change in regression example
-set.seed(1)
-x=1:250
-y=c(0.01*x[1:100],1.5-0.02*(x[101:250]-101))
-ynoise=y+rnorm(250,0,0.2)
-data=cbind(ynoise,x)
-out=cpt.reg(data) # analyses x using default values
-print(out) # gives details of analysis including default values used
-summary(out) # shorter version of print(out)
 }
 \keyword{classes}
 \keyword{cpt}

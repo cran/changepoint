@@ -272,7 +272,7 @@
 				param.est(object)<-list(mean=param.mean(object),variance=param.var(object))
 			}
 			else if(distribution(object)=="Gamma"){
-				param.est(object)<-list(scale=param.scale(object,shape=shape))
+				param.est(object)<-list(scale=param.scale(object,shape=shape),shape=shape)
 			}
 			else if(distribution(object)=="Exponential"){
 				param.est(object)<-list(rate=1/param.mean(object))
@@ -354,11 +354,21 @@
 		else if(cpttype(x)=="mean"  ||  cpttype(x)=="mean and variance"){
 			nseg=length(cpts(x))
 			cpts=c(0,cpts(x))
-			means=param.est(x)$mean
+			if((distribution(x)=="Normal")||(distribution(x)=="CUSUM")){
+				means=param.est(x)$mean
+			}
+			else if(distribution(x)=="Gamma"){
+				means=param.est(x)$scale*param.est(x)$shape
+			}
+			else if(distribution(x)=="Exponential"){
+				means=1/param.est(x)$rate
+			}
+			else{
+				stop('Invalid Changepoint distribution type')
+			}
 			for(i in 1:nseg){
 				segments(cpts[i]+1,means[i],cpts[i+1],means[i],col=cpt.col,lwd=cpt.width,lty=cpt.style)
 			}
-
 		}
 		else{
 			stop('Invalid Changepoint Type for plotting.\n Can only plot mean, variance, mean and variance')
@@ -406,58 +416,100 @@
 # likelihood functions
 	setGeneric("likelihood", function(object) standardGeneric("likelihood"),where=where)
 	setMethod("likelihood", "cpt", function(object) {
-		if(cpttype(object)=="mean"){
-			mll.mean=function(x2,x,n){
-			  return( x2-(x^2)/n)
+		if(distribution(object)=="Normal"){
+			if(cpttype(object)=="mean"){
+				mll.mean=function(x2,x,n){
+				  return( x2-(x^2)/n)
+				}
+				y2=c(0,cumsum(data.set(object)^2))
+				y=c(0,cumsum(data.set(object)))
+				cpts=c(0,cpts(object))
+				nseg=length(cpts)-1
+				tmplike=0
+				for(j in 1:nseg){
+			        	tmplike=tmplike+mll.mean(y2[cpts[j+1]+1]-y2[cpts[j]+1],y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
+				}
+				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
+				names(like)=c("like","likepen")
 			}
-			y2=c(0,cumsum(data.set(object)^2))
-			y=c(0,cumsum(data.set(object)))
-			cpts=c(0,cpts(object))
-			nseg=length(cpts)-1
-			tmplike=0
-			for(j in 1:nseg){
-		        	tmplike=tmplike+mll.mean(y2[cpts[j+1]+1]-y2[cpts[j]+1],y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
+			else if(cpttype(object)=="variance"){
+				mll.var=function(x,n){
+					neg=x<=0
+					x[neg==TRUE]=0.00000000001    
+					return( n*(log(2*pi)+log(x/n)+1))
+				}
+				y2=c(0,cumsum(data.set(object)^2))
+				cpts=c(0,cpts(object))
+				nseg=length(cpts)-1
+				tmplike=0
+				for(j in 1:nseg){
+					tmplike=tmplike+mll.var(y2[cpts[j+1]+1]-y2[cpts[j]+1],cpts[j+1]-cpts[j])
+				}
+				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
+				names(like)=c("like","likepen")
 			}
-			like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
-			names(like)=c("like","likepen")
+			else if(cpttype(object)=="mean and variance"){
+				mll.meanvar=function(x2,x,n){
+					sigmasq=(1/n)*(x2-(x^2)/n)
+					neg=sigmasq<=0
+					sigmasq[neg==TRUE]=0.00000000001
+					return( n*(log(2*pi)+log(sigmasq)+1))
+				}
+				y2=c(0,cumsum(data.set(object)^2))
+				y=c(0,cumsum(data.set(object)))
+				cpts=c(0,cpts(object))
+				nseg=length(cpts)-1
+				tmplike=0
+				for(j in 1:nseg){
+					tmplike=tmplike+mll.meanvar(y2[cpts[j+1]+1]-y2[cpts[j]+1],y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
+				}
+				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
+				names(like)=c("like","likepen")
+			}
+			else{
+				stop("Unknown changepoint type, must be 'mean', 'variance' or 'mean and variance'")
+			}
 		}
-		else if(cpttype(object)=="variance"){
-			mll.var=function(x,n){
-				neg=x<=0
-				x[neg==TRUE]=0.00000000001    
-				return( n*(log(2*pi)+log(x/n)+1))
+		else if(distribution(object)=="Gamma"){
+			if(cpttype(object)!="mean and variance"){
+				stop("Unknown changepoint type for dist='Gamma', must be 'mean and variance'")
 			}
-			y2=c(0,cumsum(data.set(object)^2))
-			cpts=c(0,cpts(object))
-			nseg=length(cpts)-1
-			tmplike=0
-			for(j in 1:nseg){
-				tmplike=tmplike+mll.var(y2[cpts[j+1]+1]-y2[cpts[j]+1],cpts[j+1]-cpts[j])
+			else{
+			  mll.meanvarg=function(x,n,shape){
+			    return(n*shape*log(n*shape)-n*shape*log(x))
+			  }
+				y=c(0,cumsum(data.set(object)))
+				shape=param.est(object)$shape
+				cpts=c(0,cpts(object))
+				nseg=length(cpts)-1
+				tmplike=0
+				for(j in 1:nseg){
+					tmplike=tmplike+mll.meanvarg(y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j],shape)
+				}
+				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
+				names(like)=c("like","likepen")
 			}
-			like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
-			names(like)=c("like","likepen")
 		}
-		else if(cpttype(object)=="mean and variance"){
-			mll.meanvar=function(x2,x,n){
-				sigmasq=(1/n)*(x2-(x^2)/n)
-				neg=sigmasq<=0
-				sigmasq[neg==TRUE]=0.00000000001
-				return( n*(log(2*pi)+log(sigmasq)+1))
+		else if(distribution(object)=="Exponential"){
+			if(cpttype(object)!="mean and variance"){
+				stop("Unknown changepoint type for dist='Exponential', must be 'mean and variance'")
 			}
-			y2=c(0,cumsum(data.set(object)^2))
-			y=c(0,cumsum(data.set(object)))
-			cpts=c(0,cpts(object))
-			nseg=length(cpts)-1
-			tmplike=0
-			for(j in 1:nseg){
-				tmplike=tmplike+mll.meanvar(y2[cpts[j+1]+1]-y2[cpts[j]+1],y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
+			else{
+			  mll.meanvare=function(x,n){
+			    return(n*log(n)-n*log(x))
+			  }
+				y=c(0,cumsum(data.set(object)))
+				cpts=c(0,cpts(object))
+				nseg=length(cpts)-1
+				tmplike=0
+				for(j in 1:nseg){
+					tmplike=tmplike+mll.meanvare(y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
+				}
+				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
+				names(like)=c("like","likepen")
 			}
-			like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
-			names(like)=c("like","likepen")
 		}
-		else{
-			stop("Unknown changepoint type, must be 'mean', 'variance' or 'mean and variance'")
-		}
+		else{stop("Likelihood is only valid for distributional assumptions, not CUSUM or CSS")}
 		return(like)
 	},where=where)
 

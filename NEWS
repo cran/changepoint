@@ -1,3 +1,11 @@
+Version 0.4
+Changes to previous version
+- removed regression for Normal distributed errors
+- added cusum for change in mean
+- added cusum of squares for change in variance
+- added some datasets
+- corrected plotting of Gamma and Exponential distributions in cpt.meanvar
+
 Version 0.3
 Changes to previous version
 - added change in regression for Normal distributed errors

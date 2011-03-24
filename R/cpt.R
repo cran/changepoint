@@ -1,51 +1,79 @@
 cpt.mean=function(data,penalty="SIC",value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE){
-	if(dist !="Normal"){ stop("Invalid distribution, must be Normal") }
-	if(method=="AMOC"){
-		return(single.mean.norm(data,penalty,value,class,param.estimates))
+	if(!((dist=="Normal")||(dist=="CUSUM"))){ stop("Invalid distribution, must be Normal or CUSUM") }
+	if(dist=="Normal"){
+		if(method=="AMOC"){
+			return(single.mean.norm(data,penalty,value,class,param.estimates))
+		}
+		else if(method=="PELT" || method=="BinSeg"){
+			return(multiple.mean.norm(data,mul.method=method,penalty,value,Q,class,param.estimates))
+		}
+		else if(method=="SegNeigh"){
+			warning("SegNeigh is computationally slow, use PELT instead")
+			return(multiple.mean.norm(data,mul.method=method,penalty,value,Q,class,param.estimates))
+		}	
+		else{
+			stop("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
+		}
 	}
-	else if(method=="PELT" || method=="BinSeg"){
-		return(multiple.mean.norm(data,mul.method=method,penalty,value,Q,class,param.estimates))
-	}
-	else if(method=="SegNeigh"){
-		warning("SegNeigh is computationally slow, use PELT instead")
-		return(multiple.mean.norm(data,mul.method=method,penalty,value,Q,class,param.estimates))
-	}
-	else{
-		stop("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
+	else if(dist=="CUSUM"){
+		if(method=="AMOC"){
+			return(single.mean.cusum(data,penalty,value,class,param.estimates))
+		}
+		else if(method=="SegNeigh" || method=="BinSeg"){
+			return(multiple.mean.cusum(data,mul.method=method,penalty,value,Q,class,param.estimates))
+		}
+		else{
+			stop("Invalid Method, must be AMOC, SegNeigh or BinSeg")
+		}
 	}
 }
 
-cpt.reg=function(data,penalty="SIC",value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE){
-	if(dist !="Normal"){ stop("Invalid distribution, must be Normal") }
-	if(method=="AMOC"){
-		return(single.reg.norm(data,penalty,value,class,param.estimates))
-	}
-	else if(method=="PELT" || method=="BinSeg"){
-		return(multiple.reg.norm(data,mul.method=method,penalty,value,Q,class,param.estimates))
-	}
-	else if(method=="SegNeigh"){
-		warning("SegNeigh is computationally slow, use PELT instead")
-		return(multiple.reg.norm(data,mul.method=method,penalty,value,Q,class,param.estimates))
-	}
-	else{
-		stop("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
-	}
-}
+#cpt.reg=function(data,penalty="SIC",value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE){
+#	if(dist !="Normal"){ stop("Invalid distribution, must be Normal") }
+#	if(method=="AMOC"){
+#		return(single.reg.norm(data,penalty,value,class,param.estimates))
+#	}
+#	else if(method=="PELT" || method=="BinSeg"){
+#		return(multiple.reg.norm(data,mul.method=method,penalty,value,Q,class,param.estimates))
+#	}
+#	else if(method=="SegNeigh"){
+#		warning("SegNeigh is computationally slow, use PELT instead")
+#		return(multiple.reg.norm(data,mul.method=method,penalty,value,Q,class,param.estimates))
+#	}
+#	else{
+#		stop("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
+#	}
+#}
 
 cpt.var=function(data,penalty="SIC",value=0,know.mean=FALSE, mu=-1000,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE){
-	if(dist !="Normal"){ stop("Invalid distribution, must be Normal") }
-	if(method=="AMOC"){
-		return(single.var.norm(data,penalty,value,know.mean,mu,class,param.estimates))
+	if(dist =="Normal"){
+		if(method=="AMOC"){
+			return(single.var.norm(data,penalty,value,know.mean,mu,class,param.estimates))
+		}
+		else if(method=="PELT" || method=="BinSeg"){
+			return(multiple.var.norm(data,mul.method=method,penalty,value,Q,know.mean,mu,class,param.estimates))
+		}
+		else if(method=="SegNeigh"){
+			warning("SegNeigh is computationally slow, use PELT instead")
+			return(multiple.var.norm(data,mul.method=method,penalty,value,Q,know.mean,mu,class,param.estimates))
+		}
+		else{
+			stop("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
+		}
 	}
-	else if(method=="PELT" || method=="BinSeg"){
-		return(multiple.var.norm(data,mul.method=method,penalty,value,Q,know.mean,mu,class,param.estimates))
-	}
-	else if(method=="SegNeigh"){
-		warning("SegNeigh is computationally slow, use PELT instead")
-		return(multiple.var.norm(data,mul.method=method,penalty,value,Q,know.mean,mu,class,param.estimates))
+	else if(dist=="CSS"){
+		if(method=="AMOC"){
+			return(single.var.css(data,penalty,value,class,param.estimates))
+		}
+		else if(method=="PELT" || method=="SegNeigh" || method=="BinSeg"){
+			return(multiple.var.css(data,mul.method=method,penalty,value,Q,class,param.estimates))
+		}
+		else{
+			stop("Invalid Method, must be AMOC, SegNeigh or BinSeg")
+		}
 	}
 	else{
-		stop("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
+		stop("Invalid distribution, must be Normal or CSS")
 	}
 }
 

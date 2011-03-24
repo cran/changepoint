@@ -503,7 +503,8 @@ multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know
 		}
 		else if(mul.method=="BinSeg"){
 			out=binseg.var.norm(data,Q,value,know.mean,mu)
-			cpts=c(sort(out$cps[1,1:out$op.cpts]),n)
+			if(out$op.cpts==0){cpts=n}
+			else{cpts=c(sort(out$cps[1,1:out$op.cpts]),n)}
 		}
 		else if(mul.method=="SegNeigh"){
 			out=segneigh.var.norm(data,Q,value,know.mean,mu)
@@ -542,15 +543,18 @@ multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know
 		else if(mul.method=="BinSeg"){
 			for(i in 1:rep){
 				out=c(out,list(binseg.var.norm(data[i,],Q,value,know.mean,mu[i])))
-				if(class==TRUE){cpts[[i]]=c(sort(out$cps[1,1:out$op.cpts]),n)}
+				if(class==TRUE){
+					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
+					else{cpts[[i]]=c(sort(out[[i]]$cps[1,1:out[[i]]$op.cpts]),n)}
+				}
 			}
 		}
 		else if(mul.method=="SegNeigh"){
 			for(i in 1:rep){
 				out=c(out,list(segneigh.var.norm(data[i,],Q,value,know.mean,mu[i])))
 				if(class==TRUE){
-					if(out$cps==0){cpts[[i]]=n}
-					else{cpts[[i]]=c(sort(out$cps[out$op.cpts+1,][out$cps[out$op.cpts+1,]>0]),n)}
+					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
+					else{cpts[[i]]=c(sort(out[[i]]$cps[out[[i]]$op.cpts+1,][out[[i]]$cps[out[[i]]$op.cpts+1,]>0]),n)}
 				}
 			}
 		}
@@ -623,7 +627,8 @@ multiple.mean.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,cla
 		}
 		else if(mul.method=="BinSeg"){
 			out=binseg.mean.norm(data,Q,value)
-			cpts=c(sort(out$cps[1,1:out$op.cpts]),n)
+			if(out$op.cpts==0){cpts=n}
+			else{cpts=c(sort(out$cps[1,1:out$op.cpts]),n)}
 		}
 		else if(mul.method=="SegNeigh"){
 			out=segneigh.mean.norm(data,Q,value)
@@ -659,15 +664,18 @@ multiple.mean.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,cla
 		else if(mul.method=="BinSeg"){
 			for(i in 1:rep){
 				out=c(out,list(binseg.mean.norm(data[i,],Q,value)))
-				if(class==TRUE){cpts[[i]]=c(sort(out$cps[1,1:out$op.cpts]),n)}
+				if(class==TRUE){
+					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
+					else{cpts[[i]]=c(sort(out[[i]]$cps[1,1:out[[i]]$op.cpts]),n)}
+				}
 			}
 		}
 		else if(mul.method=="SegNeigh"){
 			for(i in 1:rep){
 				out=c(out,list(segneigh.mean.norm(data[i,],Q,value)))
 				if(class==TRUE){
-					if(out$op.cpts==0){cpts[[i]]=n}
-					else{cpts[[i]]=c(sort(out$cps[out$op.cpts+1,][out$cps[out$op.cpts+1,]>0]),n)}
+					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
+					else{cpts[[i]]=c(sort(out[[i]]$cps[out[[i]]$op.cpts+1,][out[[i]]$cps[out[[i]]$op.cpts+1,]>0]),n)}
 				}
 			}
 		}
@@ -739,7 +747,8 @@ multiple.meanvar.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,
 		}
 		else if(mul.method=="BinSeg"){
 			out=binseg.meanvar.norm(data,Q,value)
-			cpts=c(sort(out$cps[1,1:out$op.cpts]),n)
+			if(out$op.cpts==0){cpts=n}
+			else{cpts=c(sort(out$cps[1,1:out$op.cpts]),n)}
 		}
 		else if(mul.method=="SegNeigh"){
 			out=segneigh.meanvar.norm(data,Q,value)
@@ -775,15 +784,18 @@ multiple.meanvar.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,
 		else if(mul.method=="BinSeg"){
 			for(i in 1:rep){
 				out=c(out,list(binseg.meanvar.norm(data[i,],Q,value)))
-				if(class==TRUE){cpts[[i]]=c(sort(out$cps[1,1:out$op.cpts]),n)}
+				if(class==TRUE){
+					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
+					else{cpts[[i]]=c(sort(out[[i]]$cps[1,1:out[[i]]$op.cpts]),n)}
+				}
 			}
 		}
 		else if(mul.method=="SegNeigh"){
 			for(i in 1:rep){
 				out=c(out,list(segneigh.meanvar.norm(data[i,],Q,value)))
 				if(class==TRUE){
-					if(out$op.cpts==0){cpts[[i]]=n}
-					else{cpts[[i]]=c(sort(out$cps[out$op.cpts+1,][out$cps[out$op.cpts+1,]>0]),n)}
+					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
+					else{cpts[[i]]=c(sort(out[[i]]$cps[out[[i]]$op.cpts+1,][out[[i]]$cps[out[[i]]$op.cpts+1,]>0]),n)}
 				}
 			}
 		}

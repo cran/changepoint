@@ -6,14 +6,14 @@
 Contains funcions that run various single and multiple changepoint methods
 }
 \description{
-Implements various mainstream and specialised changepoint methods for finding single and multiple changepoints within data.  Many popular non-parametric and frequentist methods are included.
+Implements various mainstream and specialised changepoint methods for finding single and multiple changepoints within data.  Many popular non-parametric and frequentist methods are included.  Users should start by looking at the documentation for cpt.mean, cpt.var and cpt.meanvar.
 }
 \details{
 \tabular{ll}{
 Package: \tab changepoint\cr
 Type: \tab Package\cr
-Version: \tab 0.3 \cr
-Date: \tab 2011-01-24\cr
+Version: \tab 0.4 \cr
+Date: \tab 2011-02-26\cr
 License: \tab GPL\cr
 LazyLoad: \tab yes\cr
 }
@@ -37,7 +37,7 @@ Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for t
 \keyword{changepoint}
 \keyword{segmentation}
 \seealso{
-\code{\link{cpt.mean}},\code{\link{cpt.var}},\code{\link{cpt.meanvar}},\code{\link{cpt.reg}}
+\code{\link{cpt.mean}},\code{\link{cpt.var}},\code{\link{cpt.meanvar}}
 }
 \examples{
 # change in variance

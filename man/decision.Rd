@@ -6,17 +6,17 @@ Likelihood Ratio Decision Function
 \description{
 Uses the function parameters to decide if a proposed changepoint is a true changepoint or due to random variability.  Test is conducted using the user specified penalty.}
 \usage{
-decision(tau,null,alt,penalty="SIC",n=0,diffparam=1,value=0)
+decision(tau,null,alt=NA,penalty="SIC",n=0,diffparam=1,value=0)
 }
 \arguments{
   \item{tau}{
 	A numeric value or vector specifying the proposed changepoint location(s).
 }
   \item{null}{
-	The value of the null likelihood to be used in the liklihood ratio calculation.  If tau is a vector, so is null.
+	The value of the null likelihood to be used in the liklihood ratio calculation.  If tau is a vector, so is null.  If the test statistic is already known, replace the null argument with the test statistic.
 }
   \item{alt}{
-	The value of the alternative likelihood (at tau) to be used in the likelihood ratio calculation.  If tau is a vector, so is alt.
+	The value of the alternative likelihood (at tau) to be used in the likelihood ratio calculation.  If tau is a vector, so is alt.  If the test statistic is already known, then it is used in replacement of the null argument and the alternative should not be specified (default NA to account for this)
 }
   \item{penalty}{
 	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the value parameter.
@@ -33,6 +33,8 @@ decision(tau,null,alt,penalty="SIC",n=0,diffparam=1,value=0)
 }
 \details{
 	This function is used to test whether tau is a true changepoint or not.  This test uses the likelihood ratio as the test statistic and performs the test where the null hypothesis is no change point and the alternative hypothesis is a single changepoint at tau.  The test is (null-alt)>=penalty, if TRUE then the changepoint is deemed a true changepoint, if FALSE then n (length of data) is returned.
+
+If the test statistic is already known then it replaces the null value and the alternative is not required (default NA).  In this case the test is null>=penalty, if TRUE then the changepoint is deemed a true changepoint, if FALSE then n (length of data) is returned.
 
 In reality this function should not be used unless you are performing a changepoint test using output from other functions.  This function is used in the "see also" functions that perform various changepoint tests, ideally these should be used.
 }
@@ -57,7 +59,7 @@ Rebecca Killick
 
 
 \seealso{
-\code{\link{cpt.mean}},\code{\link{cpt.var}},\code{\link{cpt.meanvar}},\code{\link{single.mean.norm}},\code{\link{single.var.norm}},\code{\link{single.meanvar.norm}},\code{\link{single.reg.norm}}
+\code{\link{cpt.mean}},\code{\link{cpt.var}},\code{\link{cpt.meanvar}},\code{\link{single.mean.norm}},\code{\link{single.var.norm}},\code{\link{single.meanvar.norm}}
 }
 \examples{
 # Example of finding a change

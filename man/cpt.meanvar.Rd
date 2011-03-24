@@ -78,7 +78,7 @@ Rebecca Killick
 
 
 \seealso{
-\code{\link{cpt.var}},\code{\link{cpt.mean}},\code{\link{cpt.reg}},\code{\link{plot-methods}},\code{\linkS4class{cpt}}
+\code{\link{cpt.var}},\code{\link{cpt.mean}},\code{\link{plot-methods}},\code{\linkS4class{cpt}}
 }
 \examples{
 # Example of a change in scale parameter (mean and variance) at 100 in simulated gamma data
