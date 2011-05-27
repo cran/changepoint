@@ -102,10 +102,10 @@ single.mean.norm<-function(data,penalty="SIC",value=0,class=TRUE,param.estimates
 
 
 single.var.norm.calc <-
-function(data,know.mean=FALSE,mu=-1000,extrainf=TRUE){
+function(data,know.mean=FALSE,mu=NA,extrainf=TRUE){
   singledim=function(data,know.mean=FALSE,mu=-1000,extrainf=TRUE){
     n=length(data)
-    if((know.mean==FALSE)&(mu==-1000)){
+    if((know.mean==FALSE)&(is.na(mu))){
 	mu=mean(data)
     }
     y=c(0,cumsum((data-mu)^2))
@@ -161,7 +161,7 @@ function(data,know.mean=FALSE,mu=-1000,extrainf=TRUE){
 }
 
 
-single.var.norm<-function(data,penalty="SIC",value=0,know.mean=FALSE,mu=-1000,class=TRUE,param.estimates=TRUE){
+single.var.norm<-function(data,penalty="SIC",value=0,know.mean=FALSE,mu=NA,class=TRUE,param.estimates=TRUE){
 	if(is.null(dim(data))==TRUE){
 		n=length(data)
 		if(penalty=="Asymptotic"){

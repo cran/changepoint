@@ -7,7 +7,7 @@ Multiple Changes in Variance using PELT pruned method - Normal Data
 Calculates the optimal positioning and number of changepoints for Normal data using PELT pruned method.
 }
 \usage{
-PELT.var.norm(data, pen=0, know.mean=FALSE, mu=-1000, nprune=FALSE)
+PELT.var.norm(data, pen=0, know.mean=FALSE, mu=NA, nprune=FALSE)
 }
 \arguments{
   \item{data}{

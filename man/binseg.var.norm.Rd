@@ -7,7 +7,7 @@ Multiple Changes in Variance using Binary Segmentation method - Normal Data
 Calculates the optimal positioning and number of changepoints for Normal data using Binary Segmentation method.  Note that this is an approximate method.
 }
 \usage{
-binseg.var.norm(data, Q=5, pen=0,know.mean=FALSE,mu=-1000)
+binseg.var.norm(data, Q=5, pen=0,know.mean=FALSE,mu=NA)
 }
 \arguments{
   \item{data}{

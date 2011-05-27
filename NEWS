@@ -1,3 +1,7 @@
+Version 0.4.1
+Changes to previous version
+- changed default value of the mu parameter from -1000 to NA
+
 Version 0.4
 Changes to previous version
 - removed regression for Normal distributed errors

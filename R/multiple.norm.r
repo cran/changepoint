@@ -1,10 +1,10 @@
-PELT.var.norm=function(data,pen=0,know.mean=FALSE,mu=-1000,nprune=FALSE){
+PELT.var.norm=function(data,pen=0,know.mean=FALSE,mu=NA,nprune=FALSE){
   mll.var.EFK=function(x,n){
     neg=x<=0
     x[neg==TRUE]=0.00000000001    
     return( n*(log(2*pi)+log(x/n)+1))
   }
-  if((know.mean==FALSE)&(mu==-1000)){
+  if((know.mean==FALSE)&(is.na(mu))){
 	mu=mean(data)
   }
   n=length(data)
@@ -169,9 +169,9 @@ PELT.meanvar.norm=function(data,pen=0,nprune=FALSE){
 }
 
 
-segneigh.var.norm=function(data,Q=5,pen=0,know.mean=FALSE,mu=-1000){
+segneigh.var.norm=function(data,Q=5,pen=0,know.mean=FALSE,mu=NA){
   n=length(data)
-  if((know.mean==FALSE)&(mu==-1000)){
+  if((know.mean==FALSE)&(is.na(mu))){
 	mu=mean(data)
   }
   all.seg=matrix(0,ncol=n,nrow=n)
@@ -314,14 +314,14 @@ segneigh.meanvar.norm=function(data,Q=5,pen=0){
 }
 
 
-binseg.var.norm=function(data,Q=5,pen=0,know.mean=FALSE,mu=-1000){
+binseg.var.norm=function(data,Q=5,pen=0,know.mean=FALSE,mu=NA){
   mll.var=function(x,n){
     neg=x<=0
     x[neg==TRUE]=0.00000000001    
     return( -0.5*n*(log(2*pi)+log(x/n)+1))
   }
   n=length(data)
-  if((know.mean==FALSE)&(mu==-1000)){
+  if((know.mean==FALSE)&(is.na(mu))){
 	mu=mean(data)
   }
   y2=c(0,cumsum((data-mu)^2))
@@ -455,7 +455,7 @@ binseg.meanvar.norm=function(data,Q=5,pen=0){
 }
 
 
-multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know.mean=FALSE,mu=-1000,class=TRUE,param.estimates=TRUE){
+multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know.mean=FALSE,mu=NA,class=TRUE,param.estimates=TRUE){
 	if(!((mul.method=="PELT")||(mul.method=="BinSeg")||(mul.method=="SegNeigh"))){
 		stop("Multiple Method is not recognised")
 	}

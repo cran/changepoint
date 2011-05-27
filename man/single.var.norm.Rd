@@ -7,7 +7,7 @@ Single Change in Variance - Normal Data
 Calculates the scaled log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (max).
 }
 \usage{
-single.var.norm(data,penalty="SIC",value=0,know.mean=FALSE,mu=-1000,class=TRUE,param.estimates=TRUE)
+single.var.norm(data,penalty="SIC",value=0,know.mean=FALSE,mu=NA,class=TRUE,param.estimates=TRUE)
 }
 \arguments{
   \item{data}{

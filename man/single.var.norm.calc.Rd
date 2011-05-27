@@ -7,7 +7,7 @@ Single Change in Variance - Normal Data
 Calculates the scaled negative log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (min).
 }
 \usage{
-single.var.norm.calc(data, know.mean=FALSE, mu=-1000, extrainf = TRUE)
+single.var.norm.calc(data, know.mean=FALSE, mu=NA, extrainf = TRUE)
 }
 \arguments{
   \item{data}{
