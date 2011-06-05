@@ -7,7 +7,7 @@ Multiple Changes in Variance - Normal Data
 Calculates the optimal positioning and number of changepoints for Normal data using the user specified method.
 }
 \usage{
-multiple.var.norm(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know.mean=FALSE,mu=-1000,class=TRUE,param.estimates=TRUE)
+multiple.var.norm(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know.mean=FALSE,mu=NA,class=TRUE,param.estimates=TRUE)
 }
 \arguments{
   \item{data}{

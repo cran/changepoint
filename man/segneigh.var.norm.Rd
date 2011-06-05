@@ -7,7 +7,7 @@ Multiple Changes in Variance using Segment Neighbourhood method - Normal Data
 Calculates the optimal positioning and number of changepoints for Normal data using Segment Neighbourhood method.  Note that this gives the same results as PELT method but takes more computational time.
 }
 \usage{
-segneigh.var.norm(data, Q=5, pen=0, know.mean=FALSE, mu=-1000)
+segneigh.var.norm(data, Q=5, pen=0, know.mean=FALSE, mu=NA)
 }
 \arguments{
   \item{data}{
