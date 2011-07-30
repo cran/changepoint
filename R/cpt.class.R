@@ -1,8 +1,6 @@
-.initcpt<-function(where){
-# initialization function for cpt and cpt.reg classes
-	setClass("cpt",representation(data.set="numeric", cpttype="character", method="character", 	distribution="character",pen.type="character",pen.value="numeric",cpts="numeric",ncpts.max="numeric",param.est="list",date="character"),prototype(date=date()),where=where)
+	setClass("cpt",representation(data.set="numeric", cpttype="character", method="character", 	distribution="character",pen.type="character",pen.value="numeric",cpts="numeric",ncpts.max="numeric",param.est="list",date="character"),prototype(date=date()))
 
-	setClass("cpt.reg",representation(data.set="matrix", cpttype="character", method="character", distribution="character",pen.type="character",pen.value="numeric",cpts="numeric",ncpts.max="numeric",param.est="list",date="character"),prototype(cpttype="regression",date=date()),where=where)
+	setClass("cpt.reg",representation(data.set="matrix", cpttype="character", method="character", distribution="character",pen.type="character",pen.value="numeric",cpts="numeric",ncpts.max="numeric",param.est="list",date="character"),prototype(cpttype="regression",date=date()))
 
 # retrival functions for slots
 	if(!isGeneric("data.set")) {
@@ -13,10 +11,10 @@
 				standardGeneric("data.set")
 			}
 		}
-		setGeneric("data.set", fun,where=where)
+		setGeneric("data.set", fun)
 	}
-	setMethod("data.set","cpt",function(object) object@data.set,where=where)
-	setMethod("data.set","cpt.reg",function(object) object@data.set,where=where)
+	setMethod("data.set","cpt",function(object) object@data.set)
+	setMethod("data.set","cpt.reg",function(object) object@data.set)
 
 	if(!isGeneric("cpttype")) {
 		if (is.function("cpttype")){
@@ -26,10 +24,10 @@
 				standardGeneric("cpttype")
 			}
 		}
-		setGeneric("cpttype", fun,where=where)
+		setGeneric("cpttype", fun)
 	}
-	setMethod("cpttype","cpt",function(object) object@cpttype,where=where)
-	setMethod("cpttype","cpt.reg",function(object) object@cpttype,where=where)
+	setMethod("cpttype","cpt",function(object) object@cpttype)
+	setMethod("cpttype","cpt.reg",function(object) object@cpttype)
 
 	if(!isGeneric("method")) {
 		if (is.function("method")){
@@ -39,10 +37,10 @@
 				standardGeneric("method")
 			}
 		}
-		setGeneric("method", fun,where=where)
+		setGeneric("method", fun)
 	}
-	setMethod("method","cpt",function(object) object@method,where=where)
-	setMethod("method","cpt.reg",function(object) object@method,where=where)
+	setMethod("method","cpt",function(object) object@method)
+	setMethod("method","cpt.reg",function(object) object@method)
 	
 	if(!isGeneric("distribution")) {
 		if (is.function("distribution")){
@@ -52,10 +50,10 @@
 				standardGeneric("distribution")
 			}
 		}
-		setGeneric("distribution", fun,where=where)
+		setGeneric("distribution", fun)
 	}
-	setMethod("distribution","cpt",function(object) object@distribution,where=where)
-	setMethod("distribution","cpt.reg",function(object) object@distribution,where=where)
+	setMethod("distribution","cpt",function(object) object@distribution)
+	setMethod("distribution","cpt.reg",function(object) object@distribution)
 	
 	if(!isGeneric("pen.type")) {
 		if (is.function("pen.type")){
@@ -65,10 +63,10 @@
 				standardGeneric("pen.type")
 			}
 		}
-		setGeneric("pen.type", fun,where=where)
+		setGeneric("pen.type", fun)
 	}
-	setMethod("pen.type","cpt",function(object) object@pen.type,where=where)
-	setMethod("pen.type","cpt.reg",function(object) object@pen.type,where=where)
+	setMethod("pen.type","cpt",function(object) object@pen.type)
+	setMethod("pen.type","cpt.reg",function(object) object@pen.type)
 	
 	if(!isGeneric("pen.value")) {
 		if (is.function("pen.value")){
@@ -78,10 +76,10 @@
 				standardGeneric("pen.value")
 			}
 		}
-		setGeneric("pen.value", fun,where=where)
+		setGeneric("pen.value", fun)
 	}
-	setMethod("pen.value","cpt",function(object) object@pen.value,where=where)
-	setMethod("pen.value","cpt.reg",function(object) object@pen.value,where=where)
+	setMethod("pen.value","cpt",function(object) object@pen.value)
+	setMethod("pen.value","cpt.reg",function(object) object@pen.value)
 	
 	if(!isGeneric("cpts")) {
 		if (is.function("cpts")){
@@ -91,10 +89,10 @@
 				standardGeneric("cpts")
 			}
 		}
-		setGeneric("cpts", fun,where=where)
+		setGeneric("cpts", fun)
 	}
-	setMethod("cpts","cpt",function(object) object@cpts,where=where)
-	setMethod("cpts","cpt.reg",function(object) object@cpts,where=where)
+	setMethod("cpts","cpt",function(object) object@cpts)
+	setMethod("cpts","cpt.reg",function(object) object@cpts)
 	
 	if(!isGeneric("ncpts.max")) {
 		if (is.function("ncpts.max")){
@@ -104,10 +102,10 @@
 				standardGeneric("ncpts.max")
 			}
 		}
-		setGeneric("ncpts.max", fun,where=where)
+		setGeneric("ncpts.max", fun)
 	}
-	setMethod("ncpts.max","cpt",function(object) object@ncpts.max,where=where)
-	setMethod("ncpts.max","cpt.reg",function(object) object@ncpts.max,where=where)
+	setMethod("ncpts.max","cpt",function(object) object@ncpts.max)
+	setMethod("ncpts.max","cpt.reg",function(object) object@ncpts.max)
 
 	if(!isGeneric("param.est")) {
 		if (is.function("param.est")){
@@ -117,10 +115,10 @@
 				standardGeneric("param.est")
 			}
 		}
-		setGeneric("param.est", fun,where=where)
+		setGeneric("param.est", fun)
 	}
-	setMethod("param.est","cpt",function(object) object@param.est,where=where)
-	setMethod("param.est","cpt.reg",function(object) object@param.est,where=where)
+	setMethod("param.est","cpt",function(object) object@param.est)
+	setMethod("param.est","cpt.reg",function(object) object@param.est)
 	
 # ncpts function
 	if(!isGeneric("ncpts")) {
@@ -131,104 +129,104 @@
 				standardGeneric("ncpts")
 			}
 		}
-		setGeneric("ncpts", fun,where=where)
+		setGeneric("ncpts", fun)
 	}
-	setMethod("ncpts","cpt",function(object) length(cpts(object))-1,where=where)
-	setMethod("ncpts","cpt.reg",function(object) length(cpts(object))-1,where=where)
+	setMethod("ncpts","cpt",function(object) length(cpts(object))-1)
+	setMethod("ncpts","cpt.reg",function(object) length(cpts(object))-1)
 
 # replacement functions for slots
-	setGeneric("data.set<-", function(object, value) standardGeneric("data.set<-"),where=where)
+	setGeneric("data.set<-", function(object, value) standardGeneric("data.set<-"))
 	setReplaceMethod("data.set", "cpt", function(object, value) {
 		object@data.set <- value
 		return(object)
-	},where=where)
+	})
 	setReplaceMethod("data.set", "cpt.reg", function(object, value) {
 		object@data.set <- value
 		return(object)
-	},where=where)
+	})
 	
-	setGeneric("cpttype<-", function(object, value) standardGeneric("cpttype<-"),where=where)
+	setGeneric("cpttype<-", function(object, value) standardGeneric("cpttype<-"))
 	setReplaceMethod("cpttype", "cpt", function(object, value) {
 		object@cpttype <- value
 		return(object)
-	},where=where)
+	})
 	setReplaceMethod("cpttype", "cpt.reg", function(object, value) {
 		object@cpttype <- value
 		return(object)
-	},where=where)
+	})
 	
-	setGeneric("method<-", function(object, value) standardGeneric("method<-"),where=where)
+	setGeneric("method<-", function(object, value) standardGeneric("method<-"))
 	setReplaceMethod("method", "cpt", function(object, value) {
 		object@method <- value
 		return(object)
-	},where=where)
+	})
 	setReplaceMethod("method", "cpt.reg", function(object, value) {
 		object@method <- value
 		return(object)
-	},where=where)
+	})
 	
-	setGeneric("distribution<-", function(object, value) standardGeneric("distribution<-"),where=where)
+	setGeneric("distribution<-", function(object, value) standardGeneric("distribution<-"))
 	setReplaceMethod("distribution", "cpt", function(object, value) {
 		object@distribution <- value
 		return(object)
-	},where=where)
+	})
 	setReplaceMethod("distribution", "cpt.reg", function(object, value) {
 		object@distribution <- value
 		return(object)
-	},where=where)
+	})
 	
-	setGeneric("pen.type<-", function(object, value) standardGeneric("pen.type<-"),where=where)
+	setGeneric("pen.type<-", function(object, value) standardGeneric("pen.type<-"))
 	setReplaceMethod("pen.type", "cpt", function(object, value) {
 		object@pen.type <- value
 		return(object)
-	},where=where)
+	})
 	setReplaceMethod("pen.type", "cpt.reg", function(object, value) {
 		object@pen.type <- value
 		return(object)
-	},where=where)
+	})
 	
-	setGeneric("pen.value<-", function(object, value) standardGeneric("pen.value<-"),where=where)
+	setGeneric("pen.value<-", function(object, value) standardGeneric("pen.value<-"))
 	setReplaceMethod("pen.value", "cpt", function(object, value) {
 		object@pen.value <- value
 		return(object)
-	},where=where)
+	})
 	setReplaceMethod("pen.value", "cpt.reg", function(object, value) {
 		object@pen.value <- value
 		return(object)
-	},where=where)
+	})
 	
-	setGeneric("cpts<-", function(object, value) standardGeneric("cpts<-"),where=where)
+	setGeneric("cpts<-", function(object, value) standardGeneric("cpts<-"))
 	setReplaceMethod("cpts", "cpt", function(object, value) {
 		object@cpts <- value
 		return(object)
-	},where=where)
+	})
 	setReplaceMethod("cpts", "cpt.reg", function(object, value) {
 		object@cpts <- value
 		return(object)
-	},where=where)
+	})
 
-	setGeneric("ncpts.max<-", function(object, value) standardGeneric("ncpts.max<-"),where=where)
+	setGeneric("ncpts.max<-", function(object, value) standardGeneric("ncpts.max<-"))
 	setReplaceMethod("ncpts.max", "cpt", function(object, value) {
 		object@ncpts.max <- value
 		return(object)
-	},where=where)
+	})
 	setReplaceMethod("ncpts.max", "cpt.reg", function(object, value) {
 		object@ncpts.max <- value
 		return(object)
-	},where=where)
+	})
 	
-	setGeneric("param.est<-", function(object, value) standardGeneric("param.est<-"),where=where)
+	setGeneric("param.est<-", function(object, value) standardGeneric("param.est<-"))
 	setReplaceMethod("param.est", "cpt", function(object, value) {
 		object@param.est <- value
 		return(object)
-	},where=where)
+	})
 	setReplaceMethod("param.est", "cpt.reg", function(object, value) {
 		object@param.est <- value
 		return(object)
-	},where=where)
+	})
 
 # parameter functions
-	setGeneric("param", function(object,...) standardGeneric("param"),where=where)
+	setGeneric("param", function(object,...) standardGeneric("param"))
 	setMethod("param", "cpt", function(object,shape,...) {			
 		param.mean=function(object){
 			cpts=c(0,cpts(object))
@@ -285,7 +283,9 @@
 			stop("Unknown changepoint type, must be 'mean', 'variance' or 'mean and variance'")
 		}
 		return(object)
-	},where=where)
+	})
+
+
 	setMethod("param", "cpt.reg", function(object,shape,...) {			
 		param.norm=function(object){
 			cpts=c(0,cpts(object))
@@ -305,7 +305,7 @@
 			stop("Unknown distribution, must be 'Normal'")
 		}
 		return(object)
-	},where=where)
+	})
 
 # summary functions
 	setMethod("summary","cpt",function(object){
@@ -316,7 +316,8 @@
 	    cat("Maximum no. of cpts   :", ncpts.max(object),"\n")
 	    if(length(cpts(object))<=20){cat("Changepoint Locations :",cpts(object),"\n")}
 	    else{cat("Number of changepoints:", length(cpts(object)),"\n")}
-	},where=where)
+	})
+
 	setMethod("summary","cpt.reg",function(object){
 	    cat("Changepoint type     : Change in",cpttype(object),'\n')
 	    cat("Method of analysis   :",method(object),"\n")
@@ -325,7 +326,7 @@
 	    cat("Maximum no. of cpts   :", ncpts.max(object),"\n")
 	    if(length(cpts(object))<=20){cat("Changepoint Locations :",cpts(object),"\n")}
 	    else{cat("Number of changepoints:", length(cpts(object)),"\n")}
-	},where=where)
+	})
 
 # print functions
 	setMethod("print","cpt",function(x){
@@ -335,7 +336,7 @@
 	    cat("Created on  :", x@date, "\n\n")
 	    cat("summary(.)  :\n----------\n")
 	    summary(x)
-	},where=where)
+	})
 	setMethod("print","cpt.reg",function(x){
 	    cat("Class 'cpt' : Changepoint Object\n")
 	    cat("       ~~   : S4 class containing", length(attributes(x))-1, "slots with names\n")
@@ -343,7 +344,7 @@
 	    cat("Created on  :", x@date, "\n\n")
 	    cat("summary(.)  :\n----------\n")
 	    summary(x)
-	},where=where)
+	})
 
 # plot functions
 	setMethod("plot","cpt",function(x,cpt.col='red',cpt.width=1,cpt.style=1,...){
@@ -373,7 +374,7 @@
 		else{
 			stop('Invalid Changepoint Type for plotting.\n Can only plot mean, variance, mean and variance')
 		}
-	},where=where)
+	})
 
 	setMethod("plot","cpt.reg",function(x,cpt.col='red',cpt.width=1,cpt.style=1,...){
 		if(dim(data.set(x))[2]>3){
@@ -411,10 +412,10 @@
 				segments(cpts[i]+1,betas[i,1]*data.set(x)[cpts[i]+1,2],cpts[i+1],betas[i,2]+betas[i,1]*data.set(x)[cpts[i+1],2],col=cpt.col,lwd=cpt.width,lty=cpt.style)
 			}
 		}
-	},where=where)
+	})
 
 # likelihood functions
-	setGeneric("likelihood", function(object) standardGeneric("likelihood"),where=where)
+	setGeneric("likelihood", function(object) standardGeneric("likelihood"))
 	setMethod("likelihood", "cpt", function(object) {
 		if(distribution(object)=="Normal"){
 			if(cpttype(object)=="mean"){
@@ -511,10 +512,4 @@
 		}
 		else{stop("Likelihood is only valid for distributional assumptions, not CUSUM or CSS")}
 		return(like)
-	},where=where)
-
-	rm(fun)
-}	
-
-
-
+	})

@@ -1,9 +1,8 @@
 Package: changepoint
 Type: Package
-Title: Contains funcions that run various single and multiple
-        changepoint methods
-Version: 0.4.1
-Date: 2011-05-27
+Title: An R package for changepoint analysis
+Version: 0.5
+Date: 2011-08-01
 Author: Rebecca Killick <r.killick@lancs.ac.uk>, Idris A. Eckley
         <i.eckley@lancs.ac.uk>
 Maintainer: Rebecca Killick <r.killick@lancs.ac.uk>
@@ -15,6 +14,6 @@ Description: Implements various mainstream and specialised changepoint
 Depends: R(>= 2.11), methods, graphics, base
 License: GPL
 LazyLoad: yes
-Packaged: 2011-06-04 12:32:59 UTC; killick
+Packaged: 2011-07-30 15:16:38 UTC; root
 Repository: CRAN
-Date/Publication: 2011-06-05 07:57:23
+Date/Publication: 2011-07-30 15:40:03

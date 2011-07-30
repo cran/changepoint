@@ -1,0 +1,21 @@
+importFrom(graphics, plot)
+
+export("PELT.mean.norm", "PELT.meanvar.exp", "PELT.meanvar.gamma",
+       "PELT.meanvar.norm", "PELT.var.norm", "binseg.mean.cusum",
+       "binseg.mean.norm", "binseg.meanvar.exp", "binseg.meanvar.gamma",
+       "binseg.meanvar.norm", "binseg.var.css", "binseg.var.norm",
+       "cpt.mean", "cpt.meanvar", "cpt.var", "decision",
+       "method<-","multiple.mean.cusum", "multiple.mean.norm", "multiple.meanvar.exp",
+       "multiple.meanvar.gamma", "multiple.meanvar.norm", "multiple.var.css",
+       "multiple.var.norm", "param", "segneigh.mean.cusum","segneigh.mean.norm", "segneigh.meanvar.exp",
+       "segneigh.meanvar.gamma", "segneigh.meanvar.norm", "segneigh.var.css",
+       "segneigh.var.norm", "single.mean.cusum", "single.mean.cusum.calc",
+       "single.mean.norm", "single.mean.norm.calc", "single.meanvar.exp",
+       "single.meanvar.exp.calc", "single.meanvar.gamma",
+       "single.meanvar.gamma.calc", "single.meanvar.norm",
+       "single.meanvar.norm.calc", "single.var.css", "single.var.css.calc",
+       "single.var.norm", "single.var.norm.calc")
+exportClasses(cpt,cpt.reg)
+exportMethods(plot,summary,print,likelihood,data.set,cpts,cpttype,distribution,method,ncpts,
+	ncpts.max,param.est,pen.type,pen.value,"cpts<-","cpttype<-","data.set<-","distribution<-",
+	"ncpts.max<-","param.est<-","pen.type<-","pen.value<-")
