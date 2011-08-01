@@ -45,7 +45,7 @@ cpt.mean=function(data,penalty="SIC",value=0,method="AMOC",Q=5,dist="Normal",cla
 #	}
 #}
 
-cpt.var=function(data,penalty="SIC",value=0,know.mean=FALSE, mu=-1000,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE){
+cpt.var=function(data,penalty="SIC",value=0,know.mean=FALSE, mu=NA,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE){
 	if(dist =="Normal"){
 		if(method=="AMOC"){
 			return(single.var.norm(data,penalty,value,know.mean,mu,class,param.estimates))

@@ -7,7 +7,7 @@ Identifying Changes in Variance
 Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
 }
 \usage{
-cpt.var(data,penalty="SIC",value=0,know.mean=FALSE, mu=-1000,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE)
+cpt.var(data,penalty="SIC",value=0,know.mean=FALSE, mu=NA,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
@@ -20,7 +20,7 @@ cpt.var(data,penalty="SIC",value=0,know.mean=FALSE, mu=-1000,method="AMOC",Q=5,d
 	The theoretical type I error e.g.0.05 when using the Asymptotic penalty.  The value of the penalty when using the Manual penalty option.  This can be a numeric value or text giving the formula to use.  Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
 }
   \item{know.mean}{
-	Only required for dist="Normal".  Logical, if TRUE then the mean is assumed known and mu is taken as its value.  If FALSE, and mu=-1000 (default value) then the mean is estimated via maximum likelihood.  If FALSE and the value of mu is supplied, mu is not estimated but is counted as an estimated parameter for decisions.
+	Only required for dist="Normal".  Logical, if TRUE then the mean is assumed known and mu is taken as its value.  If FALSE, and mu=NA (default value) then the mean is estimated via maximum likelihood.  If FALSE and the value of mu is supplied, mu is not estimated but is counted as an estimated parameter for decisions.
 }
   \item{mu}{
 	Only required for dist="Normal".  Numerical value of the true mean of the data.  Either single value or vector of length nrow(data).  If data is a matrix and mu is a single value, the same mean is used for each row.
