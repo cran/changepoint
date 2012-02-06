@@ -1,10 +1,11 @@
 Package: changepoint
 Type: Package
 Title: An R package for changepoint analysis
-Version: 0.5
-Date: 2011-08-01
+Version: 0.6
+Date: 2012-02-06
 Author: Rebecca Killick <r.killick@lancs.ac.uk>, Idris A. Eckley
         <i.eckley@lancs.ac.uk>
+Contributors: Paul Fearnhead <p.fearnhead@lancs.ac.uk>
 Maintainer: Rebecca Killick <r.killick@lancs.ac.uk>
 Description: Implements various mainstream and specialised changepoint
         methods for finding single and multiple changepoints within
@@ -14,6 +15,6 @@ Description: Implements various mainstream and specialised changepoint
 Depends: R(>= 2.11), methods, graphics, base
 License: GPL
 LazyLoad: yes
-Packaged: 2011-07-30 15:16:38 UTC; root
+Packaged: 2012-02-06 15:53:52 UTC; killick
 Repository: CRAN
-Date/Publication: 2011-07-30 15:40:03
+Date/Publication: 2012-02-06 16:41:46

@@ -7,7 +7,7 @@ Multiple Changes in Mean and Variance using PELT pruned method - Gamma Data (i.e
 Calculates the optimal positioning and number of changepoints for Gamma data using PELT pruned method.
 }
 \usage{
-PELT.meanvar.gamma(data, shape=1, pen=0, nprune=FALSE)
+PELT.meanvar.gamma(data, shape=1, pen=0)
 }
 \arguments{
   \item{data}{
@@ -19,18 +19,13 @@ PELT.meanvar.gamma(data, shape=1, pen=0, nprune=FALSE)
   \item{pen}{
 	Numeric value of the linear penalty function.  This value is used in the decision for each individual changepoint so that in total the penalty is k*pen where k is the optimal number of changepoints detected.
 }
-  \item{nprune}{
-	Logical.  If nprune=FALSE, the locations of the changepoints are returned.  If nprune=TRUE then the number of points kept at each stage of pruning is returned instead.
-}
 }
 \details{
 	This function is used to find a multiple changes in mean and variance for data that is assumed to be Gamma distributed.  The value returned is the result of testing H0:existing number of changepoints against H1: one extra changepoint using the log of the likelihood ratio statistic coupled with the penalty supplied.  The PELT method keeps track of the optimal number and location of changepoints as it passes through the data.
 }
 \value{
-	If nprune=FALSE then a vector of the changepoint locations is returned:
+	A vector of the changepoint locations is returned:
 	\item{cpt}{Vector containing the changepoint locations for the penalty supplied.  This always ends with n.}
-	If nprune=TRUE then a vector of the number of points kept during pruning at each iteration is returned:
-	\item{nprune}{Vector containing the number of points kept at each stage of pruning.}
 }
 \references{
 Change in Gamma shape parameter: Chen, J. and Gupta, A. K. (2000) \emph{Parametric statistical change point analysis}, Birkhauser
@@ -50,13 +45,11 @@ Rebecca Killick
 set.seed(1)
 x=c(rgamma(50,shape=1,rate=1),rgamma(50,shape=1,rate=3),rgamma(50,shape=1,rate=1),rgamma(50,shape=1,rate=10))
 PELT.meanvar.gamma(x,pen=2*log(200)) # returns c(47,102,150,200)
-PELT.meanvar.gamma(x,pen=2*log(200),nprune=TRUE) # returns vector showing how many points are kept during pruing at each iteration of the method
 
 # Example no change in scale parameter
 set.seed(1)
 x=rgamma(200,shape=1,rate=1)
 PELT.meanvar.gamma(x,pen=2*log(200)) # returns 200 to show no change in mean or variance has been found
-PELT.meanvar.gamma(x,pen=2*log(200),nprune=TRUE) # notice how the number of points kept it steadily increasing compare to the previous example where it almost resets when a true change has been found
 }
 
 \keyword{methods}

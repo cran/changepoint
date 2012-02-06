@@ -12,18 +12,19 @@ Implements various mainstream and specialised changepoint methods for finding si
 \tabular{ll}{
 Package: \tab changepoint\cr
 Type: \tab Package\cr
-Version: \tab 0.5 \cr
-Date: \tab 2011-08-01\cr
+Version: \tab 0.6 \cr
+Date: \tab 2012-02-06\cr
 License: \tab GPL\cr
 LazyLoad: \tab yes\cr
 }
 
 }
 \author{
-Rebecca Killick <r.killick@lancs.ac.uk>, Idris A. Eckley <i.eckley@lancs.ac.uk>
+Rebecca Killick <r.killick@lancs.ac.uk>, Idris A. Eckley <i.eckley@lancs.ac.uk> with contributions from Paul Fearnhead <p.fearnhead@lancs.ac.uk>.
 
 Maintainer: Rebecca Killick <r.killick@lancs.ac.uk>
 }
+
 \references{
 Chen, J. and Gupta, A. K. (2000) \emph{Parametric statistical change point analysis}, Birkhauser
 

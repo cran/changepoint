@@ -1,176 +1,225 @@
-PELT.var.norm=function(data,pen=0,know.mean=FALSE,mu=NA,nprune=FALSE){
-  mll.var.EFK=function(x,n){
-    neg=x<=0
-    x[neg==TRUE]=0.00000000001    
-    return( n*(log(2*pi)+log(x/n)+1))
-  }
+# PELT.var.norm=function(data,pen=0,know.mean=FALSE,mu=NA,nprune=FALSE){
+#   mll.var.EFK=function(x,n){
+#     neg=x<=0
+#     x[neg==TRUE]=0.00000000001    
+#     return( n*(log(2*pi)+log(x/n)+1))
+#   }
+#   if((know.mean==FALSE)&(is.na(mu))){
+# 	mu=mean(data)
+#   }
+#   n=length(data)
+#   y2=c(0,cumsum((data-mu)^2))
+# 
+#   lastchangecpts=matrix(NA,nrow=n,ncol=2)
+#   lastchangelike=matrix(NA,nrow=n,ncol=2)
+#   checklist=NULL
+#   lastchangelike[1,]=c(mll.var.EFK(y2[2],1),mll.var.EFK(y2[n+1]-y2[2],n-1)+pen)
+#   lastchangecpts[1,]=c(0,1)
+#   lastchangelike[2,]=c(mll.var.EFK(y2[3],2),mll.var.EFK(y2[n+1]-y2[3],n-2)+pen)
+#   lastchangecpts[2,]=c(0,2)
+#   lastchangelike[3,]=c(mll.var.EFK(y2[4],3),mll.var.EFK(y2[n+1]-y2[4],n-3)+pen)
+#   lastchangecpts[3,]=c(0,3)
+#   noprune=NULL
+#   for(tstar in 4:n){
+#     tmplike=NULL
+#     tmpt=c(checklist, tstar-2)
+#     tmplike=lastchangelike[tmpt,1]+mll.var.EFK(y2[tstar+1]-y2[tmpt+1],tstar-tmpt)+pen
+#     if(tstar==n){
+#       lastchangelike[tstar,]=c(min(c(tmplike,mll.var.EFK(y2[tstar+1]-y2[1],tstar)),na.rm=TRUE),0)
+#     }
+#     else{
+#       lastchangelike[tstar,]=c(min(c(tmplike,mll.var.EFK(y2[tstar+1]-y2[1],tstar)),na.rm=TRUE),mll.var.EFK(y2[n+1]-y2[tstar+1],n-tstar)+pen)
+#     }
+#     if(lastchangelike[tstar,1]==mll.var.EFK(y2[tstar+1]-y2[1],tstar)){
+#       lastchangecpts[tstar,]=c(0,tstar)
+#     }
+#     else{
+#       cpt=tmpt[tmplike==lastchangelike[tstar,1]][1]
+#       lastchangecpts[tstar,]=c(cpt,tstar)
+#     }
+#     checklist=tmpt[tmplike<=lastchangelike[tstar,1]+pen]
+#     if(nprune==TRUE){
+#       noprune=c(noprune,length(checklist))
+#     }
+#   }
+#   if(nprune==TRUE){
+#     return(nprune=noprune)
+#   }
+#   else{
+#     fcpt=NULL
+#     last=n
+#     while(last!=0){
+# 	fcpt=c(fcpt,lastchangecpts[last,2])
+# 	last=lastchangecpts[last,1]
+#     }
+#     return(cpt=sort(fcpt))
+#   }
+# }
+
+PELT.var.norm=function(data,pen=0,know.mean=FALSE,mu=NA){
+  # function that uses the PELT method to calculate changes in variance where the segments in the data are assumed to be Normal
   if((know.mean==FALSE)&(is.na(mu))){
-	mu=mean(data)
+    mu=mean(data)
   }
   n=length(data)
   y2=c(0,cumsum((data-mu)^2))
 
-  lastchangecpts=matrix(NA,nrow=n,ncol=2)
-  lastchangelike=matrix(NA,nrow=n,ncol=2)
-  checklist=NULL
-  lastchangelike[1,]=c(mll.var.EFK(y2[2],1),mll.var.EFK(y2[n+1]-y2[2],n-1)+pen)
-  lastchangecpts[1,]=c(0,1)
-  lastchangelike[2,]=c(mll.var.EFK(y2[3],2),mll.var.EFK(y2[n+1]-y2[3],n-2)+pen)
-  lastchangecpts[2,]=c(0,2)
-  lastchangelike[3,]=c(mll.var.EFK(y2[4],3),mll.var.EFK(y2[n+1]-y2[4],n-3)+pen)
-  lastchangecpts[3,]=c(0,3)
-  noprune=NULL
-  for(tstar in 4:n){
-    tmplike=NULL
-    tmpt=c(checklist, tstar-2)
-    tmplike=lastchangelike[tmpt,1]+mll.var.EFK(y2[tstar+1]-y2[tmpt+1],tstar-tmpt)+pen
-    if(tstar==n){
-      lastchangelike[tstar,]=c(min(c(tmplike,mll.var.EFK(y2[tstar+1]-y2[1],tstar)),na.rm=TRUE),0)
-    }
-    else{
-      lastchangelike[tstar,]=c(min(c(tmplike,mll.var.EFK(y2[tstar+1]-y2[1],tstar)),na.rm=TRUE),mll.var.EFK(y2[n+1]-y2[tstar+1],n-tstar)+pen)
-    }
-    if(lastchangelike[tstar,1]==mll.var.EFK(y2[tstar+1]-y2[1],tstar)){
-      lastchangecpts[tstar,]=c(0,tstar)
-    }
-    else{
-      cpt=tmpt[tmplike==lastchangelike[tstar,1]][1]
-      lastchangecpts[tstar,]=c(cpt,tstar)
-    }
-    checklist=tmpt[tmplike<=lastchangelike[tstar,1]+pen]
-    if(nprune==TRUE){
-      noprune=c(noprune,length(checklist))
-    }
-  }
-  if(nprune==TRUE){
-    return(nprune=noprune)
-  }
-  else{
-    fcpt=NULL
-    last=n
-    while(last!=0){
-	fcpt=c(fcpt,lastchangecpts[last,2])
-	last=lastchangecpts[last,1]
-    }
-    return(cpt=sort(fcpt))
-  }
+  storage.mode(y2)='double'
+  cptsout=rep(0,n) # sets up null vector for changepoint answer
+  storage.mode(cptsout)='integer'
+  
+  answer=.C('PELT_var_norm',y2,as.integer(n),as.double(pen),cptsout,PACKAGE='changepoint')
+  return(sort(answer[[4]][answer[[4]]>0]))
 }
 
 
-PELT.mean.norm=function(data,pen=0,nprune=FALSE){
-  mll.mean.EFK=function(x2,x,n){
-    return( x2-(x^2)/n)
-  }
+# PELT.mean.norm=function(data,pen=0,nprune=FALSE){
+#   mll.mean.EFK=function(x2,x,n){
+#     return( x2-(x^2)/n)
+#   }
+#   n=length(data)
+#   y2=c(0,cumsum(data^2))
+#   y=c(0,cumsum(data))
+# 
+#   lastchangecpts=matrix(NA,nrow=n,ncol=2)
+#   lastchangelike=matrix(NA,nrow=n,ncol=2)
+#   checklist=NULL
+#   lastchangelike[1,]=c(mll.mean.EFK(y2[2],y[2],1),mll.mean.EFK(y2[n+1]-y2[2],y[n+1]-y[2],n-1)+pen)
+#   lastchangecpts[1,]=c(0,1)
+#   lastchangelike[2,]=c(mll.mean.EFK(y2[3],y[3],2),mll.mean.EFK(y2[n+1]-y2[3],y[n+1]-y[3],n-2)+pen)
+#   lastchangecpts[2,]=c(0,2)
+#   lastchangelike[3,]=c(mll.mean.EFK(y2[4],y[4],3),mll.mean.EFK(y2[n+1]-y2[4],y[n+1]-y[4],n-3)+pen)
+#   lastchangecpts[3,]=c(0,3)
+#   noprune=NULL
+#   for(tstar in 4:n){
+#     tmplike=NULL
+#     tmpt=c(checklist, tstar-2)
+#     tmplike=lastchangelike[tmpt,1]+mll.mean.EFK(y2[tstar+1]-y2[tmpt+1],y[tstar+1]-y[tmpt+1],tstar-tmpt)+pen
+#     if(tstar==n){
+#       lastchangelike[tstar,]=c(min(c(tmplike,mll.mean.EFK(y2[tstar+1],y[tstar+1],tstar)),na.rm=TRUE),0)
+#     }
+#     else{
+#       lastchangelike[tstar,]=c(min(c(tmplike,mll.mean.EFK(y2[tstar+1],y[tstar+1],tstar)),na.rm=TRUE),mll.mean.EFK(y2[n+1]-y2[tstar+1],y[n+1]-y[tstar+1],n-tstar)+pen)
+#     }
+#     if(lastchangelike[tstar,1]==mll.mean.EFK(y2[tstar+1],y[tstar+1],tstar)){
+#       lastchangecpts[tstar,]=c(0,tstar)
+#     }
+#     else{
+#       cpt=tmpt[tmplike==lastchangelike[tstar,1]][1]
+#       lastchangecpts[tstar,]=c(cpt,tstar)
+#     }
+#     checklist=tmpt[tmplike<=lastchangelike[tstar,1]+pen]
+#     if(nprune==TRUE){
+#       noprune=c(noprune,length(checklist))
+#     }
+#   }
+#   if(nprune==TRUE){
+#     return(noprune)
+#   }
+#   else{
+#     fcpt=NULL
+#     last=n
+#     while(last!=0){
+# 	fcpt=c(fcpt,lastchangecpts[last,2])
+# 	last=lastchangecpts[last,1]
+#     }
+#     return(cpt=sort(fcpt))
+#   }
+# }
+
+PELT.mean.norm=function(data,pen=0){
+  # function that uses the PELT method to calculate changes in mean where the segments in the data are assumed to be Normal
   n=length(data)
-  y2=c(0,cumsum(data^2))
+  y2=c(0,cumsum((data)^2))
   y=c(0,cumsum(data))
 
-  lastchangecpts=matrix(NA,nrow=n,ncol=2)
-  lastchangelike=matrix(NA,nrow=n,ncol=2)
-  checklist=NULL
-  lastchangelike[1,]=c(mll.mean.EFK(y2[2],y[2],1),mll.mean.EFK(y2[n+1]-y2[2],y[n+1]-y[2],n-1)+pen)
-  lastchangecpts[1,]=c(0,1)
-  lastchangelike[2,]=c(mll.mean.EFK(y2[3],y[3],2),mll.mean.EFK(y2[n+1]-y2[3],y[n+1]-y[3],n-2)+pen)
-  lastchangecpts[2,]=c(0,2)
-  lastchangelike[3,]=c(mll.mean.EFK(y2[4],y[4],3),mll.mean.EFK(y2[n+1]-y2[4],y[n+1]-y[4],n-3)+pen)
-  lastchangecpts[3,]=c(0,3)
-  noprune=NULL
-  for(tstar in 4:n){
-    tmplike=NULL
-    tmpt=c(checklist, tstar-2)
-    tmplike=lastchangelike[tmpt,1]+mll.mean.EFK(y2[tstar+1]-y2[tmpt+1],y[tstar+1]-y[tmpt+1],tstar-tmpt)+pen
-    if(tstar==n){
-      lastchangelike[tstar,]=c(min(c(tmplike,mll.mean.EFK(y2[tstar+1],y[tstar+1],tstar)),na.rm=TRUE),0)
-    }
-    else{
-      lastchangelike[tstar,]=c(min(c(tmplike,mll.mean.EFK(y2[tstar+1],y[tstar+1],tstar)),na.rm=TRUE),mll.mean.EFK(y2[n+1]-y2[tstar+1],y[n+1]-y[tstar+1],n-tstar)+pen)
-    }
-    if(lastchangelike[tstar,1]==mll.mean.EFK(y2[tstar+1],y[tstar+1],tstar)){
-      lastchangecpts[tstar,]=c(0,tstar)
-    }
-    else{
-      cpt=tmpt[tmplike==lastchangelike[tstar,1]][1]
-      lastchangecpts[tstar,]=c(cpt,tstar)
-    }
-    checklist=tmpt[tmplike<=lastchangelike[tstar,1]+pen]
-    if(nprune==TRUE){
-      noprune=c(noprune,length(checklist))
-    }
-  }
-  if(nprune==TRUE){
-    return(noprune)
-  }
-  else{
-    fcpt=NULL
-    last=n
-    while(last!=0){
-	fcpt=c(fcpt,lastchangecpts[last,2])
-	last=lastchangecpts[last,1]
-    }
-    return(cpt=sort(fcpt))
-  }
+  storage.mode(y2)='double'
+  storage.mode(y)='double'
+  cptsout=rep(0,n) # sets up null vector for changepoint answer
+  storage.mode(cptsout)='integer'
+  
+  answer=.C('PELT_mean_norm',y2,y,as.integer(n),as.double(pen),cptsout,PACKAGE='changepoint')
+  return(sort(answer[[5]][answer[[5]]>0]))
 }
 
-PELT.meanvar.norm=function(data,pen=0,nprune=FALSE){
-  mll.meanvar.EFK=function(x2,x,n){
-    sigmasq=(1/n)*(x2-(x^2)/n)
-    neg=sigmasq<=0
-    sigmasq[neg==TRUE]=0.00000000001
-    return(n*(log(2*pi)+log(sigmasq)+1))
-  }
+
+# PELT.meanvar.norm=function(data,pen=0,nprune=FALSE){
+#   mll.meanvar.EFK=function(x2,x,n){
+#     sigmasq=(1/n)*(x2-(x^2)/n)
+#     neg=sigmasq<=0
+#     sigmasq[neg==TRUE]=0.00000000001
+#     return(n*(log(2*pi)+log(sigmasq)+1))
+#   }
+#   n=length(data)
+#   y2=c(0,cumsum(data^2))
+#   y=c(0,cumsum(data))
+# 
+#   lastchangecpts=matrix(NA,nrow=n,ncol=2)
+#   lastchangelike=matrix(NA,nrow=n,ncol=2)
+#   checklist=NULL
+#   lastchangelike[1,]=c(mll.meanvar.EFK(y2[2],y[2],1),mll.meanvar.EFK(y2[n+1]-y2[2],y[n+1]-y[2],n-1)+pen)
+#   lastchangecpts[1,]=c(0,1)
+#   lastchangelike[2,]=c(mll.meanvar.EFK(y2[3],y[3],2),mll.meanvar.EFK(y2[n+1]-y2[3],y[n+1]-y[3],n-2)+pen)
+#   lastchangecpts[2,]=c(0,2)
+#   lastchangelike[3,]=c(mll.meanvar.EFK(y2[4],y[4],3),mll.meanvar.EFK(y2[n+1]-y2[4],y[n+1]-y[4],n-3)+pen)
+#   lastchangecpts[3,]=c(0,3)
+#   noprune=NULL
+#   for(tstar in 4:n){
+#     tmplike=NULL
+#     tmpt=c(checklist, tstar-2)
+#     tmplike=lastchangelike[tmpt,1]+mll.meanvar.EFK(y2[tstar+1]-y2[tmpt+1],y[tstar+1]-y[tmpt+1],tstar-tmpt)+pen
+#     if(tstar==n){
+#       lastchangelike[tstar,]=c(min(c(tmplike,mll.meanvar.EFK(y2[tstar+1],y[tstar+1],tstar)),na.rm=TRUE),0)
+#     }
+#     else{
+#       lastchangelike[tstar,]=c(min(c(tmplike,mll.meanvar.EFK(y2[tstar+1],y[tstar+1],tstar)),na.rm=TRUE),mll.meanvar.EFK(y2[n+1]-y2[tstar+1],y[n+1]-y[tstar+1],n-tstar)+pen)
+#     }
+#     if(lastchangelike[tstar,1]==mll.meanvar.EFK(y2[tstar+1],y[tstar+1],tstar)){
+#       lastchangecpts[tstar,]=c(0,tstar)
+#     }
+#     else{
+#       cpt=tmpt[tmplike==lastchangelike[tstar,1]][1]
+#       lastchangecpts[tstar,]=c(cpt,tstar)
+#     }
+#     checklist=tmpt[tmplike<=lastchangelike[tstar,1]+pen]
+#     if(nprune==TRUE){
+#       noprune=c(noprune,length(checklist))
+#     }
+#   }
+#   if(nprune==TRUE){
+#     return(noprune)
+#   }
+#   else{
+#     fcpt=NULL
+#     last=n
+#     while(last!=0){
+# 	fcpt=c(fcpt,lastchangecpts[last,2])
+# 	last=lastchangecpts[last,1]
+#     }
+#     return(cpt=sort(fcpt))
+#   }
+# }
+
+
+PELT.meanvar.norm=function(data,pen=0){
+  # function that uses the PELT method to calculate changes in mean & variance where the segments in the data are assumed to be Normal
   n=length(data)
-  y2=c(0,cumsum(data^2))
+  y2=c(0,cumsum((data)^2))
   y=c(0,cumsum(data))
 
-  lastchangecpts=matrix(NA,nrow=n,ncol=2)
-  lastchangelike=matrix(NA,nrow=n,ncol=2)
-  checklist=NULL
-  lastchangelike[1,]=c(mll.meanvar.EFK(y2[2],y[2],1),mll.meanvar.EFK(y2[n+1]-y2[2],y[n+1]-y[2],n-1)+pen)
-  lastchangecpts[1,]=c(0,1)
-  lastchangelike[2,]=c(mll.meanvar.EFK(y2[3],y[3],2),mll.meanvar.EFK(y2[n+1]-y2[3],y[n+1]-y[3],n-2)+pen)
-  lastchangecpts[2,]=c(0,2)
-  lastchangelike[3,]=c(mll.meanvar.EFK(y2[4],y[4],3),mll.meanvar.EFK(y2[n+1]-y2[4],y[n+1]-y[4],n-3)+pen)
-  lastchangecpts[3,]=c(0,3)
-  noprune=NULL
-  for(tstar in 4:n){
-    tmplike=NULL
-    tmpt=c(checklist, tstar-2)
-    tmplike=lastchangelike[tmpt,1]+mll.meanvar.EFK(y2[tstar+1]-y2[tmpt+1],y[tstar+1]-y[tmpt+1],tstar-tmpt)+pen
-    if(tstar==n){
-      lastchangelike[tstar,]=c(min(c(tmplike,mll.meanvar.EFK(y2[tstar+1],y[tstar+1],tstar)),na.rm=TRUE),0)
-    }
-    else{
-      lastchangelike[tstar,]=c(min(c(tmplike,mll.meanvar.EFK(y2[tstar+1],y[tstar+1],tstar)),na.rm=TRUE),mll.meanvar.EFK(y2[n+1]-y2[tstar+1],y[n+1]-y[tstar+1],n-tstar)+pen)
-    }
-    if(lastchangelike[tstar,1]==mll.meanvar.EFK(y2[tstar+1],y[tstar+1],tstar)){
-      lastchangecpts[tstar,]=c(0,tstar)
-    }
-    else{
-      cpt=tmpt[tmplike==lastchangelike[tstar,1]][1]
-      lastchangecpts[tstar,]=c(cpt,tstar)
-    }
-    checklist=tmpt[tmplike<=lastchangelike[tstar,1]+pen]
-    if(nprune==TRUE){
-      noprune=c(noprune,length(checklist))
-    }
-  }
-  if(nprune==TRUE){
-    return(noprune)
-  }
-  else{
-    fcpt=NULL
-    last=n
-    while(last!=0){
-	fcpt=c(fcpt,lastchangecpts[last,2])
-	last=lastchangecpts[last,1]
-    }
-    return(cpt=sort(fcpt))
-  }
+  storage.mode(y2)='double'
+  storage.mode(y)='double'
+  cptsout=rep(0,n) # sets up null vector for changepoint answer
+  storage.mode(cptsout)='integer'
+  
+  answer=.C('PELT_meanvar_norm',y2,y,as.integer(n),as.double(pen),cptsout,PACKAGE='changepoint')
+  return(sort(answer[[5]][answer[[5]]>0]))
 }
 
 
 segneigh.var.norm=function(data,Q=5,pen=0,know.mean=FALSE,mu=NA){
   n=length(data)
+  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
   if((know.mean==FALSE)&(is.na(mu))){
 	mu=mean(data)
   }
@@ -220,6 +269,7 @@ segneigh.var.norm=function(data,Q=5,pen=0,know.mean=FALSE,mu=NA){
 
 segneigh.mean.norm=function(data,Q=5,pen=0){
   n=length(data)
+  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
   all.seg=matrix(0,ncol=n,nrow=n)
   for(i in 1:n){
   	ssq=0
@@ -266,6 +316,7 @@ segneigh.mean.norm=function(data,Q=5,pen=0){
 
 segneigh.meanvar.norm=function(data,Q=5,pen=0){
   n=length(data)
+  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
   all.seg=matrix(0,ncol=n,nrow=n)
   for(i in 1:n){
   	ssq=0
@@ -314,144 +365,202 @@ segneigh.meanvar.norm=function(data,Q=5,pen=0){
 }
 
 
+#binseg.var.norm=function(data,Q=5,pen=0,know.mean=FALSE,mu=NA){
+#  mll.var=function(x,n){
+#    neg=x<=0
+#    x[neg==TRUE]=0.00000000001    
+#    return( -0.5*n*(log(2*pi)+log(x/n)+1))
+#  }
+#  n=length(data)
+#  if((know.mean==FALSE)&(is.na(mu))){
+#	mu=mean(data)
+#  }
+#  y2=c(0,cumsum((data-mu)^2))
+#  tau=c(0,n)
+#  cpt=matrix(0,nrow=2,ncol=Q)
+#  oldmax=1000
+#
+#  for(q in 1:Q){
+#    lambda=rep(0,n-1)
+#    i=1
+#    st=tau[1]+1;end=tau[2]
+#    null=mll.var(y2[end+1]-y2[st],end-st+1)
+#    for(j in 1:(n-1)){
+#      if(j==end){
+#        st=end+1;i=i+1;end=tau[i+1]
+#        null=mll.var(y2[end+1]-y2[st],end-st+1)
+#      }else{
+#        lambda[j]=mll.var(y2[j+1]-y2[st],j-st+1)+mll.var(y2[end+1]-y2[j+1],end-j)-null
+#      }
+#    }
+#    k=which.max(lambda)[1]
+#    cpt[1,q]=k;cpt[2,q]=min(oldmax,max(lambda))
+#    oldmax=min(oldmax,max(lambda))
+#    tau=sort(c(tau,k))
+#  }
+#  op.cps=NULL
+#  p=1:(Q-1)
+#  for(i in 1:length(pen)){
+#    criterion=(2*cpt[2,])>=pen[i]
+#    if(sum(criterion)==0){
+#      op.cps=0
+#    }
+#    else{
+#      op.cps=c(op.cps,max(which((criterion)==TRUE)))
+#    }
+#  }
+#  return(list(cps=cpt,op.cpts=op.cps,pen=pen))
+#}
+
+
 binseg.var.norm=function(data,Q=5,pen=0,know.mean=FALSE,mu=NA){
-  mll.var=function(x,n){
-    neg=x<=0
-    x[neg==TRUE]=0.00000000001    
-    return( -0.5*n*(log(2*pi)+log(x/n)+1))
+  # function that uses the BinSeg method to calculate changes in variance where the segments in the data are assumed to be Normal
+  if((know.mean==FALSE)&(is.na(mu))){
+    mu=mean(data)
   }
   n=length(data)
-  if((know.mean==FALSE)&(is.na(mu))){
-	mu=mean(data)
-  }
+  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
   y2=c(0,cumsum((data-mu)^2))
-  tau=c(0,n)
-  cpt=matrix(0,nrow=2,ncol=Q)
-  oldmax=1000
 
-  for(q in 1:Q){
-    lambda=rep(0,n-1)
-    i=1
-    st=tau[1]+1;end=tau[2]
-    null=mll.var(y2[end+1]-y2[st],end-st+1)
-    for(j in 1:(n-1)){
-      if(j==end){
-        st=end+1;i=i+1;end=tau[i+1]
-        null=mll.var(y2[end+1]-y2[st],end-st+1)
-      }else{
-        lambda[j]=mll.var(y2[j+1]-y2[st],j-st+1)+mll.var(y2[end+1]-y2[j+1],end-j)-null
-      }
-    }
-    k=which.max(lambda)[1]
-    cpt[1,q]=k;cpt[2,q]=min(oldmax,max(lambda))
-    oldmax=min(oldmax,max(lambda))
-    tau=sort(c(tau,k))
-  }
-  op.cps=NULL
-  p=1:(Q-1)
-  for(i in 1:length(pen)){
-    criterion=(2*cpt[2,])>=pen[i]
-    if(sum(criterion)==0){
-      op.cps=0
-    }
-    else{
-      op.cps=c(op.cps,max(which((criterion)==TRUE)))
-    }
-  }
-  return(list(cps=cpt,op.cpts=op.cps,pen=pen))
+  storage.mode(y2)='double'
+  cptsout=rep(0,Q) # sets up null vector for changepoint answer
+  likeout=rep(0,Q) # sets up null vector for likelihood of changepoints in cptsout
+  storage.mode(cptsout)='double'
+  op_cps=0
+  
+  answer=.C('binseg_var_norm',y2,as.integer(n),as.double(pen),as.integer(Q),as.integer(cptsout),likeout,as.integer(op_cps),PACKAGE='changepoint')
+  return(list(cps=rbind(answer[[5]],answer[[6]]),op.cpts=answer[[7]],pen=pen))
 }
 
+# binseg.mean.norm=function(data,Q=5,pen=0){
+#   mll.mean=function(x2,x,n){
+#     return( -0.5*(x2-(x^2)/n))
+#   }
+#   n=length(data)
+#   y2=c(0,cumsum(data^2))
+#   y=c(0,cumsum(data))
+#   tau=c(0,n)
+#   cpt=matrix(0,nrow=2,ncol=Q)
+#   oldmax=1000
+# 
+#   for(q in 1:Q){
+#     lambda=rep(0,n-1)
+#     i=1
+#     st=tau[1]+1;end=tau[2]
+#     null=mll.mean(y2[end+1]-y2[st],y[end+1]-y[st],end-st+1)
+#     for(j in 1:(n-1)){
+#       if(j==end){
+#         st=end+1;i=i+1;end=tau[i+1]
+#         null=mll.mean(y2[end+1]-y2[st],y[end+1]-y[st],end-st+1)
+#       }else{
+#         lambda[j]=mll.mean(y2[j+1]-y2[st],y[j+1]-y[st],j-st+1)+mll.mean(y2[end+1]-y2[j+1],y[end+1]-y[j+1],end-j)-null
+#       }
+#     }
+#     k=which.max(lambda)[1]
+#     cpt[1,q]=k;cpt[2,q]=min(oldmax,max(lambda)) # done so that when we do the decision later we can take the max(which(criterion==T)), rather than min(which(criterion==F))-1
+#     oldmax=min(oldmax,max(lambda))
+#     tau=sort(c(tau,k))
+#   }
+#   op.cps=NULL
+#   p=1:(Q-1)
+#   for(i in 1:length(pen)){
+#     criterion=(2*cpt[2,])>=pen[i]
+#     if(sum(criterion)==0){
+#       op.cps=0
+#     }
+#     else{
+#       op.cps=c(op.cps,max(which((criterion)==TRUE)))
+#     }
+#   }
+#   return(list(cps=cpt,op.cpts=op.cps,pen=pen))
+# }
 
 binseg.mean.norm=function(data,Q=5,pen=0){
-  mll.mean=function(x2,x,n){
-    return( -0.5*(x2-(x^2)/n))
-  }
+  # function that uses the BinSeg method to calculate changes in variance where the segments in the data are assumed to be Normal
+
   n=length(data)
+  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
   y2=c(0,cumsum(data^2))
   y=c(0,cumsum(data))
-  tau=c(0,n)
-  cpt=matrix(0,nrow=2,ncol=Q)
-  oldmax=1000
 
-  for(q in 1:Q){
-    lambda=rep(0,n-1)
-    i=1
-    st=tau[1]+1;end=tau[2]
-    null=mll.mean(y2[end+1]-y2[st],y[end+1]-y[st],end-st+1)
-    for(j in 1:(n-1)){
-      if(j==end){
-        st=end+1;i=i+1;end=tau[i+1]
-        null=mll.mean(y2[end+1]-y2[st],y[end+1]-y[st],end-st+1)
-      }else{
-        lambda[j]=mll.mean(y2[j+1]-y2[st],y[j+1]-y[st],j-st+1)+mll.mean(y2[end+1]-y2[j+1],y[end+1]-y[j+1],end-j)-null
-      }
-    }
-    k=which.max(lambda)[1]
-    cpt[1,q]=k;cpt[2,q]=min(oldmax,max(lambda)) # done so that when we do the decision later we can take the max(which(criterion==T)), rather than min(which(criterion==F))-1
-    oldmax=min(oldmax,max(lambda))
-    tau=sort(c(tau,k))
-  }
-  op.cps=NULL
-  p=1:(Q-1)
-  for(i in 1:length(pen)){
-    criterion=(2*cpt[2,])>=pen[i]
-    if(sum(criterion)==0){
-      op.cps=0
-    }
-    else{
-      op.cps=c(op.cps,max(which((criterion)==TRUE)))
-    }
-  }
-  return(list(cps=cpt,op.cpts=op.cps,pen=pen))
+  storage.mode(y2)='double'
+  storage.mode(y)='double'
+  cptsout=rep(0,Q) # sets up null vector for changepoint answer
+  likeout=rep(0,Q) # sets up null vector for likelihood of changepoints in cptsout
+  storage.mode(cptsout)='double'
+  op_cps=0
+  
+  answer=.C('binseg_mean_norm',y2,y,as.integer(n),as.double(pen),as.integer(Q),as.integer(cptsout),likeout,as.integer(op_cps),PACKAGE='changepoint')
+  return(list(cps=rbind(answer[[6]],answer[[7]]),op.cpts=answer[[8]],pen=pen))
 }
+
+
+# binseg.meanvar.norm=function(data,Q=5,pen=0){
+#   mll.meanvar=function(x2,x,n){
+#     sigmasq=(1/n)*(x2-(x^2)/n)
+#     neg=sigmasq<=0
+#     sigmasq[neg==TRUE]=0.00000000001
+#     return(-(n/2)*(log(2*pi)+log(sigmasq)+1))
+#   }
+#   n=length(data)
+#   y2=c(0,cumsum(data^2))
+#   y=c(0,cumsum(data))
+#   tau=c(0,n)
+#   cpt=matrix(0,nrow=2,ncol=Q)
+#   oldmax=1000
+# 
+#   for(q in 1:Q){
+#     lambda=rep(0,n-1)
+#     i=1
+#     st=tau[1]+1;end=tau[2]
+#     null=mll.meanvar(y2[end+1]-y2[st],y[end+1]-y[st],end-st+1)
+#     for(j in 1:(n-1)){
+#       if(j==end){
+#         st=end+1;i=i+1;end=tau[i+1]
+#         null=mll.meanvar(y2[end+1]-y2[st],y[end+1]-y[st],end-st+1)
+#       }else{
+# 	if((j-st)<2){lambda[j]=-1*10^(100)}
+# 	else if((end-j)<2){lambda[j]=-1*10^(100)}
+# 	else{lambda[j]=mll.meanvar(y2[j+1]-y2[st],y[j+1]-y[st],j-st+1)+mll.meanvar(y2[end+1]-y2[j+1],y[end+1]-y[j+1],end-j)-null}
+#       }
+#     }
+#     k=which.max(lambda)[1]
+#     cpt[1,q]=k;cpt[2,q]=min(oldmax,max(lambda))
+#     oldmax=min(oldmax,max(lambda))
+#     tau=sort(c(tau,k))
+#   }
+#   op.cps=NULL
+#   p=1:(Q-1)
+#   for(i in 1:length(pen)){
+#     criterion=(2*cpt[2,])>=pen[i]
+#     if(sum(criterion)==0){
+#       op.cps=0
+#     }
+#     else{
+#       op.cps=c(op.cps,max(which((criterion)==TRUE)))
+#     }
+#   }
+#   return(list(cps=cpt,op.cpts=op.cps,pen=pen))
+# }
 
 
 binseg.meanvar.norm=function(data,Q=5,pen=0){
-  mll.meanvar=function(x2,x,n){
-    sigmasq=(1/n)*(x2-(x^2)/n)
-    neg=sigmasq<=0
-    sigmasq[neg==TRUE]=0.00000000001
-    return(-(n/2)*(log(2*pi)+log(sigmasq)+1))
-  }
+  # function that uses the BinSeg method to calculate changes in variance where the segments in the data are assumed to be Normal
+
   n=length(data)
+  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
   y2=c(0,cumsum(data^2))
   y=c(0,cumsum(data))
-  tau=c(0,n)
-  cpt=matrix(0,nrow=2,ncol=Q)
-  oldmax=1000
 
-  for(q in 1:Q){
-    lambda=rep(0,n-1)
-    i=1
-    st=tau[1]+1;end=tau[2]
-    null=mll.meanvar(y2[end+1]-y2[st],y[end+1]-y[st],end-st+1)
-    for(j in 1:(n-1)){
-      if(j==end){
-        st=end+1;i=i+1;end=tau[i+1]
-        null=mll.meanvar(y2[end+1]-y2[st],y[end+1]-y[st],end-st+1)
-      }else{
-	if((j-st)<2){lambda[j]=-1*10^(100)}
-	else if((end-j)<2){lambda[j]=-1*10^(100)}
-	else{lambda[j]=mll.meanvar(y2[j+1]-y2[st],y[j+1]-y[st],j-st+1)+mll.meanvar(y2[end+1]-y2[j+1],y[end+1]-y[j+1],end-j)-null}
-      }
-    }
-    k=which.max(lambda)[1]
-    cpt[1,q]=k;cpt[2,q]=min(oldmax,max(lambda))
-    oldmax=min(oldmax,max(lambda))
-    tau=sort(c(tau,k))
-  }
-  op.cps=NULL
-  p=1:(Q-1)
-  for(i in 1:length(pen)){
-    criterion=(2*cpt[2,])>=pen[i]
-    if(sum(criterion)==0){
-      op.cps=0
-    }
-    else{
-      op.cps=c(op.cps,max(which((criterion)==TRUE)))
-    }
-  }
-  return(list(cps=cpt,op.cpts=op.cps,pen=pen))
+  storage.mode(y2)='double'
+  storage.mode(y)='double'
+  cptsout=rep(0,Q) # sets up null vector for changepoint answer
+  likeout=rep(0,Q) # sets up null vector for likelihood of changepoints in cptsout
+  storage.mode(cptsout)='double'
+  op_cps=0
+  
+  answer=.C('binseg_meanvar_norm',y2,y,as.integer(n),as.double(pen),as.integer(Q),as.integer(cptsout),likeout,as.integer(op_cps),PACKAGE='changepoint')
+  return(list(cps=rbind(answer[[6]],answer[[7]]),op.cpts=answer[[8]],pen=pen))
 }
 
 
@@ -498,7 +607,7 @@ multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know
 	if(is.null(dim(data))==TRUE){
 		# single dataset
 		if(mul.method=="PELT"){
-			out=PELT.var.norm(data,value,know.mean,mu,nprune=FALSE)
+			out=PELT.var.norm(data,value,know.mean,mu)
 			cpts=out
 		}
 		else if(mul.method=="BinSeg"){
@@ -536,7 +645,7 @@ multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know
 		if(class==TRUE){cpts=list()}
 		if(mul.method=="PELT"){
 			for(i in 1:rep){
-				out=c(out,list(PELT.var.norm(data[i,],value,know.mean,mu[i],nprune=FALSE)))
+				out=c(out,list(PELT.var.norm(data[i,],value,know.mean,mu[i])))
 			}
 			if(class==TRUE){cpts=out}
 		}
@@ -622,7 +731,7 @@ multiple.mean.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,cla
 	if(is.null(dim(data))==TRUE){
 		# single dataset
 		if(mul.method=="PELT"){
-			out=PELT.mean.norm(data,value,nprune=FALSE)
+			out=PELT.mean.norm(data,value)
 			cpts=out
 		}
 		else if(mul.method=="BinSeg"){
@@ -657,7 +766,7 @@ multiple.mean.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,cla
 		if(class==TRUE){cpts=list()}
 		if(mul.method=="PELT"){
 			for(i in 1:rep){
-				out=c(out,list(PELT.mean.norm(data[i,],value,nprune=FALSE)))
+				out=c(out,list(PELT.mean.norm(data[i,],value)))
 			}
 			cpts=out
 		}
@@ -742,7 +851,7 @@ multiple.meanvar.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,
 	if(is.null(dim(data))==TRUE){
 		# single dataset
 		if(mul.method=="PELT"){
-			out=PELT.meanvar.norm(data,value,nprune=FALSE)
+			out=PELT.meanvar.norm(data,value)
 			cpts=out
 		}
 		else if(mul.method=="BinSeg"){
@@ -777,7 +886,7 @@ multiple.meanvar.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,
 		if(class==TRUE){cpts=list()}
 		if(mul.method=="PELT"){
 			for(i in 1:rep){
-				out=c(out,list(PELT.meanvar.norm(data[i,],value,nprune=FALSE)))
+				out=c(out,list(PELT.meanvar.norm(data[i,],value)))
 			}
 			cpts=out
 		}

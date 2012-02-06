@@ -19,3 +19,5 @@ exportClasses(cpt,cpt.reg)
 exportMethods(plot,summary,print,likelihood,data.set,cpts,cpttype,distribution,method,ncpts,
 	ncpts.max,param.est,pen.type,pen.value,"cpts<-","cpttype<-","data.set<-","distribution<-",
 	"ncpts.max<-","param.est<-","pen.type<-","pen.value<-")
+
+useDynLib(changepoint)

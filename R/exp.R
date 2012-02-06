@@ -19,7 +19,6 @@ function(data,extrainf=TRUE){
     }
   }
     
-
   if(is.null(dim(data))==TRUE){
     # single data set
     cpt=singledim(data,extrainf)
@@ -47,6 +46,8 @@ function(data,extrainf=TRUE){
 
 
 single.meanvar.exp<-function(data,penalty="SIC",value=0,class=TRUE,param.estimates=TRUE){
+	if(sum(data<=0)>0){stop('Exponential distribution requires positive data')}
+
 	if(is.null(dim(data))==TRUE){
 		n=length(data)
 		if(penalty=="Asymptotic"){
@@ -98,62 +99,79 @@ single.meanvar.exp<-function(data,penalty="SIC",value=0,class=TRUE,param.estimat
 }
 
 
-PELT.meanvar.exp=function(data,pen=0,nprune=FALSE){
-  mll.meanvar.EFK=function(x,n){
-    return( 2*n*log(x)-2*n*log(n))
-  }
+# PELT.meanvar.exp=function(data,pen=0,nprune=FALSE){
+#   mll.meanvar.EFK=function(x,n){
+#     return( 2*n*log(x)-2*n*log(n))
+#   }
+#   n=length(data)
+#   y=c(0,cumsum(data))
+# 
+#   lastchangecpts=matrix(NA,nrow=n,ncol=2)
+#   lastchangelike=matrix(NA,nrow=n,ncol=2)
+#   checklist=NULL
+#   lastchangelike[1,]=c(mll.meanvar.EFK(y[2],1),mll.meanvar.EFK(y[n+1]-y[2],n-1)+pen)
+#   lastchangecpts[1,]=c(0,1)
+#   lastchangelike[2,]=c(mll.meanvar.EFK(y[3],2),mll.meanvar.EFK(y[n+1]-y[3],n-2)+pen)
+#   lastchangecpts[2,]=c(0,2)
+#   lastchangelike[3,]=c(mll.meanvar.EFK(y[4],3),mll.meanvar.EFK(y[n+1]-y[4],n-3)+pen)
+#   lastchangecpts[3,]=c(0,3)
+#   noprune=NULL
+#   for(tstar in 4:n){
+#     tmplike=NULL
+#     tmpt=c(checklist, tstar-2)
+#     tmplike=lastchangelike[tmpt,1]+mll.meanvar.EFK(y[tstar+1]-y[tmpt+1],tstar-tmpt)+pen
+#     if(tstar==n){
+#       lastchangelike[tstar,]=c(min(c(tmplike,mll.meanvar.EFK(y[tstar+1]-y[1],tstar)),na.rm=TRUE),0)
+#     }
+#     else{
+#       lastchangelike[tstar,]=c(min(c(tmplike,mll.meanvar.EFK(y[tstar+1]-y[1],tstar)),na.rm=TRUE),mll.meanvar.EFK(y[n+1]-y[tstar+1],n-tstar)+pen)
+#     }
+#     if(lastchangelike[tstar,1]==mll.meanvar.EFK(y[tstar+1]-y[1],tstar)){
+#       lastchangecpts[tstar,]=c(0,tstar)
+#     }
+#     else{
+#       cpt=tmpt[tmplike==lastchangelike[tstar,1]][1]
+#       lastchangecpts[tstar,]=c(cpt,tstar)
+#     }
+#     checklist=tmpt[tmplike<=lastchangelike[tstar,1]+pen]
+#     if(nprune==TRUE){
+#       noprune=c(noprune,length(checklist))
+#     }
+#   }
+#   if(nprune==TRUE){
+#     return(nprune=noprune)
+#   }
+#   else{
+#     fcpt=NULL
+#     last=n
+#     while(last!=0){
+# 	fcpt=c(fcpt,lastchangecpts[last,2])
+# 	last=lastchangecpts[last,1]
+#     }
+#     return(cpt=sort(fcpt))
+#   }
+# }
+
+
+PELT.meanvar.exp=function(data,pen=0){
+  # function that uses the PELT method to calculate changes in mean & variance where the segments in the data are assumed to be Exponential
+	if(sum(data<=0)>0){stop('Exponential distribution requires positive data')}
   n=length(data)
   y=c(0,cumsum(data))
 
-  lastchangecpts=matrix(NA,nrow=n,ncol=2)
-  lastchangelike=matrix(NA,nrow=n,ncol=2)
-  checklist=NULL
-  lastchangelike[1,]=c(mll.meanvar.EFK(y[2],1),mll.meanvar.EFK(y[n+1]-y[2],n-1)+pen)
-  lastchangecpts[1,]=c(0,1)
-  lastchangelike[2,]=c(mll.meanvar.EFK(y[3],2),mll.meanvar.EFK(y[n+1]-y[3],n-2)+pen)
-  lastchangecpts[2,]=c(0,2)
-  lastchangelike[3,]=c(mll.meanvar.EFK(y[4],3),mll.meanvar.EFK(y[n+1]-y[4],n-3)+pen)
-  lastchangecpts[3,]=c(0,3)
-  noprune=NULL
-  for(tstar in 4:n){
-    tmplike=NULL
-    tmpt=c(checklist, tstar-2)
-    tmplike=lastchangelike[tmpt,1]+mll.meanvar.EFK(y[tstar+1]-y[tmpt+1],tstar-tmpt)+pen
-    if(tstar==n){
-      lastchangelike[tstar,]=c(min(c(tmplike,mll.meanvar.EFK(y[tstar+1]-y[1],tstar)),na.rm=TRUE),0)
-    }
-    else{
-      lastchangelike[tstar,]=c(min(c(tmplike,mll.meanvar.EFK(y[tstar+1]-y[1],tstar)),na.rm=TRUE),mll.meanvar.EFK(y[n+1]-y[tstar+1],n-tstar)+pen)
-    }
-    if(lastchangelike[tstar,1]==mll.meanvar.EFK(y[tstar+1]-y[1],tstar)){
-      lastchangecpts[tstar,]=c(0,tstar)
-    }
-    else{
-      cpt=tmpt[tmplike==lastchangelike[tstar,1]][1]
-      lastchangecpts[tstar,]=c(cpt,tstar)
-    }
-    checklist=tmpt[tmplike<=lastchangelike[tstar,1]+pen]
-    if(nprune==TRUE){
-      noprune=c(noprune,length(checklist))
-    }
-  }
-  if(nprune==TRUE){
-    return(nprune=noprune)
-  }
-  else{
-    fcpt=NULL
-    last=n
-    while(last!=0){
-	fcpt=c(fcpt,lastchangecpts[last,2])
-	last=lastchangecpts[last,1]
-    }
-    return(cpt=sort(fcpt))
-  }
+  storage.mode(y)='double'
+  cptsout=rep(0,n) # sets up null vector for changepoint answer
+  storage.mode(cptsout)='integer'
+  
+  answer=.C('PELT_meanvar_exp',y,as.integer(n),as.double(pen),cptsout,PACKAGE='changepoint')
+  return(sort(answer[[4]][answer[[4]]>0]))
 }
 
 
 segneigh.meanvar.exp=function(data,Q=5,pen=0){
+	if(sum(data<=0)>0){stop('Exponential distribution requires positive data')}
   n=length(data)
+  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
   all.seg=matrix(0,ncol=n,nrow=n)
   for(i in 1:n){
   	sumx=0
@@ -198,48 +216,66 @@ segneigh.meanvar.exp=function(data,Q=5,pen=0){
 }
 
 
-binseg.meanvar.exp=function(data,Q=5,pen=0){
-  mll.meanvar=function(x,n){
-    return(n*log(n)-n*log(x))
-  }
-  n=length(data)
-  y=c(0,cumsum(data))
-  tau=c(0,n)
-  cpt=matrix(0,nrow=2,ncol=Q)
-  oldmax=1000
+# binseg.meanvar.exp=function(data,Q=5,pen=0){
+#   mll.meanvar=function(x,n){
+#     return(n*log(n)-n*log(x))
+#   }
+#   n=length(data)
+#   y=c(0,cumsum(data))
+#   tau=c(0,n)
+#   cpt=matrix(0,nrow=2,ncol=Q)
+#   oldmax=1000
+# 
+#   for(q in 1:Q){
+#     lambda=rep(0,n-1)
+#     i=1
+#     st=tau[1]+1;end=tau[2]
+#     null=mll.meanvar(y[end+1]-y[st],end-st+1)
+#     for(j in 1:(n-1)){
+#       if(j==end){
+#         st=end+1;i=i+1;end=tau[i+1]
+#         null=mll.meanvar(y[end+1]-y[st],end-st+1)
+#       }else{
+# 	if((j-st)<2){lambda[j]=-1*10^(100)}
+# 	else if((end-j)<2){lambda[j]=-1*10^(100)}
+# 	else{lambda[j]=mll.meanvar(y[j+1]-y[st],j-st+1)+mll.meanvar(y[end+1]-y[j+1],end-j)-null}
+#       }
+#     }
+#     k=which.max(lambda)[1]
+#     cpt[1,q]=k;cpt[2,q]=min(oldmax,max(lambda))
+#     oldmax=min(oldmax,max(lambda))
+#     tau=sort(c(tau,k))
+#   }
+#   op.cps=NULL
+#   p=1:(Q-1)
+#   for(i in 1:length(pen)){
+#     criterion=(2*cpt[2,])>=pen[i]
+#     if(sum(criterion)==0){
+#       op.cps=0
+#     }
+#     else{
+#       op.cps=c(op.cps,max(which((criterion)==TRUE)))
+#     }
+#   }
+#   return(list(cps=cpt,op.cpts=op.cps,pen=pen))
+# }
 
-  for(q in 1:Q){
-    lambda=rep(0,n-1)
-    i=1
-    st=tau[1]+1;end=tau[2]
-    null=mll.meanvar(y[end+1]-y[st],end-st+1)
-    for(j in 1:(n-1)){
-      if(j==end){
-        st=end+1;i=i+1;end=tau[i+1]
-        null=mll.meanvar(y[end+1]-y[st],end-st+1)
-      }else{
-	if((j-st)<2){lambda[j]=-1*10^(100)}
-	else if((end-j)<2){lambda[j]=-1*10^(100)}
-	else{lambda[j]=mll.meanvar(y[j+1]-y[st],j-st+1)+mll.meanvar(y[end+1]-y[j+1],end-j)-null}
-      }
-    }
-    k=which.max(lambda)[1]
-    cpt[1,q]=k;cpt[2,q]=min(oldmax,max(lambda))
-    oldmax=min(oldmax,max(lambda))
-    tau=sort(c(tau,k))
-  }
-  op.cps=NULL
-  p=1:(Q-1)
-  for(i in 1:length(pen)){
-    criterion=(2*cpt[2,])>=pen[i]
-    if(sum(criterion)==0){
-      op.cps=0
-    }
-    else{
-      op.cps=c(op.cps,max(which((criterion)==TRUE)))
-    }
-  }
-  return(list(cps=cpt,op.cpts=op.cps,pen=pen))
+binseg.meanvar.exp=function(data,Q=5,pen=0){
+  # function that uses the BinSeg method to calculate changes in mean & variance where the segments in the data are assumed to be Exponential
+	if(sum(data<=0)>0){stop('Exponential distribution requires positive data')}
+
+  n=length(data)
+  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
+  y=c(0,cumsum(data))
+
+  storage.mode(y)='double'
+  cptsout=rep(0,Q) # sets up null vector for changepoint answer
+  likeout=rep(0,Q) # sets up null vector for likelihood of changepoints in cptsout
+  storage.mode(cptsout)='double'
+  op_cps=0
+  
+  answer=.C('binseg_meanvar_exp',y,as.integer(n),as.double(pen),as.integer(Q),as.integer(cptsout),likeout,as.integer(op_cps),PACKAGE='changepoint')
+  return(list(cps=rbind(answer[[5]],answer[[6]]),op.cpts=answer[[7]],pen=pen))
 }
 
 
@@ -285,7 +321,7 @@ multiple.meanvar.exp=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,c
 	if(is.null(dim(data))==TRUE){
 		# single dataset
 		if(mul.method=="PELT"){
-			out=PELT.meanvar.exp(data,value,nprune=FALSE)
+			out=PELT.meanvar.exp(data,value)
 			cpts=out
 		}
 		else if(mul.method=="BinSeg"){
@@ -320,7 +356,7 @@ multiple.meanvar.exp=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,c
 		if(class==TRUE){cpts=list()}
 		if(mul.method=="PELT"){
 			for(i in 1:rep){
-				out=c(out,list(PELT.meanvar.exp(data[i,],value,nprune=FALSE)))
+				out=c(out,list(PELT.meanvar.exp(data[i,],value)))
 			}
 			cpts=out
 		}

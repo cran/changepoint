@@ -7,7 +7,7 @@ Identifying Changes in Mean and Variance
 Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
 }
 \usage{
-cpt.meanvar(data,penalty="SIC",value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE,shape=0)
+cpt.meanvar(data,penalty="SIC",value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE,shape=1)
 }
 \arguments{
   \item{data}{
