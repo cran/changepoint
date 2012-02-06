@@ -1,3 +1,8 @@
+Version 0.6
+Changes to previous version
+- PELT algorithms now run using C code
+- Binary Segmentation algorithms now run using C code
+
 Version 0.5
 Changes to previous version
 - added namespace to comply with R 2.13

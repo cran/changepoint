@@ -7,7 +7,7 @@ Multiple Changes in Variance using PELT pruned method - Normal Data
 Calculates the optimal positioning and number of changepoints for Normal data using PELT pruned method.
 }
 \usage{
-PELT.var.norm(data, pen=0, know.mean=FALSE, mu=NA, nprune=FALSE)
+PELT.var.norm(data, pen=0, know.mean=FALSE, mu=NA)
 }
 \arguments{
   \item{data}{
@@ -22,18 +22,13 @@ PELT.var.norm(data, pen=0, know.mean=FALSE, mu=NA, nprune=FALSE)
   \item{mu}{
 	Numerical value of the true mean of the data.  Either single value or vector of length nrow(data).  If data is a matrix and mu is a single value, the same mean is used for each row.
 }
-  \item{nprune}{
-	Logical.  If nprune=FALSE, the locations of the changepoints are returned.  If nprune=TRUE then the number of points kept at each stage of pruning is returned instead.
-}
 }
 \details{
 	This function is used to find a multiple changes in variance for data that is assumed to be normally distributed.  The value returned is the result of testing H0:existing number of changepoints against H1: one extra changepoint using the log of the likelihood ratio statistic coupled with the penalty supplied.  The PELT method keeps track of the optimal number and location of changepoints as it passes through the data.
 }
 \value{
-	If nprune=FALSE then a vector of the changepoint locations is returned:
+	A vector of the changepoint locations is returned:
 	\item{cpt}{Vector containing the changepoint locations for the penalty supplied.  This always ends with n.}
-	If nprune=TRUE then a vector of the number of points kept during pruning at each iteration is returned:
-	\item{nprune}{Vector containing the number of points kept at each stage of pruning.}
 }
 \references{
 Change in variance: Chen, J. and Gupta, A. K. (2000) \emph{Parametric statistical change point analysis}, Birkhauser
@@ -53,13 +48,11 @@ Rebecca Killick
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,0,10),rnorm(50,0,5),rnorm(50,0,1))
 PELT.var.norm(x,pen=2*log(200)) # returns c(50,99,150,200)
-PELT.var.norm(x,pen=2*log(200),nprune=TRUE) # returns vector showing how many points are kept during pruing at each iteration of the method
 
 # Example no change in variance
 set.seed(10)
 x=rnorm(200,0,1)
 PELT.var.norm(x,pen=2*log(200)) # returns 200 to show no change in variance has been found
-PELT.var.norm(x,pen=2*log(200),nprune=TRUE) # notice how the number of points kept it steadily increasing compare to the previous example where it almost resets when a true change has been found
 }
 
 \keyword{methods}

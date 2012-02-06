@@ -77,7 +77,7 @@ cpt.var=function(data,penalty="SIC",value=0,know.mean=FALSE, mu=NA,method="AMOC"
 	}
 }
 
-cpt.meanvar=function(data,penalty="SIC",value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE,shape=0){
+cpt.meanvar=function(data,penalty="SIC",value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE,shape=1){
 	if(dist=="Normal"){
 		if(method=="AMOC"){
 			return(single.meanvar.norm(data,penalty,value,class,param.estimates))
