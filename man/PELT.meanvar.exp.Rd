@@ -43,7 +43,7 @@ set.seed(1)
 x=c(rexp(50,rate=1),rexp(50,rate=3),rexp(50,rate=1),rexp(50,rate=10))
 PELT.meanvar.exp(x,pen=2*log(200)) # returns c(53,100,150,200)
 
-# Example no change in scale parameter
+# Example no change in rate parameter
 set.seed(1)
 x=rexp(200,rate=1)
 PELT.meanvar.exp(x,pen=2*log(200)) # returns 200 to show no change in mean or variance has been found

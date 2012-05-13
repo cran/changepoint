@@ -12,7 +12,7 @@ Implements various mainstream and specialised changepoint methods for finding si
 \tabular{ll}{
 Package: \tab changepoint\cr
 Type: \tab Package\cr
-Version: \tab 0.6.1 \cr
+Version: \tab 0.7 \cr
 Date: \tab 2012-05-13\cr
 License: \tab GPL\cr
 LazyLoad: \tab yes\cr

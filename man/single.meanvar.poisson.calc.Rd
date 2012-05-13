@@ -1,13 +1,13 @@
-\name{single.meanvar.exp.calc}
-\alias{single.meanvar.exp.calc}
+\name{single.meanvar.poisson.calc}
+\alias{single.meanvar.poisson.calc}
 \title{
-Single Change in Mean and Variance - Exponential Data
+Single Change in Mean and Variance - Poisson Data
 }
 \description{
-Calculates the scaled log-likelihood (assuming the data is Exponential distributed) for all possible changepoint locations and returns the single most probable (max).
+Calculates the scaled log-likelihood (assuming the data is Poisson distributed) for all possible changepoint locations and returns the single most probable (max).
 }
 \usage{
-single.meanvar.exp.calc(data, extrainf = TRUE)
+single.meanvar.poisson.calc(data, extrainf = TRUE)
 }
 \arguments{
   \item{data}{
@@ -18,7 +18,7 @@ single.meanvar.exp.calc(data, extrainf = TRUE)
 }
 }
 \details{
-	This function is used to find a single change in mean and variance for data that is assumed to be Exponential distributed.  The changepoint returned is simply the location where the log likelihood is maximised, there is no test performed as to whether this location is a true changepoint or not.
+	This function is used to find a single change in mean and variance for data that is assumed to be Poisson distributed.  The changepoint returned is simply the location where the log likelihood is maximised, there is no test performed as to whether this location is a true changepoint or not.
 
 The returned likelihoods are scaled so that a test can be directly performed using the log of the likelihood ratio, \eqn{\lambda=\left\{null-alt\right\}}, which should be maximised.
 
@@ -36,7 +36,7 @@ In reality this function should not be used unless you are performing a changepo
 	If data is a matrix (multiple datasets) and extrainf=TRUE then a matrix is returned where the first column is the changepoint location for each row in data, the second column is the scaled null likelihood for each row in data, the final column is the scaled maximum of the alternative likelihoods for each row in data.
 }
 \references{
-Change in Exponential Model: Chen, J. and Gupta, A. K. (2000) \emph{Parametric statistical change point analysis}, Birkhauser
+Change in Poisson Model: Chen, J. and Gupta, A. K. (2000) \emph{Parametric statistical change point analysis}, Birkhauser
 }
 \author{
 Rebecca Killick
@@ -44,21 +44,21 @@ Rebecca Killick
 
 
 \seealso{
-\code{\link{single.meanvar.exp}}, \code{\link{cpt.meanvar}}
+\code{\link{single.meanvar.poisson}}, \code{\link{cpt.meanvar}}
 }
 \examples{
-# Example of a change in mean and variance at 100 in simulated Exponential data
+# Example of a change in mean and variance at 100 in simulated Poisson data
 set.seed(10)
-x=c(rexp(100,rate=1),rexp(100,rate=5))
-single.meanvar.exp.calc(x,extrainf=FALSE) # finds change at 99
-single.meanvar.exp.calc(x) # finds change at 99 and gives null likelihood as -192.5052 and alternative likelihood as -299.7263
+x=c(rpois(100,lambda=1),rpois(100,lambda=5))
+single.meanvar.poisson.calc(x,extrainf=FALSE) # finds change at 99
+single.meanvar.poisson.calc(x) # finds change at 99 and gives null likelihood as -1243.330 and alternative likelihood as -1580.522
 
 
-# Example of no change in rate parameter (mean or variance) in simulated Exponential data
+# Example of no change in parameter (mean or variance) in simulated Poisson data
 set.seed(10)
-x=rexp(100,rate=1)
-single.meanvar.exp.calc(x,extrainf=FALSE) # finds change at 90, this is the most probable point of change but if a changepoint test is performed then no change will be found.
-single.meanvar.exp.calc(x)# change at 90, null liklihood is 3.196690 and alternative is 1.060281
+x=rpois(100,lambda=1)
+single.meanvar.poisson.calc(x,extrainf=FALSE) # finds change at 17, this is the most probable point of change but if a changepoint test is performed then no change will be found.
+single.meanvar.poisson.calc(x)# change at 17, null liklihood is 34.13681 and alternative is 31.20430
 }
 
 \keyword{methods}

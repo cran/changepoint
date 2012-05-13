@@ -311,8 +311,8 @@ multiple.meanvar.gamma=function(data,shape=1,mul.method="PELT",penalty="SIC",val
 	else if(penalty=="None"){
 		value=0
 	}
-	else if(penalty!="Manual"){
-		stop('Unknown Penalty')
+	else if((penalty!="Manual")&&(penalty!="Asymptotic")){
+	  stop('Unknown Penalty')
 	}
 	if((penalty=="Manual")&&(is.numeric(value)==FALSE)){
 		value=try(eval(parse(text=paste(value))),silent=TRUE)
@@ -320,6 +320,9 @@ multiple.meanvar.gamma=function(data,shape=1,mul.method="PELT",penalty="SIC",val
 			stop('Your manual penalty cannot be evaluated')
 		}
 	}
+  else if(penalty=='Asymptotic'){
+    return('Asymptotic values for the Gamma Distribution are not defined, please choose an alternative penalty type')
+  }
 	if(is.null(dim(data))==TRUE){
 		# single dataset
 		if(mul.method=="PELT"){

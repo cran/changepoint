@@ -275,6 +275,9 @@
 			else if(distribution(object)=="Exponential"){
 				param.est(object)<-list(rate=1/param.mean(object))
 			}
+			else if(distribution(object)=="Poisson"){
+			  param.est(object)<-list(lambda=param.mean(object))
+			}
 			else{
 				stop("Unknown distribution for a change in mean and variance")
 			}
@@ -363,6 +366,9 @@
 			}
 			else if(distribution(x)=="Exponential"){
 				means=1/param.est(x)$rate
+			}
+			else if(distribution(x)=="Poisson"){
+			  means=param.est(x)$lambda
 			}
 			else{
 				stop('Invalid Changepoint distribution type')
@@ -509,6 +515,25 @@
 				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
 				names(like)=c("like","likepen")
 			}
+		}
+		else if(distribution(object)=="Poisson"){
+		  if(cpttype(object)!="mean and variance"){
+		    stop("Unknown changepoint type for dist='Poisson', must be 'mean and variance'")
+		  }
+		  else{
+		    mll.meanvarp=function(x,n){
+		      return(x*log(x)-x*log(n))
+		    }
+		    y=c(0,cumsum(data.set(object)))
+		    cpts=c(0,cpts(object))
+		    nseg=length(cpts)-1
+		    tmplike=0
+		    for(j in 1:nseg){
+		      tmplike=tmplike+mll.meanvarp(y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
+		    }
+		    like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
+		    names(like)=c("like","likepen")
+		  }
 		}
 		else{stop("Likelihood is only valid for distributional assumptions, not CUSUM or CSS")}
 		return(like)
