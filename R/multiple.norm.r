@@ -63,12 +63,20 @@ PELT.var.norm=function(data,pen=0,know.mean=FALSE,mu=NA){
   }
   n=length(data)
   y2=c(0,cumsum((data-mu)^2))
-
+  error=0
+  
   storage.mode(y2)='double'
   cptsout=rep(0,n) # sets up null vector for changepoint answer
   storage.mode(cptsout)='integer'
-  
-  answer=.C('PELT_var_norm',y2,as.integer(n),as.double(pen),cptsout,PACKAGE='changepoint')
+
+  answer=list()
+  answer[[5]]=1
+  on.exit(.C("FreePELT",answer[[5]],PACKAGE='changepoint'))
+  answer=.C('PELT_var_norm',y2,as.integer(n),as.double(pen),cptsout,as.integer(error),PACKAGE='changepoint')
+  if(answer[[5]]>0){
+    print("C code error:",answer[[5]])
+    stop(call.=F)
+  }
   return(sort(answer[[4]][answer[[4]]>0]))
 }
 
@@ -132,13 +140,21 @@ PELT.mean.norm=function(data,pen=0){
   n=length(data)
   y2=c(0,cumsum((data)^2))
   y=c(0,cumsum(data))
-
+  error=0
+  
   storage.mode(y2)='double'
   storage.mode(y)='double'
   cptsout=rep(0,n) # sets up null vector for changepoint answer
   storage.mode(cptsout)='integer'
   
-  answer=.C('PELT_mean_norm',y2,y,as.integer(n),as.double(pen),cptsout,PACKAGE='changepoint')
+  answer=list()
+  answer[[6]]=1
+  on.exit(.C("FreePELT",answer[[6]],PACKAGE='changepoint'))
+  answer=.C('PELT_mean_norm',y2,y,as.integer(n),as.double(pen),cptsout,as.integer(error),PACKAGE='changepoint')
+  if(answer[[6]]>0){
+    print("C code error:",answer[[6]])
+    stop(call.=F)
+  }
   return(sort(answer[[5]][answer[[5]]>0]))
 }
 
@@ -206,13 +222,22 @@ PELT.meanvar.norm=function(data,pen=0){
   n=length(data)
   y2=c(0,cumsum((data)^2))
   y=c(0,cumsum(data))
-
+  error=0
+  
   storage.mode(y2)='double'
   storage.mode(y)='double'
   cptsout=rep(0,n) # sets up null vector for changepoint answer
   storage.mode(cptsout)='integer'
   
-  answer=.C('PELT_meanvar_norm',y2,y,as.integer(n),as.double(pen),cptsout,PACKAGE='changepoint')
+  answer=list()
+  answer[[6]]=1
+  on.exit(.C("FreePELT",answer[[6]],PACKAGE='changepoint'))
+  answer=.C('PELT_meanvar_norm',y2,y,as.integer(n),as.double(pen),cptsout,as.integer(error),PACKAGE='changepoint')
+  if(answer[[6]]>0){
+    print("C code error:",answer[[6]])
+    stop(call.=F)
+  }
+  
   return(sort(answer[[5]][answer[[5]]>0]))
 }
 

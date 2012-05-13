@@ -1,3 +1,9 @@
+Version 0.6.1
+Changes to previous version
+- removed plotting of "n" as a changepoint for changes in variance
+- changed array allocation to calloc in PELT C code
+- added checks to C code for user interruption (including appropriate memory handling)
+
 Version 0.6
 Changes to previous version
 - PELT algorithms now run using C code
