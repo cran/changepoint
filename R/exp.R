@@ -158,12 +158,21 @@ PELT.meanvar.exp=function(data,pen=0){
 	if(sum(data<=0)>0){stop('Exponential distribution requires positive data')}
   n=length(data)
   y=c(0,cumsum(data))
-
+  error=0
+  
   storage.mode(y)='double'
   cptsout=rep(0,n) # sets up null vector for changepoint answer
   storage.mode(cptsout)='integer'
   
-  answer=.C('PELT_meanvar_exp',y,as.integer(n),as.double(pen),cptsout,PACKAGE='changepoint')
+	answer=list()
+	answer[[5]]=1
+	on.exit(.C("FreePELT",answer[[5]],PACKAGE='changepoint'))
+	answer=.C('PELT_meanvar_exp',y,as.integer(n),as.double(pen),cptsout,as.integer(error),PACKAGE='changepoint')
+	if(answer[[5]]>0){
+	  print("C code error:",answer[[5]])
+	  stop(call.=F)
+	}
+	
   return(sort(answer[[4]][answer[[4]]>0]))
 }
 

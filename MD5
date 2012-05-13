@@ -1,13 +1,13 @@
-4a684d042376f952a916d28d1b933a01 *DESCRIPTION
+991c18df46ba8b8b2c71559916d69694 *DESCRIPTION
 e7cac3774f9714878cd2e40d8b73af9a *NAMESPACE
-fe3ed77899c262672f1a718572b51999 *NEWS
+57ecc4a6fa1eb88700c65552d52fa41f *NEWS
 8d1384b04948a8394806fa42d316ee25 *R/cpt.R
 079df223779ca91d1a31fcbb5119e0dc *R/cpt.class.R
 bacee6d5ab43436a923dfec7e9f2f197 *R/decision.R
-9baa91b8dbede0d6d27cdcae5d9eb821 *R/exp.R
-74a5a922f3005c6a0d3e0092f63f87db *R/gamma.R
+ed6bc60adb60f02bea215ec92cf9df5b *R/exp.R
+2c11117174dc03b408813a0203f8fe83 *R/gamma.R
 41ffbdd1159411a2054e3c43c0b90bd3 *R/multiple.nonparametric.r
-8fdd8d36615f456eb67638dbe9420e59 *R/multiple.norm.r
+6155c9a33e3b0d5b0f08db0967469ce6 *R/multiple.norm.r
 50a2c633fe2c49f0fdd772020cd16143 *R/single.nonparametric.R
 99cf9b07b40b71345d5cd2b0ecdc2794 *R/single.norm.R
 cc1b6e1ed9c1fcf01597766a92beb955 *R/zzz.R
@@ -26,7 +26,7 @@ fe58e8ccfcae79904d6da3eee17c3317 *man/binseg.meanvar.gamma.Rd
 6e6ca0958202f6051bb68973032bf0f5 *man/binseg.meanvar.norm.Rd
 48fc2834a44f79cfea17ce2ccfc93630 *man/binseg.var.css.Rd
 bd1507f871d6ffafa90f96053f16dd5f *man/binseg.var.norm.Rd
-1356533b9278e910e05cba60a5ee325e *man/changepoint-package.Rd
+846ae782000859dc77feacb597309487 *man/changepoint-package.Rd
 4c11329f9c5368a1bad60b8ba569f7e5 *man/cpt-class.Rd
 cdb108ee3a172388656a54befd87489c *man/cpt.mean.Rd
 206340faa289ae2e71970362a8c4fcc2 *man/cpt.meanvar.Rd
@@ -107,4 +107,4 @@ f692cfeee21d793fa2f584720040ba92 *man/single.var.css.Rd
 202382fb227d1561da4db05568ea86b9 *man/single.var.norm.Rd
 ace63e25fbf82ac2add327bf0e96de2f *man/single.var.norm.calc.Rd
 2cd1d878d44079a486187a9dc2d44cac *man/summary-methods.Rd
-5f2d8a4b6d30824de811ae8ee1471bd6 *src/PELT.c
+f9940a8ad4d5ab8d68d17e63db11f4b1 *src/PELT.c

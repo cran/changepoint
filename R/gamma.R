@@ -155,12 +155,21 @@ PELT.meanvar.gamma=function(data,shape=1,pen=0){
 
   n=length(data)
   y=c(0,cumsum(data))
-
+  error=0
+  
   storage.mode(y)='double'
   cptsout=rep(0,n) # sets up null vector for changepoint answer
   storage.mode(cptsout)='integer'
   
-  answer=.C('PELT_meanvar_gamma',y,as.integer(n),as.double(pen),cptsout,as.double(shape),PACKAGE='changepoint')
+	answer=list()
+	answer[[6]]=1
+	on.exit(.C("FreePELT",answer[[6]],PACKAGE='changepoint'))
+	answer=.C('PELT_meanvar_gamma',y,as.integer(n),as.double(pen),cptsout,as.double(shape),as.integer(error),PACKAGE='changepoint')
+	if(answer[[6]]>0){
+	  print("C code error:",answer[[6]])
+	  stop(call.=F)
+	}
+	
   return(sort(answer[[4]][answer[[4]]>0]))
 }
 

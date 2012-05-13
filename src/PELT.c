@@ -12,42 +12,101 @@
 
 #define SWAP(a,b)   { int t; t=a; a=b; b=t; }  // Macro for swapping
 
-void PELT_var_norm(y2,n,pen,cptsout)
+static int *lastchangecpts;
+static double *lastchangelike;
+static int *checklist;
+static double *tmplike;
+static int *tmpt;
+
+void FreePELT(error)
+	int *error; /* Error code from PELT C function, non-zero => error */	
+	{
+	if(*error==0){
+		free((void *)lastchangecpts);
+	  free((void *)lastchangelike);
+	  free((void *)checklist);
+	  free((void *)tmplike);
+	  free((void *)tmpt);
+	}
+}
+
+void PELT_var_norm(y2,n,pen,cptsout,error)
   double *y2;    /* Summary statistic for the time series */
 	int *n;			/* Length of the time series */
   double *pen;  /* Penalty used to decide if a changepoint is significant */
   int *cptsout;    /* Vector of identified changepoint locations */
+  int *error;   /* 0 by default, nonzero indicates error in code */
   {
 	// R code does know.mean and fills mu if necessary
 
-	int lastchangecpts[*n][2]; /* stores last changepoint locations   */
-	double lastchangelike[*n]; /* stores likelihood up to that time using optimal changepoint locations up to that time */
-	int checklist[*n],nchecklist;
-	double tmplike[*n],minout;
-	int tmpt[*n];
+	//int lastchangecpts[*n][2]; /* stores last changepoint locations   */
+  int *lastchangecpts;
+  lastchangecpts = (int *)calloc(*n*2,sizeof(int));
+  if (lastchangecpts==NULL)   {
+    *error = 1;
+    goto err1;
+  }
+
+  //double lastchangelike[*n]; /* stores likelihood up to that time using optimal changepoint locations up to that time */
+  double *lastchangelike;
+  lastchangelike = (double *)calloc(*n,sizeof(double));
+  if (lastchangelike==NULL)   {
+    *error = 2;
+    goto err2;
+  }
+
+  //int checklist[*n];
+  int *checklist;
+  checklist = (int *)calloc(*n,sizeof(int));
+  if (checklist==NULL)   {
+    *error = 3;
+    goto err3;
+  }
+
+  int nchecklist;
+	double minout;
+
+  //double tmplike[*n];
+  double *tmplike;
+  tmplike = (double *)calloc(*n,sizeof(double));
+  if (tmplike==NULL)   {
+    *error = 4;
+    goto err4;
+  }
+
+	//int tmpt[*n];
+  int *tmpt;
+  tmpt = (int *)calloc(*n,sizeof(int));
+  if (tmpt==NULL)   {
+    *error = 5;
+    goto err5;
+  }
+
 	int tstar,i,whichout,nchecktmp;
 
 	double mll_var();
 	void min_which();
-	
+  
 	lastchangelike[0]=mll_var(*(y2+1),1);
-	lastchangecpts[0][0]=0; lastchangecpts[0][1]=1;
+	lastchangecpts[0]=0; lastchangecpts[*n+0]=1;
 	lastchangelike[1]=mll_var(*(y2+2),2);
-	lastchangecpts[1][0]=0; lastchangecpts[1][1]=2;
+	lastchangecpts[1]=0; lastchangecpts[*n+1]=2;
 	lastchangelike[2]=mll_var(*(y2+3),3);
-	lastchangecpts[2][0]=0; lastchangecpts[2][1]=3;
+	lastchangecpts[2]=0; lastchangecpts[*n+2]=3;
 
 	nchecklist=1;
 	checklist[0]=2;
 	for(tstar=4;tstar<(*n+1);tstar++){
-		for(i=0;i<nchecklist;i++){
+    R_CheckUserInterrupt(); /* checks if user has interrupted the R session and quits if true */
+
+    for(i=0;i<nchecklist;i++){
 			tmplike[i]=lastchangelike[checklist[i]-1] + mll_var(*(y2+tstar)-*(y2+checklist[i]),tstar-checklist[i])+*pen;
 		}
 		tmplike[nchecklist]=mll_var(*(y2+tstar),tstar);
 		min_which(tmplike,nchecklist+1,&minout,&whichout); /*updates minout and whichout with min and which element */
 		lastchangelike[tstar-1]=minout;
-		if(whichout==nchecklist){		lastchangecpts[tstar-1][0]=0; lastchangecpts[tstar-1][1]=tstar; } /* Null */
-		else{			lastchangecpts[tstar-1][0]=checklist[whichout]; lastchangecpts[tstar-1][1]=tstar; } /* Alt */
+		if(whichout==nchecklist){		lastchangecpts[tstar-1]=0; lastchangecpts[*n+tstar-1]=tstar; } /* Null */
+		else{			lastchangecpts[tstar-1]=checklist[whichout]; lastchangecpts[*n+tstar-1]=tstar; } /* Alt */
 		
 		/* Update checklist for next iteration, first element is next tau */
 		nchecktmp=0;
@@ -66,10 +125,16 @@ void PELT_var_norm(y2,n,pen,cptsout)
 	int ncpts=0;
 	int last=*n;
 	while(last!=0){
-		*(cptsout+ncpts)=lastchangecpts[last-1][1];
-		last=lastchangecpts[last-1][0];
+		*(cptsout+ncpts)=lastchangecpts[*n+last-1];
+		last=lastchangecpts[last-1];
 		ncpts+=1;
 	}
+  free(tmpt);
+err5:  free(tmplike);
+err4:  free(checklist);
+err3:  free(lastchangelike);
+err2:  free(lastchangecpts);
+err1:  return;
 }
 
 void binseg_var_norm(y2,n,pen,Q,cptsout,likeout,op_cps)
@@ -95,6 +160,7 @@ void binseg_var_norm(y2,n,pen,Q,cptsout,likeout,op_cps)
 	void order_vec();
 
   for(q=0;q<*Q;q++){
+    R_CheckUserInterrupt(); /* checks if user has interrupted the R session and quits if true */
     for(p=0;p<*n;p++){lambda[p]=0;}
     i=1;
     st=tau[0]+1;
@@ -136,43 +202,84 @@ double mll_var(double x, int n){
 	return(n*(log(2*M_PI)+log(x/n)+1)); /* M_PI is in Rmath.h  */
 }
 
-void PELT_meanvar_norm(y2,y,n,pen,cptsout)
+void PELT_meanvar_norm(y2,y,n,pen,cptsout,error)
   double *y2;    /* Summary statistic for the time series */
 	double *y;		/*Summary statistics for the time series */
 	int *n;			/* Length of the time series */
   double *pen;  /* Penalty used to decide if a changepoint is significant */
   int *cptsout;    /* Vector of identified changepoint locations */
+  int *error;   /* 0 by default, nonzero indicates error in code */
   {
 	// R code does know.mean and fills mu if necessary
 
-	int lastchangecpts[*n][2]; /* stores last changepoint locations   */
-	double lastchangelike[*n]; /* stores likelihood up to that time using optimal changepoint locations up to that time */
-	int checklist[*n],nchecklist;
-	double tmplike[*n],minout;
-	int tmpt[*n];
+	//int lastchangecpts[*n][2]; /* stores last changepoint locations   */
+  int *lastchangecpts;
+  lastchangecpts = (int *)calloc(*n*2,sizeof(int));
+  if (lastchangecpts==NULL)   {
+    *error = 1;
+    goto err1;
+  }
+
+  //double lastchangelike[*n]; /* stores likelihood up to that time using optimal changepoint locations up to that time */
+  double *lastchangelike;
+  lastchangelike = (double *)calloc(*n,sizeof(double));
+  if (lastchangelike==NULL)   {
+    *error = 2;
+    goto err2;
+  }
+
+  //int checklist[*n];
+  int *checklist;
+  checklist = (int *)calloc(*n,sizeof(int));
+  if (checklist==NULL)   {
+    *error = 3;
+    goto err3;
+  }
+
+  int nchecklist;
+	double minout;
+
+  //double tmplike[*n];
+  double *tmplike;
+  tmplike = (double *)calloc(*n,sizeof(double));
+  if (tmplike==NULL)   {
+    *error = 4;
+    goto err4;
+  }
+
+	//int tmpt[*n];
+  int *tmpt;
+  tmpt = (int *)calloc(*n,sizeof(int));
+  if (tmpt==NULL)   {
+    *error = 5;
+    goto err5;
+  }
+
 	int tstar,i,whichout,nchecktmp;
 
 	double mll_meanvar();
 	void min_which();
 	
 	lastchangelike[0]=mll_meanvar(*(y+1),*(y2+1),1);
-	lastchangecpts[0][0]=0; lastchangecpts[0][1]=1;
+	lastchangecpts[0]=0; lastchangecpts[*n+0]=1;
 	lastchangelike[1]=mll_meanvar(*(y+2),*(y2+2),2);
-	lastchangecpts[1][0]=0; lastchangecpts[1][1]=2;
+	lastchangecpts[1]=0; lastchangecpts[*n+1]=2;
 	lastchangelike[2]=mll_meanvar(*(y+3),*(y2+3),3);
-	lastchangecpts[2][0]=0; lastchangecpts[2][1]=3;
+	lastchangecpts[2]=0; lastchangecpts[*n+2]=3;
 
 	nchecklist=1;
 	checklist[0]=2;
 	for(tstar=4;tstar<(*n+1);tstar++){
-		for(i=0;i<nchecklist;i++){
+    R_CheckUserInterrupt(); /* checks if user has interrupted the R session and quits if true */
+
+    for(i=0;i<nchecklist;i++){
 			tmplike[i]=lastchangelike[checklist[i]-1] + mll_meanvar(*(y+tstar)-*(y+checklist[i]),*(y2+tstar)-*(y2+checklist[i]),tstar-checklist[i])+*pen;
 		}
 		tmplike[nchecklist]=mll_meanvar(*(y+tstar),*(y2+tstar),tstar);
 		min_which(tmplike,nchecklist+1,&minout,&whichout); /*updates minout and whichout with min and which element */
 		lastchangelike[tstar-1]=minout;
-		if(whichout==nchecklist){		lastchangecpts[tstar-1][0]=0; lastchangecpts[tstar-1][1]=tstar; } /* Null */
-		else{			lastchangecpts[tstar-1][0]=checklist[whichout]; lastchangecpts[tstar-1][1]=tstar; } /* Alt */
+		if(whichout==nchecklist){		lastchangecpts[tstar-1]=0; lastchangecpts[*n+tstar-1]=tstar; } /* Null */
+		else{			lastchangecpts[tstar-1]=checklist[whichout]; lastchangecpts[*n+tstar-1]=tstar; } /* Alt */
 		
 		/* Update checklist for next iteration, first element is next tau */
 		nchecktmp=0;
@@ -191,10 +298,16 @@ void PELT_meanvar_norm(y2,y,n,pen,cptsout)
 	int ncpts=0;
 	int last=*n;
 	while(last!=0){
-		*(cptsout+ncpts)=lastchangecpts[last-1][1];
-		last=lastchangecpts[last-1][0];
+		*(cptsout+ncpts)=lastchangecpts[*n+last-1];
+		last=lastchangecpts[last-1];
 		ncpts+=1;
 	}
+  free(tmpt);
+err5:  free(tmplike);
+err4:  free(checklist);
+err3:  free(lastchangelike);
+err2:  free(lastchangecpts);
+err1:  return;
 }
 
 
@@ -223,6 +336,8 @@ void binseg_meanvar_norm(y2,y,n,pen,Q,cptsout,likeout,op_cps)
 	void order_vec();
 
   for(q=0;q<*Q;q++){
+    R_CheckUserInterrupt(); /* checks if user has interrupted the R session and quits if true */
+
     for(p=0;p<*n;p++){lambda[p]=0;}
     i=1;
     st=tau[0]+1;
@@ -263,43 +378,84 @@ double mll_meanvar(double x, double x2, int n){
 	return(n*(log(2*M_PI)+log(sigsq)+1)); /* M_PI is in Rmath.h  */
 }
 
-void PELT_mean_norm(y2,y,n,pen,cptsout)
+void PELT_mean_norm(y2,y,n,pen,cptsout,error)
   double *y2;    /* Summary statistic for the time series */
 	double *y;		/*Summary statistics for the time series */
 	int *n;			/* Length of the time series */
   double *pen;  /* Penalty used to decide if a changepoint is significant */
   int *cptsout;    /* Vector of identified changepoint locations */
+  int *error;   /* 0 by default, nonzero indicates error in code */
   {
 	// R code does know.mean and fills mu if necessary
 
-	int lastchangecpts[*n][2]; /* stores last changepoint locations   */
-	double lastchangelike[*n]; /* stores likelihood up to that time using optimal changepoint locations up to that time */
-	int checklist[*n],nchecklist;
-	double tmplike[*n],minout;
-	int tmpt[*n];
+	//int lastchangecpts[*n][2]; /* stores last changepoint locations   */
+  int *lastchangecpts;
+  lastchangecpts = (int *)calloc(*n*2,sizeof(int));
+  if (lastchangecpts==NULL)   {
+    *error = 1;
+    goto err1;
+  }
+
+  //double lastchangelike[*n]; /* stores likelihood up to that time using optimal changepoint locations up to that time */
+  double *lastchangelike;
+  lastchangelike = (double *)calloc(*n,sizeof(double));
+  if (lastchangelike==NULL)   {
+    *error = 2;
+    goto err2;
+  }
+
+  //int checklist[*n];
+  int *checklist;
+  checklist = (int *)calloc(*n,sizeof(int));
+  if (checklist==NULL)   {
+    *error = 3;
+    goto err3;
+  }
+
+  int nchecklist;
+	double minout;
+
+  //double tmplike[*n];
+  double *tmplike;
+  tmplike = (double *)calloc(*n,sizeof(double));
+  if (tmplike==NULL)   {
+    *error = 4;
+    goto err4;
+  }
+
+	//int tmpt[*n];
+  int *tmpt;
+  tmpt = (int *)calloc(*n,sizeof(int));
+  if (tmpt==NULL)   {
+    *error = 5;
+    goto err5;
+  }
+
 	int tstar,i,whichout,nchecktmp;
 
 	double mll_mean();
 	void min_which();
 	
 	lastchangelike[0]=mll_mean(*(y+1),*(y2+1),1);
-	lastchangecpts[0][0]=0; lastchangecpts[0][1]=1;
+	lastchangecpts[0]=0; lastchangecpts[*n+0]=1;
 	lastchangelike[1]=mll_mean(*(y+2),*(y2+2),2);
-	lastchangecpts[1][0]=0; lastchangecpts[1][1]=2;
+	lastchangecpts[1]=0; lastchangecpts[*n+1]=2;
 	lastchangelike[2]=mll_mean(*(y+3),*(y2+3),3);
-	lastchangecpts[2][0]=0; lastchangecpts[2][1]=3;
+	lastchangecpts[2]=0; lastchangecpts[*n+2]=3;
 
 	nchecklist=1;
 	checklist[0]=2;
 	for(tstar=4;tstar<(*n+1);tstar++){
+    R_CheckUserInterrupt(); /* checks if user has interrupted the R session and quits if true */
+
 		for(i=0;i<nchecklist;i++){
 			tmplike[i]=lastchangelike[checklist[i]-1] + mll_mean(*(y+tstar)-*(y+checklist[i]),*(y2+tstar)-*(y2+checklist[i]),tstar-checklist[i])+*pen;
 		}
 		tmplike[nchecklist]=mll_mean(*(y+tstar),*(y2+tstar),tstar);
 		min_which(tmplike,nchecklist+1,&minout,&whichout); /*updates minout and whichout with min and which element */
 		lastchangelike[tstar-1]=minout;
-		if(whichout==nchecklist){		lastchangecpts[tstar-1][0]=0; lastchangecpts[tstar-1][1]=tstar; } /* Null */
-		else{			lastchangecpts[tstar-1][0]=checklist[whichout]; lastchangecpts[tstar-1][1]=tstar; } /* Alt */
+		if(whichout==nchecklist){		lastchangecpts[tstar-1]=0; lastchangecpts[*n+tstar-1]=tstar; } /* Null */
+		else{			lastchangecpts[tstar-1]=checklist[whichout]; lastchangecpts[*n+tstar-1]=tstar; } /* Alt */
 		
 		/* Update checklist for next iteration, first element is next tau */
 		nchecktmp=0;
@@ -318,10 +474,16 @@ void PELT_mean_norm(y2,y,n,pen,cptsout)
 	int ncpts=0;
 	int last=*n;
 	while(last!=0){
-		*(cptsout+ncpts)=lastchangecpts[last-1][1];
-		last=lastchangecpts[last-1][0];
+		*(cptsout+ncpts)=lastchangecpts[*n+last-1];
+		last=lastchangecpts[last-1];
 		ncpts+=1;
 	}
+  free(tmpt);
+err5:  free(tmplike);
+err4:  free(checklist);
+err3:  free(lastchangelike);
+err2:  free(lastchangecpts);
+err1:  return;
 }
 
 
@@ -349,6 +511,8 @@ void binseg_mean_norm(y2,y,n,pen,Q,cptsout,likeout,op_cps)
 	void order_vec();
 
   for(q=0;q<*Q;q++){
+    R_CheckUserInterrupt(); /* checks if user has interrupted the R session and quits if true */
+
     for(p=0;p<*n;p++){lambda[p]=0;}
     i=1;
     st=tau[0]+1;
@@ -391,42 +555,83 @@ double mll_mean(double x, double x2, int n){
 
 
 
-void PELT_meanvar_exp(y,n,pen,cptsout)
+void PELT_meanvar_exp(y,n,pen,cptsout,error)
 	double *y;		/*Summary statistics for the time series */
 	int *n;			/* Length of the time series */
   double *pen;  /* Penalty used to decide if a changepoint is significant */
   int *cptsout;    /* Vector of identified changepoint locations */
+  int *error;   /* 0 by default, nonzero indicates error in code */
   {
 	// R code does know.mean and fills mu if necessary
 
-	int lastchangecpts[*n][2]; /* stores last changepoint locations   */
-	double lastchangelike[*n]; /* stores likelihood up to that time using optimal changepoint locations up to that time */
-	int checklist[*n],nchecklist;
-	double tmplike[*n],minout;
-	int tmpt[*n];
+	//int lastchangecpts[*n][2]; /* stores last changepoint locations   */
+  int *lastchangecpts;
+  lastchangecpts = (int *)calloc(*n*2,sizeof(int));
+  if (lastchangecpts==NULL)   {
+    *error = 1;
+    goto err1;
+  }
+
+  //double lastchangelike[*n]; /* stores likelihood up to that time using optimal changepoint locations up to that time */
+  double *lastchangelike;
+  lastchangelike = (double *)calloc(*n,sizeof(double));
+  if (lastchangelike==NULL)   {
+    *error = 2;
+    goto err2;
+  }
+
+  //int checklist[*n];
+  int *checklist;
+  checklist = (int *)calloc(*n,sizeof(int));
+  if (checklist==NULL)   {
+    *error = 3;
+    goto err3;
+  }
+
+  int nchecklist;
+	double minout;
+
+  //double tmplike[*n];
+  double *tmplike;
+  tmplike = (double *)calloc(*n,sizeof(double));
+  if (tmplike==NULL)   {
+    *error = 4;
+    goto err4;
+  }
+
+	//int tmpt[*n];
+  int *tmpt;
+  tmpt = (int *)calloc(*n,sizeof(int));
+  if (tmpt==NULL)   {
+    *error = 5;
+    goto err5;
+  }
+
 	int tstar,i,whichout,nchecktmp;
 
 	double mll_meanvar_exp();
 	void min_which();
 	
 	lastchangelike[0]=mll_meanvar_exp(*(y+1),1);
-	lastchangecpts[0][0]=0; lastchangecpts[0][1]=1;
+	lastchangecpts[0]=0; lastchangecpts[*n+0]=1;
 	lastchangelike[1]=mll_meanvar_exp(*(y+2),2);
-	lastchangecpts[1][0]=0; lastchangecpts[1][1]=2;
+	lastchangecpts[1]=0; lastchangecpts[*n+1]=2;
 	lastchangelike[2]=mll_meanvar_exp(*(y+3),3);
-	lastchangecpts[2][0]=0; lastchangecpts[2][1]=3;
+	lastchangecpts[2]=0; lastchangecpts[*n+2]=3;
 
 	nchecklist=1;
 	checklist[0]=2;
 	for(tstar=4;tstar<(*n+1);tstar++){
-		for(i=0;i<nchecklist;i++){
+    R_CheckUserInterrupt(); /* checks if user has interrupted the R session and quits if true */
+
+    for(i=0;i<nchecklist;i++){
 			tmplike[i]=lastchangelike[checklist[i]-1] + mll_meanvar_exp(*(y+tstar)-*(y+checklist[i]),tstar-checklist[i])+*pen;
 		}
 		tmplike[nchecklist]=mll_meanvar_exp(*(y+tstar),tstar);
 		min_which(tmplike,nchecklist+1,&minout,&whichout); /*updates minout and whichout with min and which element */
 		lastchangelike[tstar-1]=minout;
-		if(whichout==nchecklist){		lastchangecpts[tstar-1][0]=0; lastchangecpts[tstar-1][1]=tstar; } /* Null */
-		else{			lastchangecpts[tstar-1][0]=checklist[whichout]; lastchangecpts[tstar-1][1]=tstar; } /* Alt */
+		if(whichout==nchecklist){		lastchangecpts[tstar-1]=0; lastchangecpts[*n+tstar-1]=tstar; } /* Null */
+		else{			lastchangecpts[tstar-1]=checklist[whichout]; lastchangecpts[*n+tstar-1]=tstar; } /* Alt */
 		
 		/* Update checklist for next iteration, first element is next tau */
 		nchecktmp=0;
@@ -445,10 +650,16 @@ void PELT_meanvar_exp(y,n,pen,cptsout)
 	int ncpts=0;
 	int last=*n;
 	while(last!=0){
-		*(cptsout+ncpts)=lastchangecpts[last-1][1];
-		last=lastchangecpts[last-1][0];
+		*(cptsout+ncpts)=lastchangecpts[*n+last-1];
+		last=lastchangecpts[last-1];
 		ncpts+=1;
 	}
+  free(tmpt);
+err5:  free(tmplike);
+err4:  free(checklist);
+err3:  free(lastchangelike);
+err2:  free(lastchangecpts);
+err1:  return;
 }
 
 
@@ -475,6 +686,8 @@ void binseg_meanvar_exp(y,n,pen,Q,cptsout,likeout,op_cps)
 	void order_vec();
 
   for(q=0;q<*Q;q++){
+    R_CheckUserInterrupt(); /* checks if user has interrupted the R session and quits if true */
+
     for(p=0;p<*n;p++){lambda[p]=0;}
     i=1;
     st=tau[0]+1;
@@ -516,43 +729,84 @@ double mll_meanvar_exp(double x, int n){
 }
 
 
-void PELT_meanvar_gamma(y,n,pen,cptsout,shape)
+void PELT_meanvar_gamma(y,n,pen,cptsout,shape,error)
 	double *y;		/*Summary statistics for the time series */
 	int *n;			/* Length of the time series */
   double *pen;  /* Penalty used to decide if a changepoint is significant */
   int *cptsout;    /* Vector of identified changepoint locations */
 	double *shape;		/* Shape parameter (fixed) */
+  int *error;   /* 0 by default, nonzero indicates error in code */
   {
 	// R code does know.mean and fills mu if necessary
 
-	int lastchangecpts[*n][2]; /* stores last changepoint locations   */
-	double lastchangelike[*n]; /* stores likelihood up to that time using optimal changepoint locations up to that time */
-	int checklist[*n],nchecklist;
-	double tmplike[*n],minout;
-	int tmpt[*n];
+	//int lastchangecpts[*n][2]; /* stores last changepoint locations   */
+  int *lastchangecpts;
+  lastchangecpts = (int *)calloc(*n*2,sizeof(int));
+  if (lastchangecpts==NULL)   {
+    *error = 1;
+    goto err1;
+  }
+
+  //double lastchangelike[*n]; /* stores likelihood up to that time using optimal changepoint locations up to that time */
+  double *lastchangelike;
+  lastchangelike = (double *)calloc(*n,sizeof(double));
+  if (lastchangelike==NULL)   {
+    *error = 2;
+    goto err2;
+  }
+
+  //int checklist[*n];
+  int *checklist;
+  checklist = (int *)calloc(*n,sizeof(int));
+  if (checklist==NULL)   {
+    *error = 3;
+    goto err3;
+  }
+
+  int nchecklist;
+	double minout;
+
+  //double tmplike[*n];
+  double *tmplike;
+  tmplike = (double *)calloc(*n,sizeof(double));
+  if (tmplike==NULL)   {
+    *error = 4;
+    goto err4;
+  }
+
+	//int tmpt[*n];
+  int *tmpt;
+  tmpt = (int *)calloc(*n,sizeof(int));
+  if (tmpt==NULL)   {
+    *error = 5;
+    goto err5;
+  }
+
 	int tstar,i,whichout,nchecktmp;
 
 	double mll_meanvar_gamma();
 	void min_which();
 	
 	lastchangelike[0]=mll_meanvar_gamma(*(y+1),1,*shape);
-	lastchangecpts[0][0]=0; lastchangecpts[0][1]=1;
+	lastchangecpts[0]=0; lastchangecpts[*n+0]=1;
 	lastchangelike[1]=mll_meanvar_gamma(*(y+2),2,*shape);
-	lastchangecpts[1][0]=0; lastchangecpts[1][1]=2;
+	lastchangecpts[1]=0; lastchangecpts[*n+1]=2;
 	lastchangelike[2]=mll_meanvar_gamma(*(y+3),3,*shape);
-	lastchangecpts[2][0]=0; lastchangecpts[2][1]=3;
+	lastchangecpts[2]=0; lastchangecpts[*n+2]=3;
 
 	nchecklist=1;
 	checklist[0]=2;
 	for(tstar=4;tstar<(*n+1);tstar++){
-		for(i=0;i<nchecklist;i++){
+    R_CheckUserInterrupt(); /* checks if user has interrupted the R session and quits if true */
+
+    for(i=0;i<nchecklist;i++){
 			tmplike[i]=lastchangelike[checklist[i]-1] + mll_meanvar_gamma(*(y+tstar)-*(y+checklist[i]),tstar-checklist[i],*shape)+*pen;
 		}
 		tmplike[nchecklist]=mll_meanvar_gamma(*(y+tstar),tstar,*shape);
 		min_which(tmplike,nchecklist+1,&minout,&whichout); /*updates minout and whichout with min and which element */
 		lastchangelike[tstar-1]=minout;
-		if(whichout==nchecklist){		lastchangecpts[tstar-1][0]=0; lastchangecpts[tstar-1][1]=tstar; } /* Null */
-		else{			lastchangecpts[tstar-1][0]=checklist[whichout]; lastchangecpts[tstar-1][1]=tstar; } /* Alt */
+		if(whichout==nchecklist){		lastchangecpts[tstar-1]=0; lastchangecpts[*n+tstar-1]=tstar; } /* Null */
+		else{			lastchangecpts[tstar-1]=checklist[whichout]; lastchangecpts[*n+tstar-1]=tstar; } /* Alt */
 		
 		/* Update checklist for next iteration, first element is next tau */
 		nchecktmp=0;
@@ -571,10 +825,16 @@ void PELT_meanvar_gamma(y,n,pen,cptsout,shape)
 	int ncpts=0;
 	int last=*n;
 	while(last!=0){
-		*(cptsout+ncpts)=lastchangecpts[last-1][1];
-		last=lastchangecpts[last-1][0];
+		*(cptsout+ncpts)=lastchangecpts[*n+last-1];
+		last=lastchangecpts[last-1];
 		ncpts+=1;
 	}
+  free(tmpt);
+err5:  free(tmplike);
+err4:  free(checklist);
+err3:  free(lastchangelike);
+err2:  free(lastchangecpts);
+err1:  return;
 }
 
 void binseg_meanvar_gamma(y,n,pen,Q,cptsout,likeout,op_cps,shape)
@@ -601,6 +861,8 @@ void binseg_meanvar_gamma(y,n,pen,Q,cptsout,likeout,op_cps,shape)
 	void order_vec();
 
   for(q=0;q<*Q;q++){
+    R_CheckUserInterrupt(); /* checks if user has interrupted the R session and quits if true */
+
     for(p=0;p<*n;p++){lambda[p]=0;}
     i=1;
     st=tau[0]+1;
