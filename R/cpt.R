@@ -123,8 +123,23 @@ cpt.meanvar=function(data,penalty="SIC",value=0,method="AMOC",Q=5,dist="Normal",
 			stop("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
 		}
 	}
+	else if(dist=="Poisson"){
+	  if(method=="AMOC"){
+	    return(single.meanvar.poisson(data,penalty,value,class,param.estimates))
+	  }
+	  else if(method=="PELT" || method=="BinSeg"){
+	    return(multiple.meanvar.poisson(data,mul.method=method,penalty,value,Q,class,param.estimates))
+	  }
+	  else if(method=="SegNeigh"){
+	    warning("SegNeigh is computationally slow, use PELT instead")
+	    return(multiple.meanvar.poisson(data,mul.method=method,penalty,value,Q,class,param.estimates))
+	  }
+	  else{
+	    stop("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
+	  }
+	}
 	else{
-		stop("Invalid Distribution, must be Normal, Gamma or Exponential")
+		stop("Invalid Distribution, must be Normal, Gamma, Exponential or Poisson")
 	}
 }
 
