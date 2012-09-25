@@ -605,11 +605,20 @@ multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know
 	if((penalty=="SIC") || (penalty=="BIC")){
 		value=diffparam*log(n)
 	}
+	else if((penalty=="SIC1") || (penalty=="BIC1")){
+		value=(diffparam+1)*log(n)
+	}
 	else if(penalty=="AIC"){
 		value=2*diffparam
 	}
+	else if(penalty=="AIC1"){
+		value=2*(diffparam+1)
+	}
 	else if(penalty=="Hannan-Quinn"){
 		value=2*diffparam*log(log(n))
+	}
+	else if(penalty=="Hannan-Quinn1"){
+		value=2*(diffparam+1)*log(log(n))
 	}
 	else if(penalty=="None"){
 		value=0
@@ -729,11 +738,20 @@ multiple.mean.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,cla
 	if((penalty=="SIC") || (penalty=="BIC")){
 		value=diffparam*log(n)
 	}
+	else if((penalty=="SIC1") || (penalty=="BIC1")){
+		value=(diffparam+1)*log(n)
+	}
 	else if(penalty=="AIC"){
 		value=2*diffparam
 	}
+	else if(penalty=="AIC1"){
+		value=2*(diffparam+1)
+	}
 	else if(penalty=="Hannan-Quinn"){
 		value=2*diffparam*log(log(n))
+	}
+	else if(penalty=="Hannan-Quinn1"){
+		value=2*(diffparam+1)*log(log(n))
 	}
 	else if(penalty=="None"){
 		value=0
@@ -849,11 +867,20 @@ multiple.meanvar.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,
 	if((penalty=="SIC") || (penalty=="BIC")){
 		value=diffparam*log(n)
 	}
+	else if((penalty=="SIC1") || (penalty=="BIC1")){
+		value=(diffparam+1)*log(n)
+	}
 	else if(penalty=="AIC"){
 		value=2*diffparam
 	}
+	else if(penalty=="AIC1"){
+		value=2*(diffparam+1)
+	}
 	else if(penalty=="Hannan-Quinn"){
 		value=2*diffparam*log(log(n))
+	}
+	else if(penalty=="Hannan-Quinn1"){
+		value=2*(diffparam+1)*log(log(n))
 	}
 	else if(penalty=="None"){
 		value=0

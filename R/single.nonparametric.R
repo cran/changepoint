@@ -58,11 +58,20 @@ single.var.css<-function(data,penalty="SIC",value=0,class=TRUE,param.estimates=T
 	if((penalty=="SIC") || (penalty=="BIC")){
 		value=log(diffparam*log(n))
 	}
+	else if((penalty=="SIC1") || (penalty=="BIC1")){
+		value=log((diffparam+1)*log(n))
+	}
 	else if(penalty=="AIC"){
 		value=log(2*diffparam)
 	}
+	else if(penalty=="AIC1"){
+		value=log(2*(diffparam+1))
+	}
 	else if(penalty=="Hannan-Quinn"){
 		value=log(2*diffparam*log(log(n)))
+	}
+	else if(penalty=="Hannan-Quinn1"){
+		value=log(2*(diffparam+1)*log(log(n)))
 	}
 	else if(penalty=="None"){
 		value=0
