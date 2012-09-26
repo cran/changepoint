@@ -1,3 +1,12 @@
+Version 0.8
+Changes to previous version
+- Restructured C implementation of PELT to remove unnecessary function calls (minor speed improvement)
+- Updated FTSE100 data
+
+Version 0.7.1
+Changes to previous version
+- added BIC1, SIC1, AIC1, Hannan-Quinn1 penalties (counting the changepoint as a parameter in contrast to BIC, SIC, AIC, Hannan-Quinn which do not)
+
 Version 0.7
 Changes to previous version
 - added change in Poisson distribution to cpt.meanvar

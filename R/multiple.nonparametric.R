@@ -103,11 +103,20 @@ multiple.var.css=function(data,mul.method="BinSeg",penalty="SIC",value=0,Q=5,cla
 	if((penalty=="SIC") || (penalty=="BIC")){
 		value=log(diffparam*log(n))
 	}
+	else if((penalty=="SIC1") || (penalty=="BIC1")){
+		value=log((diffparam+1)*log(n))
+	}
 	else if(penalty=="AIC"){
 		value=log(2*diffparam)
 	}
+	else if(penalty=="AIC1"){
+		value=log(2*(diffparam+1))
+	}
 	else if(penalty=="Hannan-Quinn"){
 		value=log(2*diffparam*log(log(n)))
+	}
+	else if(penalty=="Hannan-Quinn1"){
+		value=log(2*(diffparam+1)*log(log(n)))
 	}
 	else if(penalty=="None"){
 		value=0
@@ -313,11 +322,20 @@ multiple.mean.cusum=function(data,mul.method="BinSeg",penalty="Asymptotic",value
 	if((penalty=="SIC") || (penalty=="BIC")){
 		value=diffparam*log(n)
 	}
+	else if((penalty=="SIC1") || (penalty=="BIC1")){
+		value=(diffparam+1)*log(n)
+	}
 	else if(penalty=="AIC"){
 		value=2*diffparam
 	}
+	else if(penalty=="AIC1"){
+		value=2*(diffparam+1)
+	}
 	else if(penalty=="Hannan-Quinn"){
 		value=2*diffparam*log(log(n))
+	}
+	else if(penalty=="Hannan-Quinn1"){
+		value=2*(diffparam+1)*log(log(n))
 	}
 	else if(penalty=="None"){
 		value=0

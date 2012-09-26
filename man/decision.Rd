@@ -19,7 +19,7 @@ decision(tau,null,alt=NA,penalty="SIC",n=0,diffparam=1,value=0)
 	The value of the alternative likelihood (at tau) to be used in the likelihood ratio calculation.  If tau is a vector, so is alt.  If the test statistic is already known, then it is used in replacement of the null argument and the alternative should not be specified (default NA to account for this)
 }
   \item{penalty}{
-	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the value parameter.
+	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
 }
   \item{n}{
 	The length of the original data, required to give sensible "no changepoint".
