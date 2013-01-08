@@ -7,11 +7,11 @@ Multiple Changes in Mean and Variance - Gamma Data (i.e. change in scale paramet
 Calculates the optimal positioning and number of changepoints for Gamma data using the user specified method.
 }
 \usage{
-multiple.meanvar.gamma(data,shape=1, mul.method="PELT",penalty="SIC",value=0,Q=5,class=TRUE,param.estimates=TRUE)
+multiple.meanvar.gamma(data,shape=1, mul.method="PELT",penalty="SIC",pen.value=0,Q=5,class=TRUE,param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
-	A vector or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
+	A vector, ts object or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
 }
   \item{shape}{
 	Numerical value of the true shape parameter for the data.  Either single value or vector of length nrow(data).  If data is a matrix and shape is a single value, the same shape parameter is used for each row.
@@ -20,9 +20,9 @@ multiple.meanvar.gamma(data,shape=1, mul.method="PELT",penalty="SIC",value=0,Q=5
 	Choice of "PELT", "SegNeigh" or "BinSeg".
 }
   \item{penalty}{
-	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the pen.value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
 }
-  \item{value}{
+  \item{pen.value}{
 	The value of the penalty when using the Manual penalty option.  This can be a numeric value or text giving the formula to use.  Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
 }
   \item{Q}{
@@ -75,7 +75,7 @@ Rebecca Killick
 # Example of multiple changes in mean and variance at 50,100,150 in simulated Gamma data
 set.seed(1)
 x=c(rgamma(50,shape=1,rate=1),rgamma(50,shape=1,rate=3),rgamma(50,shape=1,rate=1),rgamma(50,shape=1,rate=10))
-multiple.meanvar.gamma(x,shape=1,mul.method="BinSeg",penalty="Manual",value="2*log(n)",Q=5,class=FALSE) # returns optimal number of changepoints is 3, locations are 47,104,150.
+multiple.meanvar.gamma(x,shape=1,mul.method="BinSeg",penalty="Manual",pen.value="2*log(n)",Q=5,class=FALSE) # returns optimal number of changepoints is 3, locations are 47,104,150.
 
 # Example multiple datasets where the first row has multiple changes in mean and variance and the second row has no change in mean or variance
 set.seed(1)

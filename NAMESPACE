@@ -1,4 +1,6 @@
 importFrom(graphics, plot)
+importFrom(zoo, coredata)
+importFrom(zoo, index)
 
 export("PELT.mean.norm", "PELT.meanvar.exp", "PELT.meanvar.poisson", "PELT.meanvar.gamma",
        "PELT.meanvar.norm", "PELT.var.norm", "binseg.mean.cusum",
@@ -16,8 +18,9 @@ export("PELT.mean.norm", "PELT.meanvar.exp", "PELT.meanvar.poisson", "PELT.meanv
        "single.meanvar.norm.calc", "single.var.css", "single.var.css.calc",
        "single.var.norm", "single.var.norm.calc")
 exportClasses(cpt,cpt.reg)
-exportMethods(plot,summary,print,likelihood,data.set,cpts,cpttype,distribution,method,ncpts,
-	ncpts.max,param.est,pen.type,pen.value,"cpts<-","cpttype<-","data.set<-","distribution<-",
-	"ncpts.max<-","param.est<-","pen.type<-","pen.value<-")
+exportMethods(plot,summary,print,logLik,likelihood,data.set,data.set.ts,cpts,cpts.ts,cpttype,distribution,test.stat,
+	method,ncpts,ncpts.max,param.est,coef,pen.type,pen.value,seg.len,"cpts<-","cpttype<-",
+	"data.set<-","distribution<-","test.stat<-","ncpts.max<-","param.est<-","pen.type<-",
+	"pen.value<-")
 
 useDynLib(changepoint)

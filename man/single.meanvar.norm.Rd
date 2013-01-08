@@ -7,16 +7,16 @@ Single Change in Mean and Variance - Normal Data
 Calculates the scaled log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (max).
 }
 \usage{
-single.meanvar.norm(data, penalty="SIC",value=0,class=TRUE,param.estimates=TRUE)
+single.meanvar.norm(data, penalty="SIC",pen.value=0,class=TRUE,param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
-	A vector or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
+	A vector, ts object or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
 }
   \item{penalty}{
-	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the value parameter. If Asymptotic is specified, the theoretical type I error is contained in the value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the pen.value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen.value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
 }
-  \item{value}{
+  \item{pen.value}{
 	The theoretical type I error e.g.0.05 when using the Asymptotic penalty.  The value of the penalty when using the Manual penalty option.  This can be a numeric value or text giving the formula to use.  Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
 }
   \item{class}{
@@ -53,7 +53,7 @@ Rebecca Killick
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,1,10))
 single.meanvar.norm(x,penalty="SIC",class=FALSE) # returns 99 to show that the null hypothesis was rejected and the change in mean and variance is at 99
-ans=single.meanvar.norm(x,penalty="Asymptotic",value=0.01) 
+ans=single.meanvar.norm(x,penalty="Asymptotic",pen.value=0.01) 
 cpts(ans) # returns 99 to show that the null hypothesis was rejected, the change in mean and variance is at 99 and we are 99% confident of this result
 
 # Example of a data matrix containing 2 rows, row 1 has a change in mean and variance and row 2 had no change in mean or variance
@@ -61,8 +61,8 @@ set.seed(10)
 x=c(rnorm(100,0,1),rnorm(100,1,10))
 y=rnorm(200,0,1)
 z=rbind(x,y)
-single.meanvar.norm(z,penalty="Asymptotic",value=0.01,class=FALSE) # returns vector c(99,200) which shows that the first dataset has a change in mean and variance at 99 and the second dataset rejected H1 and has no change in mean or variance
-ans=single.meanvar.norm(z,penalty="Manual",value="diffparam*log(n)") # list returned
+single.meanvar.norm(z,penalty="Asymptotic",pen.value=0.01,class=FALSE) # returns vector c(99,200) which shows that the first dataset has a change in mean and variance at 99 and the second dataset rejected H1 and has no change in mean or variance
+ans=single.meanvar.norm(z,penalty="Manual",pen.value="diffparam*log(n)") # list returned
 cpts(ans[[1]]) # test using a manual penalty which is the same as the SIC penalty for this example, result shows that the penalty is too small.  The same changepoint is detected for the first dataset 
 cpts(ans[[2]]) # but the second dataset returns a change in mean and variance at 198 which was rejected under the asymptotic penalty above.
 }

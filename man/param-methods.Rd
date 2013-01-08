@@ -11,10 +11,10 @@
 \describe{
 
 \item{\code{signature(object = "cpt")}}{
-	Replaces the \code{param.value} slot in object with the parameter estimates that are appropriate for the changepoint type (cpttype slot).  If the Gamma distribution is used then the shape parameter is required as a variable.
+	Replaces the \code{param.value} slot in object with the parameter estimates that are appropriate for the changepoint type (cpttype slot).  If the Gamma test statistic is used then the shape parameter is required as a variable.
 }
 \item{\code{signature(object = "cpt.reg")}}{
-	Replaces the \code{param.value} slot in object with the parameter estimates that are appropriate for the changepoint distribution (distribution slot).
+	Replaces the \code{param.value} slot in object with the parameter estimates that are appropriate for the changepoint test statistic (test.stat slot).
 }
 }}
 \keyword{methods}

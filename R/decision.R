@@ -1,4 +1,4 @@
-decision<-function(tau,null,alt=NA,penalty="SIC",n=0,diffparam=1,value=0){
+decision<-function(tau,null,alt=NA,penalty="SIC",n=0,diffparam=1,pen.value=0){
 	if(sum(is.na(alt))){
 		if(length(tau)!=length(null)){
 			stop("Lengths of tau and null do not match")
@@ -10,53 +10,53 @@ decision<-function(tau,null,alt=NA,penalty="SIC",n=0,diffparam=1,value=0){
 		}
 	}
 	if((penalty=="SIC") || (penalty=="BIC")){
-		value=diffparam*log(n)
+		pen.value=diffparam*log(n)
 	}
 	else if((penalty=="SIC1") || (penalty=="BIC1")){
-		value=(diffparam+1)*log(n)
+		pen.value=(diffparam+1)*log(n)
 	}
 	else if(penalty=="AIC"){
-		value=2*diffparam
+		pen.value=2*diffparam
 	}
 	else if(penalty=="AIC1"){
-		value=2*(diffparam+1)
+		pen.value=2*(diffparam+1)
 	}
 	else if(penalty=="Hannan-Quinn"){
-		value=2*diffparam*log(log(n))
+		pen.value=2*diffparam*log(log(n))
 	}
 	else if(penalty=="Hannan-Quinn1"){
-		value=2*(diffparam+1)*log(log(n))
+		pen.value=2*(diffparam+1)*log(log(n))
 	}
 	else if(penalty=="None"){
-		value=0
+		pen.value=0
 	}
 	else if((penalty!="Manual")&&(penalty!="Asymptotic")){
 		stop('Unknown Penalty')
 	}
-	if((penalty=="Manual")&&(is.numeric(value)==FALSE)){
-		value=try(eval(parse(text=paste(value))),silent=TRUE)
-		if(class(value)=='try-error'){
+	if((penalty=="Manual")&&(is.numeric(pen.value)==FALSE)){
+		pen.value=try(eval(parse(text=paste(pen.value))),silent=TRUE)
+		if(class(pen.value)=='try-error'){
 			stop('Your manual penalty cannot be evaluated')
 		}
 	}
-	single.decision=function(tau,null,alt,n=0,diffparam=1,value=0){
+	single.decision=function(tau,null,alt,n=0,diffparam=1,pen.value=0){
 		if(is.na(alt)){teststat=null}
 		else{teststat=null-alt}
-		if(teststat>=value){return(tau)}
+		if(teststat>=pen.value){return(tau)}
 		else{return(n)}
 	}
 	if(length(tau)==1){
-		out=single.decision(tau,null,alt,n,diffparam,value)
+		out=single.decision(tau,null,alt,n,diffparam,pen.value)
 		names(out)="cpt"
-		return(list(cpt=out,pen=value))
+		return(list(cpt=out,pen=pen.value))
 	}
 	else{
 		rep=length(tau)
 		out=NULL
 		for(i in 1:rep){
-			out[i]=single.decision(tau[i],null[i],alt[i],n,diffparam,value)
+			out[i]=single.decision(tau[i],null[i],alt[i],n,diffparam,pen.value)
 		}
 		names(out)=rep("cpt",rep)
-		return(list(cpt=out,pen=value))
+		return(list(cpt=out,pen=pen.value))
 	}
 }

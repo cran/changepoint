@@ -7,16 +7,16 @@ Single Change in Variance - Cumulative Sums of Squares
 Calculates the cumulative sums of squares (css) test statistic for all possible changepoint locations and returns the single most probable (max).
 }
 \usage{
-single.var.css(data,penalty="SIC",value=0,class=TRUE,param.estimates=TRUE)
+single.var.css(data,penalty="SIC",pen.value=0,class=TRUE,param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
-	A vector or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
+	A vector, ts object or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
 }
   \item{penalty}{
-	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the value parameter. If Asymptotic is specified, the theoretical type I error is contained in the value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the pen.value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen.value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
 }
-  \item{value}{
+  \item{pen.value}{
 	The theoretical type I error e.g.0.05 when using the Asymptotic penalty (options are 0.01,0.05,0.1,0.25,0.5,0.75,0.9,0.95).  The value of the penalty when using the Manual penalty option.  This can be a numeric value or text giving the formula to use.  Available variables are, n=length of original data, null=test statistic, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
 }
   \item{class}{
@@ -54,8 +54,8 @@ Rebecca Killick
 # Example of a change in variance at 100 in simulated normal data
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,0,10))
-single.var.css(x,penalty="Asymptotic",value=0.05,class=FALSE) # returns 105 to show that the null hypothesis was rejected and the change in variance is at 105
-ans=single.var.css(x,penalty="Asymptotic",value=0.01) 
+single.var.css(x,penalty="Asymptotic",pen.value=0.05,class=FALSE) # returns 105 to show that the null hypothesis was rejected and the change in variance is at 105
+ans=single.var.css(x,penalty="Asymptotic",pen.value=0.01) 
 cpts(ans) # returns 105 to show that the null hypothesis was rejected, the change in variance is at 105 and we are 99% confident of this result
 
 # Example of a data matrix containing 2 rows, row 1 has a change in variance and row 2 had no change in variance
@@ -63,8 +63,8 @@ set.seed(10)
 x=c(rnorm(100,0,1),rnorm(100,0,10))
 y=rnorm(200,0,1)
 z=rbind(x,y)
-single.var.css(z,penalty="Asymptotic",value=0.05,class=FALSE) # returns vector c(102,200) which shows that the first dataset has a change in variance at 102 and the second dataset rejected H1 and has no change in variance
-ans=single.var.css(z,penalty="Manual",value=2) 
+single.var.css(z,penalty="Asymptotic",pen.value=0.05,class=FALSE) # returns vector c(102,200) which shows that the first dataset has a change in variance at 102 and the second dataset rejected H1 and has no change in variance
+ans=single.var.css(z,penalty="Manual",pen.value=2) 
 cpts(ans[[1]]) # test using a manual penalty which is the same as the AIC penalty for this example
 cpts(ans[[2]]) # result is the same as above, c(102, 200)
 }

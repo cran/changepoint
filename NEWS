@@ -1,40 +1,64 @@
+Version 1.0
+***********
+Changes to previous version
+- Removed printing and plotting of the last observation as the last cpt
+- The distribution class slot for the cpt class has been rename to test.stat (backwards compatability remains - for now)
+- Changed value parameter in all functions to be pen.value (no backwards compatability for named variables but ordering of arguments remains the same)
+- The data.set slot of the cpt class is now a ts object, the repurcusions of this are:
+		* the data.set() extractor function still returns a vector (for backwards compatability)
+		* a new data.set.ts() extractor function has been created that returns the ts object
+		* the plot method associated with the cpt object uses the ts structure and thus the plot method for ts objects (i.e. automatic line plots)
+- Created a coef method for cpt objects that returns the same as the param.est() extractor function (which remains for backwards compatibility)
+- Created a logLik method for cpt objects that returns the same as the likelihood() method (which remains for backwards compatibility)
+- The cpts() extractor function no longer returns the length of the data as the final changepoint.  Instead it returns the changepoints only or an empty vector to indicate no changepoints.
+
 Version 0.8
+***********
 Changes to previous version
 - Restructured C implementation of PELT to remove unnecessary function calls (minor speed improvement)
 - Updated FTSE100 data
+- Added Lai2005fig3 and Lai2005fig4 data
 
 Version 0.7.1
+*************
 Changes to previous version
 - added BIC1, SIC1, AIC1, Hannan-Quinn1 penalties (counting the changepoint as a parameter in contrast to BIC, SIC, AIC, Hannan-Quinn which do not)
 
 Version 0.7
+***********
 Changes to previous version
 - added change in Poisson distribution to cpt.meanvar
 
 Version 0.6.1
+*************
 Changes to previous version
 - removed plotting of "n" as a changepoint for changes in variance
 - changed array allocation to calloc in PELT C code
 - added checks to C code for user interruption (including appropriate memory handling)
 
 Version 0.6
+***********
 Changes to previous version
 - PELT algorithms now run using C code
 - Binary Segmentation algorithms now run using C code
 
 Version 0.5
+***********
 Changes to previous version
 - added namespace to comply with R 2.13
 
 Version 0.4.2
+*************
 Changes to previous version
 - corrected mismatch in default values for mu
 
 Version 0.4.1
+*************
 Changes to previous version
 - changed default value of the mu parameter from -1000 to NA
 
 Version 0.4
+***********
 Changes to previous version
 - removed regression for Normal distributed errors
 - added cusum for change in mean
@@ -43,14 +67,17 @@ Changes to previous version
 - corrected plotting of Gamma and Exponential distributions in cpt.meanvar
 
 Version 0.3
+***********
 Changes to previous version
 - added change in regression for Normal distributed errors
 
 Version 0.2.1
+*************
 Changes to previous version
 - fixed multiple optimal changepoint bug in multiple algorithms
 
 Version 0.2
+***********
 Changes to previous version
 - added change in scale parameter of Gamma distribution to cpt.meanvar
 - added change in Exponential distribution to cpt.meanvar

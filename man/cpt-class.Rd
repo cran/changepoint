@@ -5,7 +5,8 @@
 \alias{cpt-method,cpts}
 \alias{cpt-method,cpttype}
 \alias{cpt-method,data.set}
-\alias{cpt-method,distribution}
+\alias{cpt-method,data.set.ts}
+\alias{cpt-method,test.stat}
 \alias{cpt-method,ncpts.max}
 \alias{cpt-method,method}
 \alias{cpt-method,param.est}
@@ -14,7 +15,7 @@
 \alias{cpt-method,cpts<-}
 \alias{cpt-method,cpttype<-}
 \alias{cpt-method,data.set<-}
-\alias{cpt-method,distribution<-}
+\alias{cpt-method,test.stat<-}
 \alias{cpt-method,ncpts.max<-}
 \alias{cpt-method,method<-}
 \alias{cpt-method,param.est<-}
@@ -24,7 +25,7 @@
 \alias{cpt-method,summary}
 \alias{cpt-method,plot}
 \alias{cpt-method,param}
-\alias{cpt-method,likelihood}
+\alias{cpt-method,logLik}
 
 \title{Class "cpt"}
 \description{
@@ -38,10 +39,10 @@ Objects can be created by calls of the form \code{new("cpt", ...)}.
 }
 \section{Slots}{
   \describe{
-    \item{\code{data.set}:}{Object of class \code{"numeric"}, the original vector of data }
+    \item{\code{data.set}:}{Object of class \code{"ts"}, a coerced time series of the original data }
     \item{\code{cpttype}:}{Object of class \code{"character"}, the type of changepoint that was identified }
     \item{\code{method}:}{Object of class \code{"character"}, the method that was used to search for changepoints }
-    \item{\code{distribution}:}{Object of class \code{"character"}, the assumed distribution of the data }
+    \item{\code{test.stat}:}{Object of class \code{"character"}, the test statistic for the analysis of the data }
     \item{\code{pen.type}:}{Object of class \code{"character"}, the penalty type specified in the analysis}
     \item{\code{pen.value}:}{Object of class \code{"numeric"}, the value of the penalty used in the analysis}
     \item{\code{cpts}:}{Object of class \code{"numeric"}, vector of changepoints identified }
@@ -54,8 +55,9 @@ Objects can be created by calls of the form \code{new("cpt", ...)}.
   \describe{
     \item{cpts}{\code{signature(object = "cpt")}: retrieves cpts slot }
     \item{cpttype}{\code{signature(object = "cpt")}: retrieves cpttype slot }
-    \item{data.set}{\code{signature(object = "cpt")}: retrieves data.set slot }
-    \item{distribution}{\code{signature(object = "cpt")}: retrieves distribution slot }
+    \item{data.set}{\code{signature(object = "cpt")}: retrieves vector version of data.set slot }
+    \item{data.set.ts}{\code{signature(object = "cpt")}: retrieves time series version of data.set slot }
+    \item{test.stat}{\code{signature(object = "cpt")}: retrieves test.stat slot }
     \item{ncpts.max}{\code{signature(object = "cpt")}: retrieves ncpts.max slot }
     \item{method}{\code{signature(object = "cpt")}: retrieves method slot }
     \item{param.est}{\code{signature(object = "cpt")}: retrieves param.est slot }
@@ -64,7 +66,7 @@ Objects can be created by calls of the form \code{new("cpt", ...)}.
     \item{cpts<-}{\code{signature(object = "cpt")}: replaces cpts slot }
     \item{cpttype<-}{\code{signature(object = "cpt")}: replaces cpttype slot }
     \item{data.set<-}{\code{signature(object = "cpt")}: replaces data.set slot }
-    \item{distribution<-}{\code{signature(object = "cpt")}: replaces distribution slot }
+    \item{test.stat<-}{\code{signature(object = "cpt")}: replaces test.stat slot }
     \item{ncpts.max<-}{\code{signature(object = "cpt")}: replaces ncpts.max slot }
     \item{method<-}{\code{signature(object = "cpt")}: replaces method slot }
     \item{param.est<-}{\code{signature(object = "cpt")}: replaces param.est slot }
@@ -74,7 +76,7 @@ Objects can be created by calls of the form \code{new("cpt", ...)}.
     \item{summary}{\code{signature(object = "cpt")}: prints a summary of the cpt object }
     \item{plot}{\code{signature(object = "cpt")}: plots the cpt object with changepoints highlighted }
     \item{param}{\code{signature(object = "cpt")}: calculates the parameter estimates for the cpt object}
-    \item{likelihood}{\code{signature(object = "cpt")}: returns the overall likelihood of the cpt object}
+    \item{logLik}{\code{signature(object = "cpt")}: returns the overall log-likelihood of the cpt object}
   }
 }
 
@@ -99,7 +101,7 @@ ans=cpt.var(x)
 print(ans) # prints details of the analysis including a summary
 summary(ans)
 plot(ans) # plots the data with change (vertical line) at 100
-likelihood(ans) # raw likelihood of the data with changepoints, second value is likelihood + penalty
+logLik(ans) # raw likelihood of the data with changepoints, second value is likelihood + penalty
 }
 \keyword{classes}
 \keyword{cpt}

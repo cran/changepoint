@@ -7,19 +7,19 @@ Single Change in Mean and Variance - Gamma Data (i.e. change in scale parameter)
 Calculates the scaled log-likelihood (assuming the data is Gamma distributed) for all possible changepoint locations and returns the single most probable (max).
 }
 \usage{
-single.meanvar.gamma(data, shape=1, penalty="SIC",value=0,class=TRUE,param.estimates=TRUE)
+single.meanvar.gamma(data, shape=1, penalty="SIC",pen.value=0,class=TRUE,param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
-	A vector or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
+	A vector, ts object or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
 }
   \item{shape}{
 	Numerical value of the true shape parameter for the data.  Either single value or vector of length nrow(data).  If data is a matrix and shape is a single value, the same shape parameter is used for each row.
 }
   \item{penalty}{
-	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the pen.value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
 }
-  \item{value}{
+  \item{pen.value}{
 	The value of the penalty when using the Manual penalty option.  This can be a numeric value or text giving the formula to use.  Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
 }
   \item{class}{
@@ -65,7 +65,7 @@ x=c(rgamma(100,shape=1,rate=1),rgamma(100,shape=1,rate=10))
 y=rgamma(200,shape=1,rate=1)
 z=rbind(x,y)
 single.meanvar.gamma(z,penalty="SIC",class=FALSE) # returns vector c(99,200) which shows that the first dataset has a change in scale parameter at 99 and the second dataset rejected H1 and has no change in scale parameter
-ans=single.meanvar.gamma(z,penalty="Manual",value="diffparam*log(n)") # list returned
+ans=single.meanvar.gamma(z,penalty="Manual",pen.value="diffparam*log(n)") # list returned
 cpts(ans[[1]]) # test using a manual penalty which is the same as the SIC penalty for this example.  The same changepoint is detected for the first dataset 
 cpts(ans[[2]]) # same as above, no change found
 }

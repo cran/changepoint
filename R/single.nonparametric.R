@@ -45,8 +45,8 @@ function(data,extrainf=TRUE){
 }
 
 
-single.var.css<-function(data,penalty="SIC",value=0,class=TRUE,param.estimates=TRUE){
-	if(length(value)>1){stop('Only one dimensional penalties can be used for CSS')}
+single.var.css<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.estimates=TRUE){
+	if(length(pen.value)>1){stop('Only one dimensional penalties can be used for CSS')}
 	diffparam=1
 	if(is.null(dim(data))==TRUE){
 		# single dataset
@@ -56,52 +56,52 @@ single.var.css<-function(data,penalty="SIC",value=0,class=TRUE,param.estimates=T
 		n=ncol(data)
 	}
 	if((penalty=="SIC") || (penalty=="BIC")){
-		value=log(diffparam*log(n))
+		pen.value=log(diffparam*log(n))
 	}
 	else if((penalty=="SIC1") || (penalty=="BIC1")){
-		value=log((diffparam+1)*log(n))
+		pen.value=log((diffparam+1)*log(n))
 	}
 	else if(penalty=="AIC"){
-		value=log(2*diffparam)
+		pen.value=log(2*diffparam)
 	}
 	else if(penalty=="AIC1"){
-		value=log(2*(diffparam+1))
+		pen.value=log(2*(diffparam+1))
 	}
 	else if(penalty=="Hannan-Quinn"){
-		value=log(2*diffparam*log(log(n)))
+		pen.value=log(2*diffparam*log(log(n)))
 	}
 	else if(penalty=="Hannan-Quinn1"){
-		value=log(2*(diffparam+1)*log(log(n)))
+		pen.value=log(2*(diffparam+1)*log(log(n)))
 	}
 	else if(penalty=="None"){
-		value=0
+		pen.value=0
 	}
 	else if((penalty!="Manual")&&(penalty!="Asymptotic")){
 		stop('Unknown Penalty')
 	}
-	if((penalty=="Manual")&&(is.numeric(value)==FALSE)){
-		value=try(eval(parse(text=paste(value))),silent=TRUE)
-		if(class(value)=='try-error'){
+	if((penalty=="Manual")&&(is.numeric(pen.value)==FALSE)){
+		pen.value=try(eval(parse(text=paste(pen.value))),silent=TRUE)
+		if(class(pen.value)=='try-error'){
 			stop('Your manual penalty cannot be evaluated')
 		}
 	}
 	if(penalty=="Asymptotic"){
-		if(value==0.01){value=1.628}
-		else if(value==0.05){value=1.358}
-		else if(value==0.1){value=1.224}
-		else if(value==0.25){value=1.019}
-		else if(value==0.5){value=0.828}
-		else if(value==0.75){value=0.677}
-		else if(value==0.9){value=0.571}
-		else if(value==0.95){value=0.520}
+		if(pen.value==0.01){pen.value=1.628}
+		else if(pen.value==0.05){pen.value=1.358}
+		else if(pen.value==0.1){pen.value=1.224}
+		else if(pen.value==0.25){pen.value=1.019}
+		else if(pen.value==0.5){pen.value=0.828}
+		else if(pen.value==0.75){pen.value=0.677}
+		else if(pen.value==0.9){pen.value=0.571}
+		else if(pen.value==0.95){pen.value=0.520}
 		else{stop('Only alpha values of 0.01,0.05,0.1,0.25,0.5,0.75,0.9,0.95 are valid for CSS')}
 	}
 	if(is.null(dim(data))==TRUE){
-		tmp=single.var.css.calc(data,extrainf=TRUE)
-		ans=decision(tau=tmp[1],null=tmp[2],penalty="Manual",n=n,diffparam=1,value=value)
+		tmp=single.var.css.calc(coredata(data),extrainf=TRUE)
+		ans=decision(tau=tmp[1],null=tmp[2],penalty="Manual",n=n,diffparam=1,pen.value=pen.value)
 		if(class==TRUE){
 			out=new("cpt")
-			data.set(out)=data; cpttype(out)="variance"; method(out)="AMOC"; distribution(out)="CSS"; pen.type(out)=penalty; pen.value(out)=ans$pen;ncpts.max(out)=1
+			data.set(out)=data; cpttype(out)="variance"; method(out)="AMOC"; test.stat(out)="CSS"; pen.type(out)=penalty; pen.value(out)=ans$pen;ncpts.max(out)=1
 			if(ans$cpt != n){cpts(out)=c(ans$cpt,n)}
 			else{cpts(out)=ans$cpt}
 			if(param.estimates==TRUE){
@@ -113,13 +113,13 @@ single.var.css<-function(data,penalty="SIC",value=0,class=TRUE,param.estimates=T
 	}
 	else{ 
 		tmp=single.var.css.calc(data,extrainf=TRUE)
-		ans=decision(tau=tmp[,1],null=tmp[,2],penalty="Manual",n=n,diffparam=1,value=value)
+		ans=decision(tau=tmp[,1],null=tmp[,2],penalty="Manual",n=n,diffparam=1,pen.value=pen.value)
 		if(class==TRUE){
 			rep=nrow(data)
 			out=list()
 			for(i in 1:rep){
 				out[[i]]=new("cpt")
-				data.set(out[[i]])=data[i,]; cpttype(out[[i]])="variance"; method(out[[i]])="AMOC"; distribution(out[[i]])="CSS"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
+				data.set(out[[i]])=ts(data[i,]); cpttype(out[[i]])="variance"; method(out[[i]])="AMOC"; test.stat(out[[i]])="CSS"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
 				if(ans$cpt[i] != n){cpts(out[[i]])=c(ans$cpt[i],n)}
 				else{cpts(out[[i]])=ans$cpt[i]}
 				if(param.estimates==TRUE){
@@ -188,18 +188,18 @@ function(data,extrainf=TRUE){
 }
 
 
-single.mean.cusum<-function(data,penalty="Asymptotic",value=0.05,class=TRUE,param.estimates=TRUE){
-	if(length(value)>1){stop('Only one dimensional penalties can be used for CUSUM')}
+single.mean.cusum<-function(data,penalty="Asymptotic",pen.value=0.05,class=TRUE,param.estimates=TRUE){
+	if(length(pen.value)>1){stop('Only one dimensional penalties can be used for CUSUM')}
 	if(penalty=="Asymptotic"){
 		stop('No Asymptotic penalty is available for CUSUM')
 	}
 	if(is.null(dim(data))==TRUE){
 		n=length(data)
-		tmp=single.mean.cusum.calc(data,extrainf=TRUE)
-		ans=decision(tau=tmp[1],null=tmp[2],penalty=penalty,n=n,diffparam=1,value=value)
+		tmp=single.mean.cusum.calc(coredata(data),extrainf=TRUE)
+		ans=decision(tau=tmp[1],null=tmp[2],penalty=penalty,n=n,diffparam=1,pen.value=pen.value)
 		if(class==TRUE){
 			out=new("cpt")
-			data.set(out)=data; cpttype(out)="mean"; method(out)="AMOC"; distribution(out)="CUSUM"; pen.type(out)=penalty; pen.value(out)=ans$pen;ncpts.max(out)=1
+			data.set(out)=data; cpttype(out)="mean"; method(out)="AMOC"; test.stat(out)="CUSUM"; pen.type(out)=penalty; pen.value(out)=ans$pen;ncpts.max(out)=1
 			if(ans$cpt != n){cpts(out)=c(ans$cpt,n)}
 			else{cpts(out)=ans$cpt}
 			if(param.estimates==TRUE){
@@ -212,13 +212,13 @@ single.mean.cusum<-function(data,penalty="Asymptotic",value=0.05,class=TRUE,para
 	else{ 
 		n=ncol(data)
 		tmp=single.mean.cusum.calc(data,extrainf=TRUE)
-		ans=decision(tau=tmp[,1],null=tmp[,2],penalty=penalty,n=n,diffparam=1,value=value)
+		ans=decision(tau=tmp[,1],null=tmp[,2],penalty=penalty,n=n,diffparam=1,pen.value=pen.value)
 		if(class==TRUE){
 			rep=nrow(data)
 			out=list()
 			for(i in 1:rep){
 				out[[i]]=new("cpt")
-				data.set(out[[i]])=data[i,]; cpttype(out[[i]])="mean"; method(out[[i]])="AMOC"; distribution(out[[i]])="CUSUM"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
+				data.set(out[[i]])=ts(data[i,]); cpttype(out[[i]])="mean"; method(out[[i]])="AMOC"; test.stat(out[[i]])="CUSUM"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
 				if(ans$cpt[i] != n){cpts(out[[i]])=c(ans$cpt[i],n)}
 				else{cpts(out[[i]])=ans$cpt[i]}
 				if(param.estimates==TRUE){

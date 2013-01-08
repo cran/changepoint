@@ -7,16 +7,16 @@ Identifying Changes in Variance
 Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
 }
 \usage{
-cpt.var(data,penalty="SIC",value=0,know.mean=FALSE, mu=NA,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE)
+cpt.var(data,penalty="SIC",pen.value=0,know.mean=FALSE, mu=NA,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
-	A vector or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
+	A vector, ts object or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
 }
   \item{penalty}{
-	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the value parameter. If Asymptotic is specified, the theoretical type I error is contained in the value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the pen.value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen.value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
 }
-  \item{value}{
+  \item{pen.value}{
 	The theoretical type I error e.g.0.05 when using the Asymptotic penalty.  The value of the penalty when using the Manual penalty option.  This can be a numeric value or text giving the formula to use.  Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
 }
   \item{know.mean}{
@@ -86,21 +86,21 @@ Rebecca Killick
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,0,10))
 cpt.var(x,penalty="SIC",method="AMOC",class=FALSE) # returns 100 to show that the null hypothesis was rejected and the change in variance is at 100
-ans=cpt.var(x,penalty="Asymptotic",value=0.01,method="AMOC") 
+ans=cpt.var(x,penalty="Asymptotic",pen.value=0.01,method="AMOC") 
 cpts(ans)# returns 100 to show that the null hypothesis was rejected, the change in variance is at 100 and we are 99% confident of this result
 
 # Example of multiple changes in variance at 50,100,150 in simulated data
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,0,10),rnorm(50,0,5),rnorm(50,0,1))
-cpt.var(x,penalty="Manual",value="log(2*log(n))",method="BinSeg",dist="CSS",Q=5,class=FALSE) # returns optimal number of changepoints is 4, locations are 50,53,99,150.
+cpt.var(x,penalty="Manual",pen.value="log(2*log(n))",method="BinSeg",dist="CSS",Q=5,class=FALSE) # returns optimal number of changepoints is 4, locations are 50,53,99,150.
 
 # Example multiple datasets where the first row has multiple changes in variance and the second row has no change in variance
 set.seed(10)
 x=c(rnorm(50,0,1),rnorm(50,0,10),rnorm(50,0,5),rnorm(50,0,1))
 y=rnorm(200,0,1)
 z=rbind(x,y)
-cpt.var(z,penalty="Asymptotic",value=0.01,method="SegNeigh",Q=5,class=FALSE) # returns list that has two elements, the first has 3 changes in variance at 50,100,149 and the second has no changes in variance
-ans=cpt.var(z,penalty="Asymptotic",value=0.01,method="PELT") 
+cpt.var(z,penalty="Asymptotic",pen.value=0.01,method="SegNeigh",Q=5,class=FALSE) # returns list that has two elements, the first has 3 changes in variance at 50,100,149 and the second has no changes in variance
+ans=cpt.var(z,penalty="Asymptotic",pen.value=0.01,method="PELT") 
 cpts(ans[[1]]) # same results as for the SegNeigh method.
 cpts(ans[[2]]) # same results as for the SegNeigh method.
 }

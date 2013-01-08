@@ -87,7 +87,7 @@ binseg.var.css=function(data,Q=5,pen=0){
 }
 
 
-multiple.var.css=function(data,mul.method="BinSeg",penalty="SIC",value=0,Q=5,class=TRUE,param.estimates=TRUE){
+multiple.var.css=function(data,mul.method="BinSeg",penalty="SIC",pen.value=0,Q=5,class=TRUE,param.estimates=TRUE){
 	if(mul.method=="PELT"){ stop("CSS does not satisfy the assumptions of PELT, use SegNeigh or BinSeg instead.") }
 	else if(!((mul.method=="BinSeg")||(mul.method=="SegNeigh"))){
 		stop("Multiple Method is not recognised")
@@ -101,61 +101,61 @@ multiple.var.css=function(data,mul.method="BinSeg",penalty="SIC",value=0,Q=5,cla
 		n=ncol(data)
 	}
 	if((penalty=="SIC") || (penalty=="BIC")){
-		value=log(diffparam*log(n))
+		pen.value=log(diffparam*log(n))
 	}
 	else if((penalty=="SIC1") || (penalty=="BIC1")){
-		value=log((diffparam+1)*log(n))
+		pen.value=log((diffparam+1)*log(n))
 	}
 	else if(penalty=="AIC"){
-		value=log(2*diffparam)
+		pen.value=log(2*diffparam)
 	}
 	else if(penalty=="AIC1"){
-		value=log(2*(diffparam+1))
+		pen.value=log(2*(diffparam+1))
 	}
 	else if(penalty=="Hannan-Quinn"){
-		value=log(2*diffparam*log(log(n)))
+		pen.value=log(2*diffparam*log(log(n)))
 	}
 	else if(penalty=="Hannan-Quinn1"){
-		value=log(2*(diffparam+1)*log(log(n)))
+		pen.value=log(2*(diffparam+1)*log(log(n)))
 	}
 	else if(penalty=="None"){
-		value=0
+		pen.value=0
 	}
 	else if((penalty!="Manual")&&(penalty!="Asymptotic")){
 		stop('Unknown Penalty')
 	}
-	if((penalty=="Manual")&&(is.numeric(value)==FALSE)){
-		value=try(eval(parse(text=paste(value))),silent=TRUE)
-		if(class(value)=='try-error'){
+	if((penalty=="Manual")&&(is.numeric(pen.value)==FALSE)){
+		pen.value=try(eval(parse(text=paste(pen.value))),silent=TRUE)
+		if(class(pen.value)=='try-error'){
 			stop('Your manual penalty cannot be evaluated')
 		}
 	}
 	if(penalty=="Asymptotic"){
-		if(value==0.01){value=1.628}
-		else if(value==0.05){value=1.358}
-		else if(value==0.1){value=1.224}
-		else if(value==0.25){value=1.019}
-		else if(value==0.5){value=0.828}
-		else if(value==0.75){value=0.677}
-		else if(value==0.9){value=0.571}
-		else if(value==0.95){value=0.520}
+		if(pen.value==0.01){pen.value=1.628}
+		else if(pen.value==0.05){pen.value=1.358}
+		else if(pen.value==0.1){pen.value=1.224}
+		else if(pen.value==0.25){pen.value=1.019}
+		else if(pen.value==0.5){pen.value=0.828}
+		else if(pen.value==0.75){pen.value=0.677}
+		else if(pen.value==0.9){pen.value=0.571}
+		else if(pen.value==0.95){pen.value=0.520}
 		else{stop('Only alpha values of 0.01,0.05,0.1,0.25,0.5,0.75,0.9,0.95 are valid for CSS')}
 	}
 	if(is.null(dim(data))==TRUE){
 		# single dataset
 		if(mul.method=="BinSeg"){
-			out=binseg.var.css(data,Q,value)
+			out=binseg.var.css(data,Q,pen.value)
 			if(out$op.cpts==0){cpts=n}
 			else{cpts=c(sort(out$cps[1,1:out$op.cpts]),n)}
 		}
 		else if(mul.method=="SegNeigh"){
-			out=segneigh.var.css(data,Q,value)
+			out=segneigh.var.css(data,Q,pen.value)
 			if(out$op.cpts==0){cpts=n}
 			else{cpts=c(sort(out$cps[out$op.cpts+1,][out$cps[out$op.cpts+1,]>0]),n)}
 		}
 		if(class==TRUE){
 			ans=new("cpt")
-			data.set(ans)=data;cpttype(ans)="variance";method(ans)=mul.method;distribution(ans)="CSS"; pen.type(ans)=penalty;pen.value(ans)=value;cpts(ans)=cpts
+			data.set(ans)=data;cpttype(ans)="variance";method(ans)=mul.method;test.stat(ans)="CSS"; pen.type(ans)=penalty;pen.value(ans)=pen.value;cpts(ans)=cpts
 			ncpts.max(ans)=Q
 			if(param.estimates==TRUE){
 				ans=param(ans)
@@ -170,7 +170,7 @@ multiple.var.css=function(data,mul.method="BinSeg",penalty="SIC",value=0,Q=5,cla
 		if(class==TRUE){cpts=list()}
 		if(mul.method=="BinSeg"){
 			for(i in 1:rep){
-				out=c(out,list(binseg.var.css(data[i,],Q,value)))
+				out=c(out,list(binseg.var.css(data[i,],Q,pen.value)))
 				if(class==TRUE){
 					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
 					else{cpts[[i]]=c(sort(out[[i]]$cps[1,1:out[[i]]$op.cpts]),n)}
@@ -179,7 +179,7 @@ multiple.var.css=function(data,mul.method="BinSeg",penalty="SIC",value=0,Q=5,cla
 		}
 		else if(mul.method=="SegNeigh"){
 			for(i in 1:rep){
-				out=c(out,list(segneigh.var.css(data[i,],Q,value)))
+				out=c(out,list(segneigh.var.css(data[i,],Q,pen.value)))
 				if(class==TRUE){
 					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
 					else{cpts[[i]]=c(sort(out[[i]]$cps[out[[i]]$op.cpts+1,][out[[i]]$cps[out[[i]]$op.cpts+1,]>0]),n)}
@@ -190,7 +190,7 @@ multiple.var.css=function(data,mul.method="BinSeg",penalty="SIC",value=0,Q=5,cla
 			ans=list()
 			for(i in 1:rep){
 				ans[[i]]=new("cpt")
-				data.set(ans[[i]])=data[i,];cpttype(ans[[i]])="variance";method(ans[[i]])=mul.method;distribution(ans[[i]])="CSS"; pen.type(ans[[i]])=penalty;pen.value(ans[[i]])=value;cpts(ans[[i]])=cpts[[i]]
+				data.set(ans[[i]])=data[i,];cpttype(ans[[i]])="variance";method(ans[[i]])=mul.method;test.stat(ans[[i]])="CSS"; pen.type(ans[[i]])=penalty;pen.value(ans[[i]])=pen.value;cpts(ans[[i]])=cpts[[i]]
 				ncpts.max(ans[[i]])=Q
 				if(param.estimates==TRUE){
 					ans[[i]]=param(ans[[i]])
@@ -306,7 +306,7 @@ binseg.mean.cusum=function(data,Q=5,pen=0){
 }
 
 
-multiple.mean.cusum=function(data,mul.method="BinSeg",penalty="Asymptotic",value=0.05,Q=5,class=TRUE,param.estimates=TRUE){
+multiple.mean.cusum=function(data,mul.method="BinSeg",penalty="Asymptotic",pen.value=0.05,Q=5,class=TRUE,param.estimates=TRUE){
 	if(mul.method=="PELT"){ stop("CUSUM does not satisfy the assumptions of PELT, use SegNeigh or BinSeg instead.") }
 	else if(!((mul.method=="BinSeg")||(mul.method=="SegNeigh"))){
 		stop("Multiple Method is not recognised")
@@ -320,53 +320,53 @@ multiple.mean.cusum=function(data,mul.method="BinSeg",penalty="Asymptotic",value
 		n=ncol(data)
 	}
 	if((penalty=="SIC") || (penalty=="BIC")){
-		value=diffparam*log(n)
+		pen.value=diffparam*log(n)
 	}
 	else if((penalty=="SIC1") || (penalty=="BIC1")){
-		value=(diffparam+1)*log(n)
+		pen.value=(diffparam+1)*log(n)
 	}
 	else if(penalty=="AIC"){
-		value=2*diffparam
+		pen.value=2*diffparam
 	}
 	else if(penalty=="AIC1"){
-		value=2*(diffparam+1)
+		pen.value=2*(diffparam+1)
 	}
 	else if(penalty=="Hannan-Quinn"){
-		value=2*diffparam*log(log(n))
+		pen.value=2*diffparam*log(log(n))
 	}
 	else if(penalty=="Hannan-Quinn1"){
-		value=2*(diffparam+1)*log(log(n))
+		pen.value=2*(diffparam+1)*log(log(n))
 	}
 	else if(penalty=="None"){
-		value=0
+		pen.value=0
 	}
 	else if((penalty!="Manual")&&(penalty!="Asymptotic")){
 		stop('Unknown Penalty')
 	}
-	if((penalty=="Manual")&&(is.numeric(value)==FALSE)){
-		value=try(eval(parse(text=paste(value))),silent=TRUE)
-		if(class(value)=='try-error'){
+	if((penalty=="Manual")&&(is.numeric(pen.value)==FALSE)){
+		pen.value=try(eval(parse(text=paste(pen.value))),silent=TRUE)
+		if(class(pen.value)=='try-error'){
 			stop('Your manual penalty cannot be evaluated')
 		}
 	}
 	if(penalty=="Asymptotic"){
-		stop('Asymptotic Values have not been implemented yet for CUSUM')
+		stop('Asymptotic penalties have not been implemented yet for CUSUM')
 	}
 	if(is.null(dim(data))==TRUE){
 		# single dataset
 		if(mul.method=="BinSeg"){
-			out=binseg.mean.cusum(data,Q,value)
+			out=binseg.mean.cusum(coredata(data),Q,pen.value)
 			if(out$op.cpts==0){cpts=n}
 			else{cpts=c(sort(out$cps[1,1:out$op.cpts]),n)}
 		}
 		else if(mul.method=="SegNeigh"){
-			out=segneigh.mean.cusum(data,Q,value)
+			out=segneigh.mean.cusum(coredata(data),Q,pen.value)
 			if(out$op.cpts==0){cpts=n}
 			else{cpts=c(sort(out$cps[out$op.cpts+1,][out$cps[out$op.cpts+1,]>0]),n)}
 		}
 		if(class==TRUE){
 			ans=new("cpt")
-			data.set(ans)=data;cpttype(ans)="mean";method(ans)=mul.method;distribution(ans)="CUSUM"; pen.type(ans)=penalty;pen.value(ans)=value;cpts(ans)=cpts
+			data.set(ans)=data;cpttype(ans)="mean";method(ans)=mul.method;test.stat(ans)="CUSUM"; pen.type(ans)=penalty;pen.value(ans)=pen.value;cpts(ans)=cpts
 			ncpts.max(ans)=Q
 			if(param.estimates==TRUE){
 				ans=param(ans)
@@ -381,7 +381,7 @@ multiple.mean.cusum=function(data,mul.method="BinSeg",penalty="Asymptotic",value
 		if(class==TRUE){cpts=list()}
 		if(mul.method=="BinSeg"){
 			for(i in 1:rep){
-				out=c(out,list(binseg.mean.cusum(data[i,],Q,value)))
+				out=c(out,list(binseg.mean.cusum(data[i,],Q,pen.value)))
 				if(class==TRUE){
 					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
 					else{cpts[[i]]=c(sort(out[[i]]$cps[1,1:out[[i]]$op.cpts]),n)}
@@ -390,7 +390,7 @@ multiple.mean.cusum=function(data,mul.method="BinSeg",penalty="Asymptotic",value
 		}
 		else if(mul.method=="SegNeigh"){
 			for(i in 1:rep){
-				out=c(out,list(segneigh.mean.cusum(data[i,],Q,value)))
+				out=c(out,list(segneigh.mean.cusum(data[i,],Q,pen.value)))
 				if(class==TRUE){
 					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
 					else{cpts[[i]]=c(sort(out[[i]]$cps[out[[i]]$op.cpts+1,][out[[i]]$cps[out[[i]]$op.cpts+1,]>0]),n)}
@@ -401,7 +401,7 @@ multiple.mean.cusum=function(data,mul.method="BinSeg",penalty="Asymptotic",value
 			ans=list()
 			for(i in 1:rep){
 				ans[[i]]=new("cpt")
-				data.set(ans[[i]])=data[i,];cpttype(ans[[i]])="mean";method(ans[[i]])=mul.method;distribution(ans[[i]])="CUSUM"; pen.type(ans[[i]])=penalty;pen.value(ans[[i]])=value;cpts(ans[[i]])=cpts[[i]]
+				data.set(ans[[i]])=ts(data[i,]);cpttype(ans[[i]])="mean";method(ans[[i]])=mul.method;test.stat(ans[[i]])="CUSUM"; pen.type(ans[[i]])=penalty;pen.value(ans[[i]])=pen.value;cpts(ans[[i]])=cpts[[i]]
 				ncpts.max(ans[[i]])=Q
 				if(param.estimates==TRUE){
 					ans[[i]]=param(ans[[i]])

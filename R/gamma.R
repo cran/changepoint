@@ -48,19 +48,19 @@ function(data,shape=1,extrainf=TRUE){
   }
 }
 
-single.meanvar.gamma<-function(data,shape=1,penalty="SIC",value=0,class=TRUE,param.estimates=TRUE){
-	if(sum(data<=0)>0){stop('Gamma distribution requires positive data')}
+single.meanvar.gamma<-function(data,shape=1,penalty="SIC",pen.value=0,class=TRUE,param.estimates=TRUE){
+	if(sum(data<=0)>0){stop('Gamma test statistic requires positive data')}
 
 	if(is.null(dim(data))==TRUE){
 		n=length(data)
 		if(penalty=="Asymptotic"){
-			return('Asymptotic values for the Gamma Distribution are not defined, please choose an alternative penalty type')
+			return('Asymptotic penalties for the Gamma test statistic are not defined, please choose an alternative penalty type')
 		}
-		tmp=single.meanvar.gamma.calc(data,shape,extrainf=TRUE)
-		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=1,value)
+		tmp=single.meanvar.gamma.calc(coredata(data),shape,extrainf=TRUE)
+		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=1,pen.value)
 		if(class==TRUE){
 			out=new("cpt")
-			data.set(out)=data;cpttype(out)="mean and variance";method(out)="AMOC";distribution(out)="Gamma";pen.type(out)=penalty; pen.value(out)=ans$pen;ncpts.max(out)=1
+			data.set(out)=data;cpttype(out)="mean and variance";method(out)="AMOC";test.stat(out)="Gamma";pen.type(out)=penalty; pen.value(out)=ans$pen;ncpts.max(out)=1
 			if(ans$cpt != n){cpts(out)=c(ans$cpt,n)}
 			else{cpts(out)=ans$cpt}
 			if(param.estimates==TRUE){
@@ -73,16 +73,16 @@ single.meanvar.gamma<-function(data,shape=1,penalty="SIC",value=0,class=TRUE,par
 	else{ 
 		n=ncol(data)
 		if(penalty=="Asymptotic"){
-			return('Asymptotic values for the Gamma Distribution are not defined, please choose an alternative penalty type')
+			return('Asymptotic penalties for the Gamma test statistic are not defined, please choose an alternative penalty type')
 		}
 		tmp=single.meanvar.gamma.calc(data,shape,extrainf=TRUE)
-		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=1,value)
+		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=1,pen.value)
 		if(class==TRUE){
 			rep=nrow(data)
 			out=list()
 			for(i in 1:rep){
 				out[[i]]=new("cpt")
-				data.set(out[[i]])=data[i,];cpttype(out[[i]])="mean and variance";method(out[[i]])="AMOC";distribution(out[[i]])="Gamma"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
+				data.set(out[[i]])=ts(data[i,]);cpttype(out[[i]])="mean and variance";method(out[[i]])="AMOC";test.stat(out[[i]])="Gamma"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
 				if(ans$cpt[i] != n){cpts(out[[i]])=c(ans$cpt[i],n)}
 				else{cpts(out[[i]])=ans$cpt[i]}
 				if(param.estimates==TRUE){
@@ -151,7 +151,7 @@ single.meanvar.gamma<-function(data,shape=1,penalty="SIC",value=0,class=TRUE,par
 
 PELT.meanvar.gamma=function(data,shape=1,pen=0){
   # function that uses the PELT method to calculate changes in mean & variance where the segments in the data are assumed to be Exponential
-	if(sum(data<=0)>0){stop('Gamma distribution requires positive data')}
+	if(sum(data<=0)>0){stop('Gamma test statistic requires positive data')}
 
   n=length(data)
   y=c(0,cumsum(data))
@@ -175,7 +175,7 @@ PELT.meanvar.gamma=function(data,shape=1,pen=0){
 
 
 segneigh.meanvar.gamma=function(data,shape=1,Q=5,pen=0){
-	if(sum(data<=0)>0){stop('Gamma distribution requires positive data')}
+	if(sum(data<=0)>0){stop('Gamma test statistic requires positive data')}
 
   n=length(data)
   if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
@@ -269,7 +269,7 @@ segneigh.meanvar.gamma=function(data,shape=1,Q=5,pen=0){
 
 binseg.meanvar.gamma=function(data,shape=1,Q=5,pen=0){
   # function that uses the BinSeg method to calculate changes in mean & variance where the segments in the data are assumed to be Exponential
-	if(sum(data<=0)>0){stop('Gamma distribution requires positive data')}
+	if(sum(data<=0)>0){stop('Gamma test statistic requires positive data')}
 
   n=length(data)
   if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
@@ -286,7 +286,7 @@ binseg.meanvar.gamma=function(data,shape=1,Q=5,pen=0){
 }
 
 
-multiple.meanvar.gamma=function(data,shape=1,mul.method="PELT",penalty="SIC",value=0,Q=5,class=TRUE,param.estimates=TRUE){
+multiple.meanvar.gamma=function(data,shape=1,mul.method="PELT",penalty="SIC",pen.value=0,Q=5,class=TRUE,param.estimates=TRUE){
 	if(!((mul.method=="PELT")||(mul.method=="BinSeg")||(mul.method=="SegNeigh"))){
 		stop("Multiple Method is not recognised")
 	}
@@ -300,57 +300,57 @@ multiple.meanvar.gamma=function(data,shape=1,mul.method="PELT",penalty="SIC",val
 		n=ncol(data)
 	}
 	if((penalty=="SIC") || (penalty=="BIC")){
-		value=diffparam*log(n)
+		pen.value=diffparam*log(n)
 	}
 	else if((penalty=="SIC1") || (penalty=="BIC1")){
-		value=(diffparam+1)*log(n)
+		pen.value=(diffparam+1)*log(n)
 	}
 	else if(penalty=="AIC"){
-		value=2*diffparam
+		pen.value=2*diffparam
 	}
 	else if(penalty=="AIC1"){
-		value=2*(diffparam+1)
+		pen.value=2*(diffparam+1)
 	}
 	else if(penalty=="Hannan-Quinn"){
-		value=2*diffparam*log(log(n))
+		pen.value=2*diffparam*log(log(n))
 	}
 	else if(penalty=="Hannan-Quinn1"){
-		value=2*(diffparam+1)*log(log(n))
+		pen.value=2*(diffparam+1)*log(log(n))
 	}
 	else if(penalty=="None"){
-		value=0
+		pen.value=0
 	}
 	else if((penalty!="Manual")&&(penalty!="Asymptotic")){
 	  stop('Unknown Penalty')
 	}
-	if((penalty=="Manual")&&(is.numeric(value)==FALSE)){
-		value=try(eval(parse(text=paste(value))),silent=TRUE)
-		if(class(value)=='try-error'){
+	if((penalty=="Manual")&&(is.numeric(pen.value)==FALSE)){
+		pen.value=try(eval(parse(text=paste(pen.value))),silent=TRUE)
+		if(class(pen.value)=='try-error'){
 			stop('Your manual penalty cannot be evaluated')
 		}
 	}
   else if(penalty=='Asymptotic'){
-    return('Asymptotic values for the Gamma Distribution are not defined, please choose an alternative penalty type')
+    return('Asymptotic penalties for the Gamma test statistic are not defined, please choose an alternative penalty type')
   }
 	if(is.null(dim(data))==TRUE){
 		# single dataset
 		if(mul.method=="PELT"){
-			out=PELT.meanvar.gamma(data,shape,value)
+			out=PELT.meanvar.gamma(coredata(data),shape,pen.value)
 			cpts=out
 		}
 		else if(mul.method=="BinSeg"){
-			out=binseg.meanvar.gamma(data,shape,Q,value)
+			out=binseg.meanvar.gamma(coredata(data),shape,Q,pen.value)
 			if(out$op.cpts==0){cpts=n}
 			else{cpts=c(sort(out$cps[1,1:out$op.cpts]),n)}
 		}
 		else if(mul.method=="SegNeigh"){
-			out=segneigh.meanvar.gamma(data,shape,Q,value)
+			out=segneigh.meanvar.gamma(coredata(data),shape,Q,pen.value)
 			if(out$op.cpts==0){cpts=n}
 			else{cpts=c(sort(out$cps[out$op.cpts+1,][out$cps[out$op.cpts+1,]>0]),n)}
 		}
 		if(class==TRUE){
 			ans=new("cpt")
-			data.set(ans)=data;cpttype(ans)="mean and variance";method(ans)=mul.method; distribution(ans)="Gamma";pen.type(ans)=penalty;pen.value(ans)=value;cpts(ans)=cpts
+			data.set(ans)=data;cpttype(ans)="mean and variance";method(ans)=mul.method; test.stat(ans)="Gamma";pen.type(ans)=penalty;pen.value(ans)=pen.value;cpts(ans)=cpts
 			if(mul.method=="PELT"){
 				ncpts.max(ans)=Inf
 			}
@@ -373,13 +373,13 @@ multiple.meanvar.gamma=function(data,shape=1,mul.method="PELT",penalty="SIC",val
 		if(class==TRUE){cpts=list()}
 		if(mul.method=="PELT"){
 			for(i in 1:rep){
-				out=c(out,list(PELT.meanvar.gamma(data[i,],shape[i],value)))
+				out=c(out,list(PELT.meanvar.gamma(data[i,],shape[i],pen.value)))
 			}
 			cpts=out
 		}
 		else if(mul.method=="BinSeg"){
 			for(i in 1:rep){
-				out=c(out,list(binseg.meanvar.gamma(data[i,],shape[i],Q,value)))
+				out=c(out,list(binseg.meanvar.gamma(data[i,],shape[i],Q,pen.value)))
 				if(class==TRUE){
 					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
 					else{cpts[[i]]=c(sort(out[[i]]$cps[1,1:out[[i]]$op.cpts]),n)}
@@ -388,7 +388,7 @@ multiple.meanvar.gamma=function(data,shape=1,mul.method="PELT",penalty="SIC",val
 		}
 		else if(mul.method=="SegNeigh"){
 			for(i in 1:rep){
-				out=c(out,list(segneigh.meanvar.gamma(data[i,],shape[i],Q,value)))
+				out=c(out,list(segneigh.meanvar.gamma(data[i,],shape[i],Q,pen.value)))
 				if(class==TRUE){
 					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
 					else{cpts[[i]]=c(sort(out[[i]]$cps[out[[i]]$op.cpts+1,][out[[i]]$cps[out[[i]]$op.cpts+1,]>0]),n)}
@@ -399,7 +399,7 @@ multiple.meanvar.gamma=function(data,shape=1,mul.method="PELT",penalty="SIC",val
 			ans=list()
 			for(i in 1:rep){
 				ans[[i]]=new("cpt")
-				data.set(ans[[i]])=data[i,];cpttype(ans[[i]])="mean and variance"; method(ans[[i]])=mul.method;distribution(ans[[i]])="Gamma";pen.type(ans[[i]])=penalty;pen.value(ans[[i]])=value;cpts(ans[[i]])=cpts[[i]]
+				data.set(ans[[i]])=ts(data[i,]);cpttype(ans[[i]])="mean and variance"; method(ans[[i]])=mul.method;test.stat(ans[[i]])="Gamma";pen.type(ans[[i]])=penalty;pen.value(ans[[i]])=pen.value;cpts(ans[[i]])=cpts[[i]]
 				if(mul.method=="PELT"){
 					ncpts.max(ans[[i]])=Inf
 				}
