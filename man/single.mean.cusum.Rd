@@ -7,16 +7,16 @@ Single Change in Mean - Cumulative Sums
 Calculates the cumulative sums (cusum) test statistic for all possible changepoint locations and returns the single most probable (max).
 }
 \usage{
-single.mean.cusum(data,penalty="Asymptotic",value=0.05,class=TRUE,param.estimates=TRUE)
+single.mean.cusum(data,penalty="Asymptotic",pen.value=0.05,class=TRUE,param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
-	A vector or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
+	A vector, ts object or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
 }
   \item{penalty}{
-	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the pen.value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
 }
-  \item{value}{
+  \item{pen.value}{
 	The value of the penalty when using the Manual penalty option.  This can be a numeric value or text giving the formula to use.  Available variables are, n=length of original data, null=test statistic, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
 }
   \item{class}{
@@ -56,8 +56,8 @@ Rebecca Killick
 # Example of a change in mean at 100 in simulated normal data
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,10,1))
-single.mean.cusum(x,penalty="Manual",value=1,class=FALSE) # returns 101 to show that the null hypothesis was rejected and the change in mean is at 101
-ans=single.mean.cusum(x,penalty="Manual",value=1) 
+single.mean.cusum(x,penalty="Manual",pen.value=1,class=FALSE) # returns 101 to show that the null hypothesis was rejected and the change in mean is at 101
+ans=single.mean.cusum(x,penalty="Manual",pen.value=1) 
 cpts(ans) # returns 101 to show that the null hypothesis was rejected, the change in mean is at 101
 
 
@@ -66,8 +66,8 @@ set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,10,1))
 y=rnorm(200,0,1)
 z=rbind(x,y)
-single.mean.cusum(z,penalty="Manual",value=1,class=FALSE) # returns vector c(101,200) which shows that the first dataset has a change in mean at 101 and the second dataset rejected H1 and has no change in mean
-ans=single.mean.cusum(z,penalty="Manual",value="log(log(n))") 
+single.mean.cusum(z,penalty="Manual",pen.value=1,class=FALSE) # returns vector c(101,200) which shows that the first dataset has a change in mean at 101 and the second dataset rejected H1 and has no change in mean
+ans=single.mean.cusum(z,penalty="Manual",pen.value="log(log(n))") 
 cpts(ans[[1]]) # test using a manual penalty which is the log(SIC) penalty and gives the same values for this example 
 cpts(ans[[2]]) # result is the same as above, c(101, 200)
 }

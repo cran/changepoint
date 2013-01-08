@@ -46,20 +46,20 @@ function(data,extrainf=TRUE){
   }
 }
 
-single.mean.norm<-function(data,penalty="SIC",value=0,class=TRUE,param.estimates=TRUE){
+single.mean.norm<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.estimates=TRUE){
 	if(is.null(dim(data))==TRUE){ # single dataset
 		n=length(data)
 		if(penalty=="Asymptotic"){
-			alpha=value
+			alpha=pen.value
 			alogn=(2*log(log(n)))^(-(1/2))
 			blogn=(alogn^(-1))+(1/2)*alogn*log(log(log(n)))
-			value=(-alogn*log(log((1-alpha+exp(-2*(pi^(1/2))*exp(blogn/alogn)))^(-1/(2*(pi^(1/2))))))+blogn)^2
+			pen.value=(-alogn*log(log((1-alpha+exp(-2*(pi^(1/2))*exp(blogn/alogn)))^(-1/(2*(pi^(1/2))))))+blogn)^2
 		}
-		tmp=single.mean.norm.calc(data,extrainf=TRUE)
-		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=1,value)
+		tmp=single.mean.norm.calc(coredata(data),extrainf=TRUE)
+		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=1,pen.value)
 		if(class==TRUE){
 			out=new("cpt")
-			data.set(out)=data; cpttype(out)="mean"; method(out)="AMOC"; distribution(out)="Normal"; pen.type(out)=penalty; pen.value(out)=ans$pen; ncpts.max(out)=1
+			data.set(out)=data; cpttype(out)="mean"; method(out)="AMOC"; test.stat(out)="Normal"; pen.type(out)=penalty; pen.value(out)=ans$pen; ncpts.max(out)=1
 			if(ans$cpt != n){cpts(out)=c(ans$cpt,n)}
 			else{cpts(out)=ans$cpt}
 			if(param.estimates==TRUE){
@@ -72,19 +72,19 @@ single.mean.norm<-function(data,penalty="SIC",value=0,class=TRUE,param.estimates
 	else{ 
 		n=ncol(data)
 		if(penalty=="Asymptotic"){
-			alpha=value
+			alpha=pen.value
 			alogn=(2*log(log(n)))^(-(1/2))
 			blogn=(alogn^(-1))+(1/2)*alogn*log(log(log(n)))
-			value=(-alogn*log(log((1-alpha+exp(-2*(pi^(1/2))*exp(blogn/alogn)))^(-1/(2*(pi^(1/2))))))+blogn)^2
+			pen.value=(-alogn*log(log((1-alpha+exp(-2*(pi^(1/2))*exp(blogn/alogn)))^(-1/(2*(pi^(1/2))))))+blogn)^2
 		}
 		tmp=single.mean.norm.calc(data,extrainf=TRUE)
-		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=1,value)
+		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=1,pen.value)
 		if(class==TRUE){
 			rep=nrow(data)
 			out=list()
 			for(i in 1:rep){
 				out[[i]]=new("cpt")
-				data.set(out[[i]])=data[i,];cpttype(out[[i]])="mean";method(out[[i]])="AMOC"; distribution(out[[i]])="Normal"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
+				data.set(out[[i]])=ts(data[i,]);cpttype(out[[i]])="mean";method(out[[i]])="AMOC"; test.stat(out[[i]])="Normal"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
 				if(ans$cpt[i] != n){cpts(out[[i]])=c(ans$cpt[i],n)}
 				else{cpts(out[[i]])=ans$cpt[i]}
 				if(param.estimates==TRUE){
@@ -161,20 +161,20 @@ function(data,know.mean=FALSE,mu=NA,extrainf=TRUE){
 }
 
 
-single.var.norm<-function(data,penalty="SIC",value=0,know.mean=FALSE,mu=NA,class=TRUE,param.estimates=TRUE){
+single.var.norm<-function(data,penalty="SIC",pen.value=0,know.mean=FALSE,mu=NA,class=TRUE,param.estimates=TRUE){
 	if(is.null(dim(data))==TRUE){
 		n=length(data)
 		if(penalty=="Asymptotic"){
-			alpha=value
+			alpha=pen.value
 			alogn=sqrt(2*log(log(n)))
 			blogn=2*log(log(n))+ (log(log(log(n))))/2 - log(gamma(1/2))
-			value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
+			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
 		}
-		tmp=single.var.norm.calc(data,know.mean,mu,extrainf=TRUE)
-		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=1,value)
+		tmp=single.var.norm.calc(coredata(data),know.mean,mu,extrainf=TRUE)
+		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=1,pen.value)
 		if(class==TRUE){
 			out=new("cpt")
-			data.set(out)=data; cpttype(out)="variance"; method(out)="AMOC"; distribution(out)="Normal"; pen.type(out)=penalty; pen.value(out)=ans$pen;ncpts.max(out)=1
+			data.set(out)=data; cpttype(out)="variance"; method(out)="AMOC"; test.stat(out)="Normal"; pen.type(out)=penalty; pen.value(out)=ans$pen;ncpts.max(out)=1
 			if(ans$cpt != n){cpts(out)=c(ans$cpt,n)}
 			else{cpts(out)=ans$cpt}
 			if(param.estimates==TRUE){
@@ -187,19 +187,19 @@ single.var.norm<-function(data,penalty="SIC",value=0,know.mean=FALSE,mu=NA,class
 	else{ 
 		n=ncol(data)
 		if(penalty=="Asymptotic"){
-			alpha=value
+			alpha=pen.value
 			alogn=sqrt(2*log(log(n)))
 			blogn=2*log(log(n))+ (log(log(log(n))))/2 - log(gamma(1/2))
-			value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
+			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
 		}
 		tmp=single.var.norm.calc(data,know.mean,mu,extrainf=TRUE)
-		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=1,value)
+		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=1,pen.value)
 		if(class==TRUE){
 			rep=nrow(data)
 			out=list()
 			for(i in 1:rep){
 				out[[i]]=new("cpt")
-				data.set(out[[i]])=data[i,]; cpttype(out[[i]])="variance"; method(out[[i]])="AMOC"; distribution(out[[i]])="Normal"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
+				data.set(out[[i]])=ts(data[i,]); cpttype(out[[i]])="variance"; method(out[[i]])="AMOC"; test.stat(out[[i]])="Normal"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
 				if(ans$cpt[i] != n){cpts(out[[i]])=c(ans$cpt[i],n)}
 				else{cpts(out[[i]])=ans$cpt[i]}
 				if(param.estimates==TRUE){
@@ -271,20 +271,20 @@ function(data,extrainf=TRUE){
   }
 }
 
-single.meanvar.norm<-function(data,penalty="SIC",value=0,class=TRUE,param.estimates=TRUE){
+single.meanvar.norm<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.estimates=TRUE){
 	if(is.null(dim(data))==TRUE){
 		n=length(data)
 		if(penalty=="Asymptotic"){
-			alpha=value
+			alpha=pen.value
 			alogn=sqrt(2*log(log(n)))
 			blogn=2*log(log(n))+ log(log(log(n)))
-			value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
+			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
 		}
-		tmp=single.meanvar.norm.calc(data,extrainf=TRUE)
-		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=2,value)
+		tmp=single.meanvar.norm.calc(coredata(data),extrainf=TRUE)
+		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=2,pen.value)
 		if(class==TRUE){
 			out=new("cpt")
-			data.set(out)=data;cpttype(out)="mean and variance";method(out)="AMOC";distribution(out)="Normal";pen.type(out)=penalty; pen.value(out)=ans$pen;ncpts.max(out)=1
+			data.set(out)=data;cpttype(out)="mean and variance";method(out)="AMOC";test.stat(out)="Normal";pen.type(out)=penalty; pen.value(out)=ans$pen;ncpts.max(out)=1
 			if(ans$cpt != n){cpts(out)=c(ans$cpt,n)}
 			else{cpts(out)=ans$cpt}
 			if(param.estimates==TRUE){
@@ -297,19 +297,19 @@ single.meanvar.norm<-function(data,penalty="SIC",value=0,class=TRUE,param.estima
 	else{ 
 		n=ncol(data)
 		if(penalty=="Asymptotic"){
-			alpha=value
+			alpha=pen.value
 			alogn=sqrt(2*log(log(n)))
 			blogn=2*log(log(n))+ log(log(log(n)))
-			value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
+			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
 		}
 		tmp=single.meanvar.norm.calc(data,extrainf=TRUE)
-		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=2,value)
+		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=2,pen.value)
 		if(class==TRUE){
 			rep=nrow(data)
 			out=list()
 			for(i in 1:rep){
 				out[[i]]=new("cpt")
-				data.set(out[[i]])=data[i,];cpttype(out[[i]])="mean and variance";method(out[[i]])="AMOC";distribution(out[[i]])="Normal"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
+				data.set(out[[i]])=ts(data[i,]);cpttype(out[[i]])="mean and variance";method(out[[i]])="AMOC";test.stat(out[[i]])="Normal"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
 				if(ans$cpt[i] != n){cpts(out[[i]])=c(ans$cpt[i],n)}
 				else{cpts(out[[i]])=ans$cpt[i]}
 				if(param.estimates==TRUE){

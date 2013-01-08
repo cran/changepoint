@@ -589,7 +589,7 @@ binseg.meanvar.norm=function(data,Q=5,pen=0){
 }
 
 
-multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know.mean=FALSE,mu=NA,class=TRUE,param.estimates=TRUE){
+multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",pen.value=0,Q=5,know.mean=FALSE,mu=NA,class=TRUE,param.estimates=TRUE){
 	if(!((mul.method=="PELT")||(mul.method=="BinSeg")||(mul.method=="SegNeigh"))){
 		stop("Multiple Method is not recognised")
 	}
@@ -603,60 +603,60 @@ multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know
 		n=ncol(data)
 	}
 	if((penalty=="SIC") || (penalty=="BIC")){
-		value=diffparam*log(n)
+		pen.value=diffparam*log(n)
 	}
 	else if((penalty=="SIC1") || (penalty=="BIC1")){
-		value=(diffparam+1)*log(n)
+		pen.value=(diffparam+1)*log(n)
 	}
 	else if(penalty=="AIC"){
-		value=2*diffparam
+		pen.value=2*diffparam
 	}
 	else if(penalty=="AIC1"){
-		value=2*(diffparam+1)
+		pen.value=2*(diffparam+1)
 	}
 	else if(penalty=="Hannan-Quinn"){
-		value=2*diffparam*log(log(n))
+		pen.value=2*diffparam*log(log(n))
 	}
 	else if(penalty=="Hannan-Quinn1"){
-		value=2*(diffparam+1)*log(log(n))
+		pen.value=2*(diffparam+1)*log(log(n))
 	}
 	else if(penalty=="None"){
-		value=0
+		pen.value=0
 	}
 	else if((penalty!="Manual")&&(penalty!="Asymptotic")){
 		stop('Unknown Penalty')
 	}
-	if((penalty=="Manual")&&(is.numeric(value)==FALSE)){
-		value=try(eval(parse(text=paste(value))),silent=TRUE)
-		if(class(value)=='try-error'){
+	if((penalty=="Manual")&&(is.numeric(pen.value)==FALSE)){
+		pen.value=try(eval(parse(text=paste(pen.value))),silent=TRUE)
+		if(class(pen.value)=='try-error'){
 			stop('Your manual penalty cannot be evaluated')
 		}
 	}
 	if(penalty=="Asymptotic"){
-		alpha=value
+		alpha=pen.value
 		alogn=sqrt(2*log(log(n)))
 		blogn=2*log(log(n))+ (log(log(log(n))))/2 - log(gamma(1/2))
-		value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
+		pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
 	}
 	if(is.null(dim(data))==TRUE){
 		# single dataset
 		if(mul.method=="PELT"){
-			out=PELT.var.norm(data,value,know.mean,mu)
+			out=PELT.var.norm(coredata(data),pen.value,know.mean,mu)
 			cpts=out
 		}
 		else if(mul.method=="BinSeg"){
-			out=binseg.var.norm(data,Q,value,know.mean,mu)
+			out=binseg.var.norm(coredata(data),Q,pen.value,know.mean,mu)
 			if(out$op.cpts==0){cpts=n}
 			else{cpts=c(sort(out$cps[1,1:out$op.cpts]),n)}
 		}
 		else if(mul.method=="SegNeigh"){
-			out=segneigh.var.norm(data,Q,value,know.mean,mu)
+			out=segneigh.var.norm(coredata(data),Q,pen.value,know.mean,mu)
 			if(out$op.cpts==0){cpts=n}
 			else{cpts=c(sort(out$cps[out$op.cpts+1,][out$cps[out$op.cpts+1,]>0]),n)}
 		}
 		if(class==TRUE){
 			ans=new("cpt")
-			data.set(ans)=data;cpttype(ans)="variance";method(ans)=mul.method;distribution(ans)="Normal"; pen.type(ans)=penalty;pen.value(ans)=value;cpts(ans)=cpts
+			data.set(ans)=data;cpttype(ans)="variance";method(ans)=mul.method;test.stat(ans)="Normal"; pen.type(ans)=penalty;pen.value(ans)=pen.value;cpts(ans)=cpts
 			if(mul.method=="PELT"){
 				ncpts.max(ans)=Inf
 			}
@@ -679,13 +679,13 @@ multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know
 		if(class==TRUE){cpts=list()}
 		if(mul.method=="PELT"){
 			for(i in 1:rep){
-				out=c(out,list(PELT.var.norm(data[i,],value,know.mean,mu[i])))
+				out=c(out,list(PELT.var.norm(data[i,],pen.value,know.mean,mu[i])))
 			}
 			if(class==TRUE){cpts=out}
 		}
 		else if(mul.method=="BinSeg"){
 			for(i in 1:rep){
-				out=c(out,list(binseg.var.norm(data[i,],Q,value,know.mean,mu[i])))
+				out=c(out,list(binseg.var.norm(data[i,],Q,pen.value,know.mean,mu[i])))
 				if(class==TRUE){
 					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
 					else{cpts[[i]]=c(sort(out[[i]]$cps[1,1:out[[i]]$op.cpts]),n)}
@@ -694,7 +694,7 @@ multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know
 		}
 		else if(mul.method=="SegNeigh"){
 			for(i in 1:rep){
-				out=c(out,list(segneigh.var.norm(data[i,],Q,value,know.mean,mu[i])))
+				out=c(out,list(segneigh.var.norm(data[i,],Q,pen.value,know.mean,mu[i])))
 				if(class==TRUE){
 					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
 					else{cpts[[i]]=c(sort(out[[i]]$cps[out[[i]]$op.cpts+1,][out[[i]]$cps[out[[i]]$op.cpts+1,]>0]),n)}
@@ -705,7 +705,7 @@ multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know
 			ans=list()
 			for(i in 1:rep){
 				ans[[i]]=new("cpt")
-				data.set(ans[[i]])=data[i,];cpttype(ans[[i]])="variance";method(ans[[i]])=mul.method;distribution(ans[[i]])="Normal"; pen.type(ans[[i]])=penalty;pen.value(ans[[i]])=value;cpts(ans[[i]])=cpts[[i]]
+				data.set(ans[[i]])=ts(data[i,]);cpttype(ans[[i]])="variance";method(ans[[i]])=mul.method;test.stat(ans[[i]])="Normal"; pen.type(ans[[i]])=penalty;pen.value(ans[[i]])=pen.value;cpts(ans[[i]])=cpts[[i]]
 				if(mul.method=="PELT"){
 					ncpts.max(ans[[i]])=Inf
 				}
@@ -723,73 +723,73 @@ multiple.var.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,know
 }
 
 
-multiple.mean.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,class=TRUE,param.estimates=TRUE){
+multiple.mean.norm=function(data,mul.method="PELT",penalty="SIC",pen.value=0,Q=5,class=TRUE,param.estimates=TRUE){
 	if(!((mul.method=="PELT")||(mul.method=="BinSeg")||(mul.method=="SegNeigh"))){
 		stop("Multiple Method is not recognised")
 	}
 	diffparam=1
 	if(is.null(dim(data))==TRUE){
 		# single dataset
-		n=length(data)
+    n=length(data) # still works is data is of class ts
 	}
 	else{
 		n=ncol(data)
 	}
 	if((penalty=="SIC") || (penalty=="BIC")){
-		value=diffparam*log(n)
+		pen.value=diffparam*log(n)
 	}
 	else if((penalty=="SIC1") || (penalty=="BIC1")){
-		value=(diffparam+1)*log(n)
+		pen.value=(diffparam+1)*log(n)
 	}
 	else if(penalty=="AIC"){
-		value=2*diffparam
+		pen.value=2*diffparam
 	}
 	else if(penalty=="AIC1"){
-		value=2*(diffparam+1)
+		pen.value=2*(diffparam+1)
 	}
 	else if(penalty=="Hannan-Quinn"){
-		value=2*diffparam*log(log(n))
+		pen.value=2*diffparam*log(log(n))
 	}
 	else if(penalty=="Hannan-Quinn1"){
-		value=2*(diffparam+1)*log(log(n))
+		pen.value=2*(diffparam+1)*log(log(n))
 	}
 	else if(penalty=="None"){
-		value=0
+		pen.value=0
 	}
 	else if((penalty!="Manual")&&(penalty!="Asymptotic")){
 		stop('Unknown Penalty')
 	}
-	if((penalty=="Manual")&&(is.numeric(value)==FALSE)){
-		value=try(eval(parse(text=paste(value))),silent=TRUE)
-		if(class(value)=='try-error'){
+	if((penalty=="Manual")&&(is.numeric(pen.value)==FALSE)){
+		pen.value=try(eval(parse(text=paste(pen.value))),silent=TRUE)
+		if(class(pen.value)=='try-error'){
 			stop('Your manual penalty cannot be evaluated')
 		}
 	}
 	if(penalty=="Asymptotic"){
-			alpha=value
+			alpha=pen.value
 			alogn=(2*log(log(n)))^(-(1/2))
 			blogn=(alogn^(-1))+(1/2)*alogn*log(log(log(n)))
-			value=(-alogn*log(log((1-alpha+exp(-2*(pi^(1/2))*exp(blogn/alogn)))^(-1/(2*(pi^(1/2))))))+blogn)^2
+			pen.value=(-alogn*log(log((1-alpha+exp(-2*(pi^(1/2))*exp(blogn/alogn)))^(-1/(2*(pi^(1/2))))))+blogn)^2
 	}
 	if(is.null(dim(data))==TRUE){
 		# single dataset
 		if(mul.method=="PELT"){
-			out=PELT.mean.norm(data,value)
+			out=PELT.mean.norm(coredata(data),pen.value)
 			cpts=out
 		}
 		else if(mul.method=="BinSeg"){
-			out=binseg.mean.norm(data,Q,value)
+			out=binseg.mean.norm(coredata(data),Q,pen.value)
 			if(out$op.cpts==0){cpts=n}
 			else{cpts=c(sort(out$cps[1,1:out$op.cpts]),n)}
 		}
 		else if(mul.method=="SegNeigh"){
-			out=segneigh.mean.norm(data,Q,value)
+			out=segneigh.mean.norm(coredata(data),Q,pen.value)
 			if(out$op.cpts==0){cpts=n}
 			else{cpts=c(sort(out$cps[out$op.cpts+1,][out$cps[out$op.cpts+1,]>0]),n)}
 		}
 		if(class==TRUE){
 			ans=new("cpt")
-			data.set(ans)=data;cpttype(ans)="mean";method(ans)=mul.method;distribution(ans)="Normal"; pen.type(ans)=penalty;pen.value(ans)=value;cpts(ans)=cpts
+			data.set(ans)=data;cpttype(ans)="mean";method(ans)=mul.method;test.stat(ans)="Normal"; pen.type(ans)=penalty;pen.value(ans)=pen.value;cpts(ans)=cpts
 			if(mul.method=="PELT"){
 				ncpts.max(ans)=Inf
 			}
@@ -809,13 +809,13 @@ multiple.mean.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,cla
 		if(class==TRUE){cpts=list()}
 		if(mul.method=="PELT"){
 			for(i in 1:rep){
-				out=c(out,list(PELT.mean.norm(data[i,],value)))
+				out=c(out,list(PELT.mean.norm(data[i,],pen.value)))
 			}
 			cpts=out
 		}
 		else if(mul.method=="BinSeg"){
 			for(i in 1:rep){
-				out=c(out,list(binseg.mean.norm(data[i,],Q,value)))
+				out=c(out,list(binseg.mean.norm(data[i,],Q,pen.value)))
 				if(class==TRUE){
 					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
 					else{cpts[[i]]=c(sort(out[[i]]$cps[1,1:out[[i]]$op.cpts]),n)}
@@ -824,7 +824,7 @@ multiple.mean.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,cla
 		}
 		else if(mul.method=="SegNeigh"){
 			for(i in 1:rep){
-				out=c(out,list(segneigh.mean.norm(data[i,],Q,value)))
+				out=c(out,list(segneigh.mean.norm(data[i,],Q,pen.value)))
 				if(class==TRUE){
 					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
 					else{cpts[[i]]=c(sort(out[[i]]$cps[out[[i]]$op.cpts+1,][out[[i]]$cps[out[[i]]$op.cpts+1,]>0]),n)}
@@ -835,7 +835,7 @@ multiple.mean.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,cla
 			ans=list()
 			for(i in 1:rep){
 				ans[[i]]=new("cpt")
-				data.set(ans[[i]])=data[i,];cpttype(ans[[i]])="mean";method(ans[[i]])=mul.method;distribution(ans[[i]])="Normal"; pen.type(ans[[i]])=penalty;pen.value(ans[[i]])=value;cpts(ans[[i]])=cpts[[i]]
+				data.set(ans[[i]])=ts(data[i,]);cpttype(ans[[i]])="mean";method(ans[[i]])=mul.method;test.stat(ans[[i]])="Normal"; pen.type(ans[[i]])=penalty;pen.value(ans[[i]])=pen.value;cpts(ans[[i]])=cpts[[i]]
 				if(mul.method=="PELT"){
 					ncpts.max(ans[[i]])=Inf
 				}
@@ -852,7 +852,7 @@ multiple.mean.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,cla
 	}
 }
 
-multiple.meanvar.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,class=TRUE,param.estimates=TRUE){
+multiple.meanvar.norm=function(data,mul.method="PELT",penalty="SIC",pen.value=0,Q=5,class=TRUE,param.estimates=TRUE){
 	if(!((mul.method=="PELT")||(mul.method=="BinSeg")||(mul.method=="SegNeigh"))){
 		stop("Multiple Method is not recognised")
 	}
@@ -865,60 +865,60 @@ multiple.meanvar.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,
 		n=ncol(data)
 	}
 	if((penalty=="SIC") || (penalty=="BIC")){
-		value=diffparam*log(n)
+		pen.value=diffparam*log(n)
 	}
 	else if((penalty=="SIC1") || (penalty=="BIC1")){
-		value=(diffparam+1)*log(n)
+		pen.value=(diffparam+1)*log(n)
 	}
 	else if(penalty=="AIC"){
-		value=2*diffparam
+		pen.value=2*diffparam
 	}
 	else if(penalty=="AIC1"){
-		value=2*(diffparam+1)
+		pen.value=2*(diffparam+1)
 	}
 	else if(penalty=="Hannan-Quinn"){
-		value=2*diffparam*log(log(n))
+		pen.value=2*diffparam*log(log(n))
 	}
 	else if(penalty=="Hannan-Quinn1"){
-		value=2*(diffparam+1)*log(log(n))
+		pen.value=2*(diffparam+1)*log(log(n))
 	}
 	else if(penalty=="None"){
-		value=0
+		pen.value=0
 	}
 	else if((penalty!="Manual")&&(penalty!="Asymptotic")){
 		stop('Unknown Penalty')
 	}
-	if((penalty=="Manual")&&(is.numeric(value)==FALSE)){
-		value=try(eval(parse(text=paste(value))),silent=TRUE)
-		if(class(value)=='try-error'){
+	if((penalty=="Manual")&&(is.numeric(pen.value)==FALSE)){
+		pen.value=try(eval(parse(text=paste(pen.value))),silent=TRUE)
+		if(class(pen.value)=='try-error'){
 			stop('Your manual penalty cannot be evaluated')
 		}
 	}
 	if(penalty=="Asymptotic"){
-			alpha=value
+			alpha=pen.value
 			alogn=sqrt(2*log(log(n)))
 			blogn=2*log(log(n))+ log(log(log(n)))
-			value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
+			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
 	}
 	if(is.null(dim(data))==TRUE){
 		# single dataset
 		if(mul.method=="PELT"){
-			out=PELT.meanvar.norm(data,value)
+			out=PELT.meanvar.norm(coredata(data),pen.value)
 			cpts=out
 		}
 		else if(mul.method=="BinSeg"){
-			out=binseg.meanvar.norm(data,Q,value)
+			out=binseg.meanvar.norm(coredata(data),Q,pen.value)
 			if(out$op.cpts==0){cpts=n}
 			else{cpts=c(sort(out$cps[1,1:out$op.cpts]),n)}
 		}
 		else if(mul.method=="SegNeigh"){
-			out=segneigh.meanvar.norm(data,Q,value)
+			out=segneigh.meanvar.norm(coredata(data),Q,pen.value)
 			if(out$op.cpts==0){cpts=n}
 			else{cpts=c(sort(out$cps[out$op.cpts+1,][out$cps[out$op.cpts+1,]>0]),n)}
 		}
 		if(class==TRUE){
 			ans=new("cpt")
-			data.set(ans)=data;cpttype(ans)="mean and variance";method(ans)=mul.method; distribution(ans)="Normal";pen.type(ans)=penalty;pen.value(ans)=value;cpts(ans)=cpts
+			data.set(ans)=data;cpttype(ans)="mean and variance";method(ans)=mul.method; test.stat(ans)="Normal";pen.type(ans)=penalty;pen.value(ans)=pen.value;cpts(ans)=cpts
 			if(mul.method=="PELT"){
 				ncpts.max(ans)=Inf
 			}
@@ -938,13 +938,13 @@ multiple.meanvar.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,
 		if(class==TRUE){cpts=list()}
 		if(mul.method=="PELT"){
 			for(i in 1:rep){
-				out=c(out,list(PELT.meanvar.norm(data[i,],value)))
+				out=c(out,list(PELT.meanvar.norm(data[i,],pen.value)))
 			}
 			cpts=out
 		}
 		else if(mul.method=="BinSeg"){
 			for(i in 1:rep){
-				out=c(out,list(binseg.meanvar.norm(data[i,],Q,value)))
+				out=c(out,list(binseg.meanvar.norm(data[i,],Q,pen.value)))
 				if(class==TRUE){
 					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
 					else{cpts[[i]]=c(sort(out[[i]]$cps[1,1:out[[i]]$op.cpts]),n)}
@@ -953,7 +953,7 @@ multiple.meanvar.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,
 		}
 		else if(mul.method=="SegNeigh"){
 			for(i in 1:rep){
-				out=c(out,list(segneigh.meanvar.norm(data[i,],Q,value)))
+				out=c(out,list(segneigh.meanvar.norm(data[i,],Q,pen.value)))
 				if(class==TRUE){
 					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
 					else{cpts[[i]]=c(sort(out[[i]]$cps[out[[i]]$op.cpts+1,][out[[i]]$cps[out[[i]]$op.cpts+1,]>0]),n)}
@@ -964,7 +964,7 @@ multiple.meanvar.norm=function(data,mul.method="PELT",penalty="SIC",value=0,Q=5,
 			ans=list()
 			for(i in 1:rep){
 				ans[[i]]=new("cpt")
-				data.set(ans[[i]])=data[i,];cpttype(ans[[i]])="mean and variance"; method(ans[[i]])=mul.method;distribution(ans[[i]])="Normal";pen.type(ans[[i]])=penalty;pen.value(ans[[i]])=value;cpts(ans[[i]])=cpts[[i]]
+				data.set(ans[[i]])=ts(data[i,]);cpttype(ans[[i]])="mean and variance"; method(ans[[i]])=mul.method;test.stat(ans[[i]])="Normal";pen.type(ans[[i]])=penalty;pen.value(ans[[i]])=pen.value;cpts(ans[[i]])=cpts[[i]]
 				if(mul.method=="PELT"){
 					ncpts.max(ans[[i]])=Inf
 				}
