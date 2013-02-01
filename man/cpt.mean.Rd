@@ -7,7 +7,7 @@ Identifying Changes in Mean
 Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
 }
 \usage{
-cpt.mean(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE)
+cpt.mean(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,test.stat="Normal",class=TRUE,param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
@@ -25,8 +25,8 @@ cpt.mean(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Normal",class=TR
   \item{Q}{
 	The maximum number of changepoints to search for using the "BinSeg" method.  The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
 }
-  \item{dist}{
-	The assumed distribution of the data.  Currently only "Normal" and "CUSUM" supported.
+  \item{test.stat}{
+	The assumed test statistic / distribution of the data.  Currently only "Normal" and "CUSUM" supported.
 }
   \item{class}{
 	Logical.  If TRUE then an object of class \code{cpt} is returned.
@@ -37,7 +37,7 @@ cpt.mean(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Normal",class=TR
 
 }
 \details{
-	This function is used to find changes in mean for data that is assumed to be distributed as the dist parameter.  The changes are found using the method supplied which can be single changepoint (AMOC) or multiple changepoints using exact (PELT or SegNeigh) or approximate (BinSeg) methods.
+	This function is used to find changes in mean for data using the test statistic specfified in the test.stat parameter.  The changes are found using the method supplied which can be single changepoint (AMOC) or multiple changepoints using exact (PELT or SegNeigh) or approximate (BinSeg) methods.
 }
 \value{
 	If class=TRUE then an object of S4 class "cpt" is returned.  The slot \code{cpts} contains the changepoints that are solely returned if class=FALSE.  The structure of \code{cpts} is as follows.
@@ -83,7 +83,7 @@ x=c(rnorm(100,0,1),rnorm(100,10,1))
 cpt.mean(x,penalty="SIC",method="AMOC",class=FALSE) # returns 100 to show that the null hypothesis was rejected and the change in mean is at 100
 ans=cpt.mean(x,penalty="Asymptotic",pen.value=0.01,method="AMOC") 
 cpts(ans)# returns 100 to show that the null hypothesis was rejected, the change in mean is at 100 and we are 99% confident of this result
-ans=cpt.mean(x,penalty="Manual",pen.value=0.8,method="AMOC",dist="CUSUM") # returns 101 as the changepoint location
+ans=cpt.mean(x,penalty="Manual",pen.value=0.8,method="AMOC",test.stat="CUSUM") # returns 101 as the changepoint location
 
 # Example of multiple changes in mean at 50,100,150 in simulated normal data
 set.seed(1)

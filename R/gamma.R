@@ -7,7 +7,7 @@ function(data,shape=1,extrainf=TRUE){
     taustar=2:(n-1)
     tmp=2*taustar*shape*log(y[taustar+1]) -2*taustar*shape*log(taustar*shape) + 2*(n-taustar)*shape*log((y[n+1]-y[taustar+1]))-2*(n-taustar)*shape*log((n-taustar)*shape)
     
-    tau=which(tmp==min(tmp))[1]
+    tau=which(tmp==min(tmp,na.rm=T))[1]
     taulike=tmp[tau]
     if(extrainf==TRUE){
       out=c(tau,null,taulike)
@@ -217,7 +217,7 @@ segneigh.meanvar.gamma=function(data,shape=1,Q=5,pen=0){
   for(i in 1:length(pen)){
     criterion=-2*like.Q[,n]+k*pen[i]
 
-    op.cps=c(op.cps,which(criterion==min(criterion))-1)
+    op.cps=c(op.cps,which(criterion==min(criterion,na.rm=T))-1)
   }
   return(list(cps=cps.Q,op.cpts=op.cps,pen=pen,like=criterion[op.cps+1]))
 }

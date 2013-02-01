@@ -1,3 +1,18 @@
+Version 1.0.3
+*************
+Changes to previous version
+- Changed a few commands where na.rm=F to na.rm=T.  This was causing problems when users entered constant data as some test statistics could produce NAs.  Thanks go to Harutyun Khachatryan for pointing out this bug.
+
+Version 1.0.2
+*************
+Changes to previous version
+- Changed argument name in cpt.mean, cpt.var and cpt.meanvar.  Previously was named 'dist', now named 'test.stat'.  Not backwards compatible.  This is in line with the major changes in version 1.0 to the class structure.
+
+Version 1.0.1
+*************
+Changes to previous version
+- Corrected naming of columns returned by logLik and likelihood generics.  These return the scaled negative likelihood and scaled negative likelihood + penalty.
+
 Version 1.0
 ***********
 Changes to previous version

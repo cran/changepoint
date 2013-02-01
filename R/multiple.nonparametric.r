@@ -68,8 +68,8 @@ binseg.var.css=function(data,Q=5,pen=0){
       }
     }
     k=which.max(abs(lambda))
-    cpt[1,q]=k;cpt[2,q]=min(oldmax,max(abs(lambda)))
-    oldmax=min(oldmax,max(abs(lambda)))
+    cpt[1,q]=k;cpt[2,q]=min(oldmax,max(abs(lambda),na.rm=T))
+    oldmax=min(oldmax,max(abs(lambda),na.rm=T))
     tau=sort(c(tau,k))
   }
   op.cps=NULL

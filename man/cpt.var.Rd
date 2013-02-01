@@ -7,7 +7,7 @@ Identifying Changes in Variance
 Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
 }
 \usage{
-cpt.var(data,penalty="SIC",pen.value=0,know.mean=FALSE, mu=NA,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE)
+cpt.var(data,penalty="SIC",pen.value=0,know.mean=FALSE, mu=NA,method="AMOC",Q=5,test.stat="Normal",class=TRUE,param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
@@ -20,10 +20,10 @@ cpt.var(data,penalty="SIC",pen.value=0,know.mean=FALSE, mu=NA,method="AMOC",Q=5,
 	The theoretical type I error e.g.0.05 when using the Asymptotic penalty.  The value of the penalty when using the Manual penalty option.  This can be a numeric value or text giving the formula to use.  Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
 }
   \item{know.mean}{
-	Only required for dist="Normal".  Logical, if TRUE then the mean is assumed known and mu is taken as its value.  If FALSE, and mu=NA (default value) then the mean is estimated via maximum likelihood.  If FALSE and the value of mu is supplied, mu is not estimated but is counted as an estimated parameter for decisions.
+	Only required for test.stat="Normal".  Logical, if TRUE then the mean is assumed known and mu is taken as its value.  If FALSE, and mu=NA (default value) then the mean is estimated via maximum likelihood.  If FALSE and the value of mu is supplied, mu is not estimated but is counted as an estimated parameter for decisions.
 }
   \item{mu}{
-	Only required for dist="Normal".  Numerical value of the true mean of the data.  Either single value or vector of length nrow(data).  If data is a matrix and mu is a single value, the same mean is used for each row.
+	Only required for test.stat="Normal".  Numerical value of the true mean of the data.  Either single value or vector of length nrow(data).  If data is a matrix and mu is a single value, the same mean is used for each row.
 }
   \item{method}{
 	Choice of "AMOC", "PELT", "SegNeigh" or "BinSeg".
@@ -31,8 +31,8 @@ cpt.var(data,penalty="SIC",pen.value=0,know.mean=FALSE, mu=NA,method="AMOC",Q=5,
   \item{Q}{
 	The maximum number of changepoints to search for using the "BinSeg" method.  The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
 }
-  \item{dist}{
-	The assumed distribution of the data.  Currently only "Normal" and "CSS" supported.
+  \item{test.stat}{
+	The assumed test statistic / distribution of the data.  Currently only "Normal" and "CSS" supported.
 }
   \item{class}{
 	Logical.  If TRUE then an object of class \code{cpt} is returned.
@@ -42,7 +42,7 @@ cpt.var(data,penalty="SIC",pen.value=0,know.mean=FALSE, mu=NA,method="AMOC",Q=5,
 }
 }
 \details{
-	This function is used to find changes in variance for data that is assumed to be distributed as the dist parameter.  The changes are found using the method supplied which can be single changepoint (AMOC) or multiple changepoints using exact (PELT or SegNeigh) or approximate (BinSeg) methods.  Note that for the dist="CSS" option the preset penalties are log(.) to allow comparison with dist="Normal".
+	This function is used to find changes in variance for data using the test statistic specified in the test.stat parameter.  The changes are found using the method supplied which can be single changepoint (AMOC) or multiple changepoints using exact (PELT or SegNeigh) or approximate (BinSeg) methods.  Note that for the test.stat="CSS" option the preset penalties are log(.) to allow comparison with test.stat="Normal".
 }
 \value{
 	If class=TRUE then an object of S4 class "cpt" is returned.  The slot \code{cpts} contains the changepoints that are solely returned if class=FALSE.  The structure of \code{cpts} is as follows.
@@ -92,7 +92,7 @@ cpts(ans)# returns 100 to show that the null hypothesis was rejected, the change
 # Example of multiple changes in variance at 50,100,150 in simulated data
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,0,10),rnorm(50,0,5),rnorm(50,0,1))
-cpt.var(x,penalty="Manual",pen.value="log(2*log(n))",method="BinSeg",dist="CSS",Q=5,class=FALSE) # returns optimal number of changepoints is 4, locations are 50,53,99,150.
+cpt.var(x,penalty="Manual",pen.value="log(2*log(n))",method="BinSeg",test.stat="CSS",Q=5,class=FALSE) # returns optimal number of changepoints is 4, locations are 50,53,99,150.
 
 # Example multiple datasets where the first row has multiple changes in variance and the second row has no change in variance
 set.seed(10)

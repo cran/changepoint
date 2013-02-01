@@ -6,7 +6,7 @@ function(data,extrainf=TRUE){
     taustar=1:(n-1)
 		tmp=(y2[taustar+1]/y2[n+1])-taustar/n
     
-		D=max(abs(tmp))
+		D=max(abs(tmp),na.rm=T)
 		tau=which.max(abs(tmp))
     if(extrainf==TRUE){
       out=c(tau,sqrt(n/2)*D)
@@ -149,7 +149,7 @@ function(data,extrainf=TRUE){
     y=c(0,cumsum(data-ybar))
 		y=y/n
     
-		M=max(abs(y))
+		M=max(abs(y),na.rm=T)
 		tau=which.max(abs(y))
     if(extrainf==TRUE){
       out=c(tau,M)

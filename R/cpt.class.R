@@ -507,7 +507,7 @@
 			        	tmplike=tmplike+mll.mean(y2[cpts[j+1]+1]-y2[cpts[j]+1],y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
 				}
 				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
-				names(like)=c("like","likepen")
+				names(like)=c("-like","-likepen")
 			}
 			else if(cpttype(object)=="variance"){
 				mll.var=function(x,n){
@@ -523,7 +523,7 @@
 					tmplike=tmplike+mll.var(y2[cpts[j+1]+1]-y2[cpts[j]+1],cpts[j+1]-cpts[j])
 				}
 				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
-				names(like)=c("like","likepen")
+				names(like)=c("-like","-likepen")
 			}
 			else if(cpttype(object)=="mean and variance"){
 				mll.meanvar=function(x2,x,n){
@@ -541,7 +541,7 @@
 					tmplike=tmplike+mll.meanvar(y2[cpts[j+1]+1]-y2[cpts[j]+1],y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
 				}
 				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
-				names(like)=c("like","likepen")
+				names(like)=c("-like","-likepen")
 			}
 			else{
 				stop("Unknown changepoint type, must be 'mean', 'variance' or 'mean and variance'")
@@ -564,7 +564,7 @@
 					tmplike=tmplike+mll.meanvarg(y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j],shape)
 				}
 				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
-				names(like)=c("like","likepen")
+				names(like)=c("-like","-likepen")
 			}
 		}
 		else if(test.stat(object)=="Exponential"){
@@ -583,7 +583,7 @@
 					tmplike=tmplike+mll.meanvare(y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
 				}
 				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
-				names(like)=c("like","likepen")
+				names(like)=c("-like","-likepen")
 			}
 		}
 		else if(test.stat(object)=="Poisson"){

@@ -8,7 +8,7 @@ function(data,extrainf=TRUE){
     taustar=1:(n-1)
     tmp=y2[taustar+1]-y[taustar+1]^2/taustar + (y2[n+1]-y2[taustar+1]) - ((y[n+1]-y[taustar+1])^2)/(n-taustar)
     
-    tau=which(tmp==min(tmp))[1]
+    tau=which(tmp==min(tmp,na.rm=T))[1]
     taulike=tmp[tau]
     if(extrainf==TRUE){
       out=c(tau,null,taulike)
@@ -119,7 +119,7 @@ function(data,know.mean=FALSE,mu=NA,extrainf=TRUE){
     sigman[neg==TRUE]=1*10^(-10)
     tmp=taustar*log(sigma1) + (n-taustar)*log(sigman)
     
-    tau=which(tmp==min(tmp))[1]
+    tau=which(tmp==min(tmp,na.rm=T))[1]
     taulike=tmp[tau]
     if(extrainf==TRUE){
       out=c(tau,null,taulike)
@@ -233,7 +233,7 @@ function(data,extrainf=TRUE){
     sigman[neg==TRUE]=1*10^(-10)
     tmp=taustar*log(sigma1) + (n-taustar)*log(sigman)
     
-    tau=which(tmp==min(tmp))[1]
+    tau=which(tmp==min(tmp,na.rm=T))[1]
     taulike=tmp[tau]
     if(extrainf==TRUE){
       out=c(tau,null,taulike)
