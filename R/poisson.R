@@ -14,7 +14,7 @@ single.meanvar.poisson.calc <-
       if(sum(is.na(tmp))!=0){
         tmp[which(is.na(tmp))]=Inf
       }
-      tau=which(tmp==min(tmp))[1]
+      tau=which(tmp==min(tmp,na.rm=T))[1]
       taulike=tmp[tau]
       if(extrainf==TRUE){
         out=c(tau,null,taulike)
@@ -176,7 +176,7 @@ segneigh.meanvar.poisson=function(data,Q=5,pen=0){
   for(i in 1:length(pen)){
     criterion=-2*like.Q[,n]+k*pen[i]
     
-    op.cps=c(op.cps,which(criterion==min(criterion))-1)
+    op.cps=c(op.cps,which(criterion==min(criterion,na.rm=T))-1)
   }
   return(list(cps=cps.Q,op.cpts=op.cps,pen=pen,like=criterion[op.cps+1]))
 }

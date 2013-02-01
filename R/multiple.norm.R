@@ -286,7 +286,7 @@ segneigh.var.norm=function(data,Q=5,pen=0,know.mean=FALSE,mu=NA){
   for(i in 1:length(pen)){
     criterion=-2*like.Q[,n]+k*pen[i]
 
-    op.cps=c(op.cps,which(criterion==min(criterion))-1)
+    op.cps=c(op.cps,which(criterion==min(criterion,na.rm=T))-1)
   }
   return(list(cps=cps.Q,op.cpts=op.cps,pen=pen,like=criterion[op.cps+1]))
 }
@@ -333,7 +333,7 @@ segneigh.mean.norm=function(data,Q=5,pen=0){
   for(i in 1:length(pen)){
     criterion=-2*like.Q[,n]+k*pen[i]
 
-    op.cps=c(op.cps,which(criterion==min(criterion))-1)
+    op.cps=c(op.cps,which(criterion==min(criterion,na.rm=T))-1)
   }
   return(list(cps=cps.Q,op.cpts=op.cps,pen=pen,like=criterion[op.cps+1]))
 }
@@ -384,7 +384,7 @@ segneigh.meanvar.norm=function(data,Q=5,pen=0){
   for(i in 1:length(pen)){
     criterion=-2*like.Q[,n]+k*pen[i]
 
-    op.cps=c(op.cps,which(criterion==min(criterion))-1)
+    op.cps=c(op.cps,which(criterion==min(criterion,na.rm=T))-1)
   }
   return(list(cps=cps.Q,op.cpts=op.cps,pen=pen,like=criterion[op.cps+1]))
 }

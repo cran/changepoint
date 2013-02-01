@@ -1,6 +1,6 @@
-cpt.mean=function(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE){
-	if(!((dist=="Normal")||(dist=="CUSUM"))){ stop("Invalid test statistic, must be Normal or CUSUM") }
-	if(dist=="Normal"){
+cpt.mean=function(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,test.stat="Normal",class=TRUE,param.estimates=TRUE){
+	if(!((test.stat=="Normal")||(test.stat=="CUSUM"))){ stop("Invalid test statistic, must be Normal or CUSUM") }
+	if(test.stat=="Normal"){
 		if(method=="AMOC"){
 			return(single.mean.norm(data,penalty,pen.value,class,param.estimates))
 		}
@@ -15,7 +15,7 @@ cpt.mean=function(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Normal"
 			stop("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
 		}
 	}
-	else if(dist=="CUSUM"){
+	else if(test.stat=="CUSUM"){
 		if(method=="AMOC"){
 			return(single.mean.cusum(data,penalty,pen.value,class,param.estimates))
 		}
@@ -28,8 +28,8 @@ cpt.mean=function(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Normal"
 	}
 }
 
-#cpt.reg=function(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE){
-#	if(dist !="Normal"){ stop("Invalid test statistic, must be Normal") }
+#cpt.reg=function(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,test.stat="Normal",class=TRUE,param.estimates=TRUE){
+#	if(test.stat !="Normal"){ stop("Invalid test statistic, must be Normal") }
 #	if(method=="AMOC"){
 #		return(single.reg.norm(data,penalty,pen.value,class,param.estimates))
 #	}
@@ -45,8 +45,8 @@ cpt.mean=function(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Normal"
 #	}
 #}
 
-cpt.var=function(data,penalty="SIC",pen.value=0,know.mean=FALSE, mu=NA,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE){
-	if(dist =="Normal"){
+cpt.var=function(data,penalty="SIC",pen.value=0,know.mean=FALSE, mu=NA,method="AMOC",Q=5,test.stat="Normal",class=TRUE,param.estimates=TRUE){
+	if(test.stat =="Normal"){
 		if(method=="AMOC"){
 			return(single.var.norm(data,penalty,pen.value,know.mean,mu,class,param.estimates))
 		}
@@ -61,7 +61,7 @@ cpt.var=function(data,penalty="SIC",pen.value=0,know.mean=FALSE, mu=NA,method="A
 			stop("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
 		}
 	}
-	else if(dist=="CSS"){
+	else if(test.stat=="CSS"){
 		if(method=="AMOC"){
 			return(single.var.css(data,penalty,pen.value,class,param.estimates))
 		}
@@ -77,8 +77,8 @@ cpt.var=function(data,penalty="SIC",pen.value=0,know.mean=FALSE, mu=NA,method="A
 	}
 }
 
-cpt.meanvar=function(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE,shape=1){
-	if(dist=="Normal"){
+cpt.meanvar=function(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,test.stat="Normal",class=TRUE,param.estimates=TRUE,shape=1){
+	if(test.stat=="Normal"){
 		if(method=="AMOC"){
 			return(single.meanvar.norm(data,penalty,pen.value,class,param.estimates))
 		}
@@ -93,7 +93,7 @@ cpt.meanvar=function(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Norm
 			stop("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
 		}
 	}
-	else if(dist=="Gamma"){
+	else if(test.stat=="Gamma"){
 		if(method=="AMOC"){
 			return(single.meanvar.gamma(data,shape,penalty,pen.value,class,param.estimates))
 		}
@@ -108,7 +108,7 @@ cpt.meanvar=function(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Norm
 			stop("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
 		}
 	}
-	else if(dist=="Exponential"){
+	else if(test.stat=="Exponential"){
 		if(method=="AMOC"){
 			return(single.meanvar.exp(data,penalty,pen.value,class,param.estimates))
 		}
@@ -123,7 +123,7 @@ cpt.meanvar=function(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Norm
 			stop("Invalid Method, must be AMOC, PELT, SegNeigh or BinSeg")
 		}
 	}
-	else if(dist=="Poisson"){
+	else if(test.stat=="Poisson"){
 	  if(method=="AMOC"){
 	    return(single.meanvar.poisson(data,penalty,pen.value,class,param.estimates))
 	  }

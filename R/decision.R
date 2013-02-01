@@ -1,5 +1,5 @@
 decision<-function(tau,null,alt=NA,penalty="SIC",n=0,diffparam=1,pen.value=0){
-	if(sum(is.na(alt))){
+  if(sum(is.na(alt))){
 		if(length(tau)!=length(null)){
 			stop("Lengths of tau and null do not match")
 		}

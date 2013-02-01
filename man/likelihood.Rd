@@ -32,7 +32,7 @@ Rebecca Killick
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,0,10),rnorm(50,0,5),rnorm(50,0,1))
 out=cpt.var(x,penalty="Manual",pen.value="2*log(n)",method="BinSeg",Q=5)
-likelihood(out) # returns the raw likelihood (783.9144) and the likelihood + penalty (805.1076)
+likelihood(out) # returns the raw scaled negative likelihood (783.9144) and the scaled negative likelihood + penalty (805.1076)
 }
 
 \keyword{methods}

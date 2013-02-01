@@ -7,7 +7,7 @@ Identifying Changes in Mean and Variance
 Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
 }
 \usage{
-cpt.meanvar(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Normal",class=TRUE,param.estimates=TRUE,shape=1)
+cpt.meanvar(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,test.stat="Normal",class=TRUE,param.estimates=TRUE,shape=1)
 }
 \arguments{
   \item{data}{
@@ -25,8 +25,8 @@ cpt.meanvar(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Normal",class
   \item{Q}{
 	The maximum number of changepoints to search for using the "BinSeg" method.  The maximum number of segments (number of changepoints + 1) to search for using the "SegNeigh" method.
 }
-  \item{dist}{
-	The assumed distribution of the data.  Currently only "Normal", "Gamma", "Exponential" and "Poisson" are supported.
+  \item{test.stat}{
+	The assumed test statistic / distribution of the data.  Currently only "Normal", "Gamma", "Exponential" and "Poisson" are supported.
 }
   \item{class}{
 	Logical.  If TRUE then an object of class \code{cpt} is returned.
@@ -35,11 +35,11 @@ cpt.meanvar(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,dist="Normal",class
 	Logical.  If TRUE and class=TRUE then parameter estimates are returned. If FALSE or class=FALSE no parameter estimates are returned.
 }
   \item{shape}{
-	Value of the assumed known shape parameter required when dist="Gamma".
+	Value of the assumed known shape parameter required when test.stat="Gamma".
 }
 }
 \details{
-	This function is used to find changes in mean and variance for data that is assumed to be distributed as the dist parameter.  The changes are found using the method supplied which can be single changepoint (AMOC) or multiple changepoints using exact (PELT or SegNeigh) or approximate (BinSeg) methods.
+	This function is used to find changes in mean and variance for data using the test statistic specified in the test.stat parameter.  The changes are found using the method supplied which can be single changepoint (AMOC) or multiple changepoints using exact (PELT or SegNeigh) or approximate (BinSeg) methods.
 }
 \value{
 	If class=TRUE then an object of S4 class "cpt" is returned.  The slot \code{cpts} contains the changepoints that are solely returned if class=FALSE.  The structure of \code{cpts} is as follows.
@@ -86,8 +86,8 @@ Rebecca Killick
 # Example of a change in scale parameter (mean and variance) at 100 in simulated gamma data
 set.seed(1)
 x=c(rgamma(100,shape=1,rate=1),rgamma(100,shape=1,rate=5))
-cpt.meanvar(x,penalty="SIC",method="AMOC",dist="Gamma",class=FALSE,shape=1) # returns 97 to show that the null hypothesis was rejected and the change in scale parameter is at 97
-ans=cpt.meanvar(x,penalty="AIC",method="AMOC",dist="Gamma",shape=1)
+cpt.meanvar(x,penalty="SIC",method="AMOC",test.stat="Gamma",class=FALSE,shape=1) # returns 97 to show that the null hypothesis was rejected and the change in scale parameter is at 97
+ans=cpt.meanvar(x,penalty="AIC",method="AMOC",test.stat="Gamma",shape=1)
 cpts(ans) # returns 97 to show that the null hypothesis was rejected, the change in scale parameter is at 97
 
 # Example of multiple changes in mean and variance at 50,100,150 in simulated normal data
