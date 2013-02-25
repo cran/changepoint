@@ -151,7 +151,7 @@ void binseg_var_norm(y2,n,pen,Q,cptsout,likeout,op_cps)
 	// R code does know.mean and fills mu if necessary
 	// must -0.5*mll_var to get same as R code
 
-	double oldmax=1000,null,lambda[*n],maxout;
+	double oldmax=1.7E+308,null,lambda[*n],maxout;
 	int q,p,i,j,whichout,st,end;
 	int tau[*Q+2]; // max ncpts is Q, +2 is for 0 and n
 	tau[0]=0;
@@ -329,7 +329,7 @@ void binseg_meanvar_norm(y2,y,n,pen,Q,cptsout,likeout,op_cps)
 	// R code does know.mean and fills mu if necessary
 	// must -0.5*mll_var to get same as R code
 
-	double oldmax=1000,null,lambda[*n],maxout;
+	double oldmax=1.7E+308,null,lambda[*n],maxout;
 	int q,p,i,j,whichout,st,end;
 	int tau[*Q+2]; // max ncpts is Q, +2 is for 0 and n
 	tau[0]=0;
@@ -507,7 +507,7 @@ void binseg_mean_norm(y2,y,n,pen,Q,cptsout,likeout,op_cps)
 	// R code does know.mean and fills mu if necessary
 	// must -0.5*mll_var to get same as R code
 
-	double oldmax=1000,null,lambda[*n],maxout;
+	double oldmax=1.7E+308,null,lambda[*n],maxout;
 	int q,p,i,j,whichout,st,end;
 	int tau[*Q+2]; // max ncpts is Q, +2 is for 0 and n
 	tau[0]=0;
@@ -684,7 +684,7 @@ void binseg_meanvar_exp(y,n,pen,Q,cptsout,likeout,op_cps)
 	// R code does know.mean and fills mu if necessary
 	// must -0.5*mll_var to get same as R code
 
-	double oldmax=1000,null,lambda[*n],maxout;
+	double oldmax=1.7E+308,null,lambda[*n],maxout;
 	int q,p,i,j,whichout,st,end;
 	int tau[*Q+2]; // max ncpts is Q, +2 is for 0 and n
 	tau[0]=0;
@@ -861,7 +861,7 @@ void binseg_meanvar_gamma(y,n,pen,Q,cptsout,likeout,op_cps,shape)
 	// R code does know.mean and fills mu if necessary
 	// must -0.5*mll_var to get same as R code
 
-	double oldmax=1000,null,lambda[*n],maxout;
+	double oldmax=1.7E+308,null,lambda[*n],maxout;
 	int q,p,i,j,whichout,st,end;
 	int tau[*Q+2]; // max ncpts is Q, +2 is for 0 and n
 	tau[0]=0;
@@ -1037,7 +1037,7 @@ void binseg_meanvar_poisson(y,n,pen,Q,cptsout,likeout,op_cps)
   {
 	// must -0.5*mll_var to get same as R code
 
-	double oldmax=1000,null,lambda[*n],maxout;
+	double oldmax=1.7E+308,null,lambda[*n],maxout;
 	int q,p,i,j,whichout,st,end;
 	int tau[*Q+2]; // max ncpts is Q, +2 is for 0 and n
 	tau[0]=0;

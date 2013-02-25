@@ -1,3 +1,9 @@
+Version 1.0.4
+*************
+Changes to previous version
+- Changed all the Binary Segmentation multiple changepoint algorithms to have a default oldmax parameter of Inf.  The old default (1000) was causing problems when users were wanting to do elbow plots for penalty choice.  Thanks go to Brian Jessop for highlighting the problem.
+Note: There was no problem with the changepoints returned by the previous code.  This change purely relates to elbow plot penalty choice.
+
 Version 1.0.3
 *************
 Changes to previous version
