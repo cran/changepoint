@@ -54,7 +54,7 @@ binseg.var.css=function(data,Q=5,pen=0){
   y2=c(0,cumsum(data^2))
   tau=c(0,n)
   cpt=matrix(0,nrow=2,ncol=Q)
-  oldmax=1000
+  oldmax=Inf
 
   for(q in 1:Q){
     lambda=rep(0,n-1)
@@ -273,7 +273,7 @@ binseg.mean.cusum=function(data,Q=5,pen=0){
   y=c(0,cumsum(data))
   tau=c(0,n)
   cpt=matrix(0,nrow=2,ncol=Q)
-  oldmax=1000
+  oldmax=Inf
 
   for(q in 1:Q){
     lambda=rep(0,n-1)

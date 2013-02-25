@@ -12,8 +12,8 @@ Implements various mainstream and specialised changepoint methods for finding si
 \tabular{ll}{
 Package: \tab changepoint\cr
 Type: \tab Package\cr
-Version: \tab 1.0.3 \cr
-Date: \tab 2013-01-22\cr
+Version: \tab 1.0.4 \cr
+Date: \tab 2013-02-25\cr
 License: \tab GPL\cr
 LazyLoad: \tab yes\cr
 }
