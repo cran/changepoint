@@ -50,6 +50,8 @@ single.meanvar.exp<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.est
 
 	if(is.null(dim(data))==TRUE){
 		n=length(data)
+		if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+		
 		if(penalty=="Asymptotic"){
 			alpha=pen.value
 			an=(2*log(log(n)))^(1/2)
@@ -72,6 +74,8 @@ single.meanvar.exp<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.est
 	}
 	else{ 
 		n=ncol(data)
+		if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+		
 		if(penalty=="Asymptotic"){
 			alpha=pen.value
 			an=(2*log(log(n)))^(1/2)
@@ -157,6 +161,8 @@ PELT.meanvar.exp=function(data,pen=0){
   # function that uses the PELT method to calculate changes in mean & variance where the segments in the data are assumed to be Exponential
 	if(sum(data<=0)>0){stop('Exponential test statistic requires positive data')}
   n=length(data)
+	if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+	
   y=c(0,cumsum(data))
   error=0
   
@@ -180,7 +186,8 @@ PELT.meanvar.exp=function(data,pen=0){
 segneigh.meanvar.exp=function(data,Q=5,pen=0){
 	if(sum(data<=0)>0){stop('Exponential test statistic requires positive data')}
   n=length(data)
-  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
+	if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+  if(Q>((n/2)+1)){stop(paste('Q is larger than the maximum number of segments',(n/2)+1))}
   all.seg=matrix(0,ncol=n,nrow=n)
   for(i in 1:n){
   	sumx=0
@@ -274,7 +281,8 @@ binseg.meanvar.exp=function(data,Q=5,pen=0){
 	if(sum(data<=0)>0){stop('Exponential test statistic requires positive data')}
 
   n=length(data)
-  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
+	if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+  if(Q>((n/2)+1)){stop(paste('Q is larger than the maximum number of segments',(n/2)+1))}
   y=c(0,cumsum(data))
 
   storage.mode(y)='double'

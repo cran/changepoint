@@ -49,6 +49,8 @@ function(data,extrainf=TRUE){
 single.mean.norm<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.estimates=TRUE){
 	if(is.null(dim(data))==TRUE){ # single dataset
 		n=length(data)
+		if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
+    
 		if(penalty=="Asymptotic"){
 			alpha=pen.value
 			alogn=(2*log(log(n)))^(-(1/2))
@@ -71,6 +73,8 @@ single.mean.norm<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.estim
 	}
 	else{ 
 		n=ncol(data)
+		if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
+    
 		if(penalty=="Asymptotic"){
 			alpha=pen.value
 			alogn=(2*log(log(n)))^(-(1/2))
@@ -164,6 +168,8 @@ function(data,know.mean=FALSE,mu=NA,extrainf=TRUE){
 single.var.norm<-function(data,penalty="SIC",pen.value=0,know.mean=FALSE,mu=NA,class=TRUE,param.estimates=TRUE){
 	if(is.null(dim(data))==TRUE){
 		n=length(data)
+		if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+		
 		if(penalty=="Asymptotic"){
 			alpha=pen.value
 			alogn=sqrt(2*log(log(n)))
@@ -186,6 +192,8 @@ single.var.norm<-function(data,penalty="SIC",pen.value=0,know.mean=FALSE,mu=NA,c
 	}
 	else{ 
 		n=ncol(data)
+		if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+		
 		if(penalty=="Asymptotic"){
 			alpha=pen.value
 			alogn=sqrt(2*log(log(n)))
@@ -274,6 +282,8 @@ function(data,extrainf=TRUE){
 single.meanvar.norm<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.estimates=TRUE){
 	if(is.null(dim(data))==TRUE){
 		n=length(data)
+		if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+		
 		if(penalty=="Asymptotic"){
 			alpha=pen.value
 			alogn=sqrt(2*log(log(n)))
@@ -296,6 +306,8 @@ single.meanvar.norm<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.es
 	}
 	else{ 
 		n=ncol(data)
+		if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+		
 		if(penalty=="Asymptotic"){
 			alpha=pen.value
 			alogn=sqrt(2*log(log(n)))

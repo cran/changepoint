@@ -1,5 +1,8 @@
 segneigh.var.css=function(data,Q=5,pen=0){
   n=length(data)
+  if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+  if(Q>((n/2)+1)){stop(paste('Q is larger than the maximum number of segments',(n/2)+1))}
+  
 	y2=c(0,cumsum(data^2))
 	oldmax=1000
 
@@ -51,6 +54,9 @@ segneigh.var.css=function(data,Q=5,pen=0){
 
 binseg.var.css=function(data,Q=5,pen=0){
   n=length(data)
+  if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+  if(Q>((n/2)+1)){stop(paste('Q is larger than the maximum number of segments',(n/2)+1))}
+  
   y2=c(0,cumsum(data^2))
   tau=c(0,n)
   cpt=matrix(0,nrow=2,ncol=Q)
@@ -220,7 +226,10 @@ multiple.var.css=function(data,mul.method="BinSeg",penalty="SIC",pen.value=0,Q=5
 
 segneigh.mean.cusum=function(data,Q=5,pen=0){
   n=length(data)
-	y=c(0,cumsum(data))
+  if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
+  if(Q>((n/2)+1)){stop(paste('Q is larger than the maximum number of segments',(n/2)+1))}
+  
+  y=c(0,cumsum(data))
 	oldmax=1000
 
 	test=NULL
@@ -270,6 +279,9 @@ segneigh.mean.cusum=function(data,Q=5,pen=0){
 
 binseg.mean.cusum=function(data,Q=5,pen=0){
   n=length(data)
+  if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
+  if(Q>((n/2)+1)){stop(paste('Q is larger than the maximum number of segments',(n/2)+1))}
+
   y=c(0,cumsum(data))
   tau=c(0,n)
   cpt=matrix(0,nrow=2,ncol=Q)

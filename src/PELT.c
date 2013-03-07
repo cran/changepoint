@@ -445,16 +445,12 @@ void PELT_mean_norm(y2,y,n,pen,cptsout,error)
 	lastchangecpts[0]=0; lastchangecpts[*n+0]=0;
 	lastchangelike[1]=mll_mean(*(y+1),*(y2+1),1);
 	lastchangecpts[1]=0; lastchangecpts[*n+1]=1;
-	lastchangelike[2]=mll_mean(*(y+2),*(y2+2),2);
-	lastchangecpts[2]=0; lastchangecpts[*n+2]=2;
-	lastchangelike[3]=mll_mean(*(y+3),*(y2+3),3);
-	lastchangecpts[3]=0; lastchangecpts[*n+3]=3;
 
 	nchecklist=2;
 	checklist[0]=0;
-	checklist[1]=2;
+	checklist[1]=1;
 
-	for(tstar=4;tstar<(*n+1);tstar++){
+	for(tstar=2;tstar<(*n+1);tstar++){
     R_CheckUserInterrupt(); /* checks if user has interrupted the R session and quits if true */
 
 		for(i=0;i<nchecklist;i++){
@@ -472,7 +468,7 @@ void PELT_mean_norm(y2,y,n,pen,cptsout,error)
 				nchecktmp+=1;
 			}
 		}
-		*(checklist+nchecktmp)=tstar-1;  // atleast 2 obs per seg
+		*(checklist+nchecktmp)=tstar;  // atleast 1 obs per seg
 		nchecktmp+=1;
 		nchecklist=nchecktmp;
 	} // end taustar

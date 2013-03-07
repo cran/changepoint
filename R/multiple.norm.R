@@ -62,6 +62,8 @@ PELT.var.norm=function(data,pen=0,know.mean=FALSE,mu=NA){
     mu=mean(data)
   }
   n=length(data)
+  if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+  
   y2=c(0,cumsum((data-mu)^2))
   error=0
   
@@ -138,6 +140,8 @@ PELT.var.norm=function(data,pen=0,know.mean=FALSE,mu=NA){
 PELT.mean.norm=function(data,pen=0){
   # function that uses the PELT method to calculate changes in mean where the segments in the data are assumed to be Normal
   n=length(data)
+  if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
+  
   y2=c(0,cumsum((data)^2))
   y=c(0,cumsum(data))
   error=0
@@ -220,6 +224,8 @@ PELT.mean.norm=function(data,pen=0){
 PELT.meanvar.norm=function(data,pen=0){
   # function that uses the PELT method to calculate changes in mean & variance where the segments in the data are assumed to be Normal
   n=length(data)
+  if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+  
   y2=c(0,cumsum((data)^2))
   y=c(0,cumsum(data))
   error=0
@@ -244,7 +250,9 @@ PELT.meanvar.norm=function(data,pen=0){
 
 segneigh.var.norm=function(data,Q=5,pen=0,know.mean=FALSE,mu=NA){
   n=length(data)
-  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
+  if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+  
+  if(Q>((n/2)+1)){stop(paste('Q is larger than the maximum number of segments',(n/2)+1))}
   if((know.mean==FALSE)&(is.na(mu))){
 	mu=mean(data)
   }
@@ -294,7 +302,9 @@ segneigh.var.norm=function(data,Q=5,pen=0,know.mean=FALSE,mu=NA){
 
 segneigh.mean.norm=function(data,Q=5,pen=0){
   n=length(data)
-  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
+  if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
+  
+  if(Q>((n/2)+1)){stop(paste('Q is larger than the maximum number of segments',(n/2)+1))}
   all.seg=matrix(0,ncol=n,nrow=n)
   for(i in 1:n){
   	ssq=0
@@ -341,7 +351,9 @@ segneigh.mean.norm=function(data,Q=5,pen=0){
 
 segneigh.meanvar.norm=function(data,Q=5,pen=0){
   n=length(data)
-  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
+  if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+  
+  if(Q>((n/2)+1)){stop(paste('Q is larger than the maximum number of segments',(n/2)+1))}
   all.seg=matrix(0,ncol=n,nrow=n)
   for(i in 1:n){
   	ssq=0
@@ -444,7 +456,8 @@ binseg.var.norm=function(data,Q=5,pen=0,know.mean=FALSE,mu=NA){
     mu=mean(data)
   }
   n=length(data)
-  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
+  if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+  if(Q>((n/2)+1)){stop(paste('Q is larger than the maximum number of segments',(n/2)+1))}
   y2=c(0,cumsum((data-mu)^2))
 
   storage.mode(y2)='double'
@@ -504,7 +517,8 @@ binseg.mean.norm=function(data,Q=5,pen=0){
   # function that uses the BinSeg method to calculate changes in variance where the segments in the data are assumed to be Normal
 
   n=length(data)
-  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
+  if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
+  if(Q>((n/2)+1)){stop(paste('Q is larger than the maximum number of segments',(n/2)+1))}
   y2=c(0,cumsum(data^2))
   y=c(0,cumsum(data))
 
@@ -573,7 +587,8 @@ binseg.meanvar.norm=function(data,Q=5,pen=0){
   # function that uses the BinSeg method to calculate changes in variance where the segments in the data are assumed to be Normal
 
   n=length(data)
-  if(Q>(n/2)){stop(paste('Q is larger than the maximum number of segments',n/2))}
+  if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+  if(Q>((n/2)+1)){stop(paste('Q is larger than the maximum number of segments',(n/2)+1))}
   y2=c(0,cumsum(data^2))
   y=c(0,cumsum(data))
 
