@@ -1,3 +1,9 @@
+Version 1.0.5
+*************
+Changes to previous version
+- Added journal references to PELT documentation. Thanks go to Martyn Byng for pointing out that this required updating.
+- Added checks on minimum lengths of data input (minimum for mean is 1 per segment, for variance / mean & variance it is 2 observations per segment).  Thanks go to Toby Hocking for highlighting the error.
+
 Version 1.0.4
 *************
 Changes to previous version

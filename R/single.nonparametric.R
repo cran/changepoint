@@ -55,6 +55,8 @@ single.var.css<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.estimat
 	else{
 		n=ncol(data)
 	}
+	if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
+	
 	if((penalty=="SIC") || (penalty=="BIC")){
 		pen.value=log(diffparam*log(n))
 	}
@@ -195,6 +197,8 @@ single.mean.cusum<-function(data,penalty="Asymptotic",pen.value=0.05,class=TRUE,
 	}
 	if(is.null(dim(data))==TRUE){
 		n=length(data)
+		if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
+		
 		tmp=single.mean.cusum.calc(coredata(data),extrainf=TRUE)
 		ans=decision(tau=tmp[1],null=tmp[2],penalty=penalty,n=n,diffparam=1,pen.value=pen.value)
 		if(class==TRUE){
@@ -211,6 +215,8 @@ single.mean.cusum<-function(data,penalty="Asymptotic",pen.value=0.05,class=TRUE,
 	}
 	else{ 
 		n=ncol(data)
+		if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
+		
 		tmp=single.mean.cusum.calc(data,extrainf=TRUE)
 		ans=decision(tau=tmp[,1],null=tmp[,2],penalty=penalty,n=n,diffparam=1,pen.value=pen.value)
 		if(class==TRUE){
