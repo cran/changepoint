@@ -46,7 +46,8 @@ PELT.meanvar.poisson(x,pen=2*log(200)) # returns c(50,100,150,200)
 # Example no change in parameter
 set.seed(1)
 x=rpois(200,lambda=1)
-PELT.meanvar.poisson(x,pen=2*log(200)) # returns 200 to show no change in mean or variance has been found
+PELT.meanvar.poisson(x,pen=2*log(200)) # returns 200 to show no change in mean or variance has been
+#found
 }
 
 \keyword{methods}

@@ -52,17 +52,21 @@ Rebecca Killick
 # Example of a change in mean at 100 in simulated normal data
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,10,1))
-single.mean.norm(x,penalty="SIC",class=FALSE) # returns 100 to show that the null hypothesis was rejected and the change in mean is at 100
+single.mean.norm(x,penalty="SIC",class=FALSE) # returns 100 to show that the null hypothesis was
+#rejected and the change in mean is at 100
 ans=single.mean.norm(x,penalty="Asymptotic",pen.value=0.01) 
-cpts(ans) # returns 100 to show that the null hypothesis was rejected, the change in mean is at 100 and we are 99% confident of this result
+cpts(ans) # returns 100 to show that the null hypothesis was rejected, the change in mean is at 100
+#and we are 99% confident of this result
 
 
-# Example of a data matrix containing 2 rows, row 1 has a change in mean and row 2 had no change in mean
+# Example of a data matrix containing 2 rows, row 1 has a change in mean and row 2 had no change in
+#mean
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,10,1))
 y=rnorm(200,0,1)
 z=rbind(x,y)
-single.mean.norm(z,penalty="SIC",class=FALSE) # returns vector c(100,200) which shows that the first dataset has a change in mean at 100 and the second dataset rejected H1 and has no change in mean
+single.mean.norm(z,penalty="SIC",class=FALSE) # returns vector c(100,200) which shows that the first
+#dataset has a change in mean at 100 and the second dataset rejected H1 and has no change in mean
 ans=single.mean.norm(z,penalty="Manual",pen.value="log(n)") 
 cpts(ans[[1]]) # test using a manual penalty which is the same as the SIC penalty for this example 
 cpts(ans[[2]]) # result is the same as above, c(100, 200)

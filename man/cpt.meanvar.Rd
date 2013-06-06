@@ -7,7 +7,8 @@ Identifying Changes in Mean and Variance
 Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
 }
 \usage{
-cpt.meanvar(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,test.stat="Normal",class=TRUE,param.estimates=TRUE,shape=1)
+cpt.meanvar(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,test.stat="Normal",
+class=TRUE,param.estimates=TRUE,shape=1)
 }
 \arguments{
   \item{data}{
@@ -86,21 +87,27 @@ Rebecca Killick
 # Example of a change in scale parameter (mean and variance) at 100 in simulated gamma data
 set.seed(1)
 x=c(rgamma(100,shape=1,rate=1),rgamma(100,shape=1,rate=5))
-cpt.meanvar(x,penalty="SIC",method="AMOC",test.stat="Gamma",class=FALSE,shape=1) # returns 97 to show that the null hypothesis was rejected and the change in scale parameter is at 97
+cpt.meanvar(x,penalty="SIC",method="AMOC",test.stat="Gamma",class=FALSE,shape=1) # returns 97 to
+#show that the null hypothesis was rejected and the change in scale parameter is at 97
 ans=cpt.meanvar(x,penalty="AIC",method="AMOC",test.stat="Gamma",shape=1)
-cpts(ans) # returns 97 to show that the null hypothesis was rejected, the change in scale parameter is at 97
+cpts(ans) # returns 97 to show that the null hypothesis was rejected, the change in scale parameter
+#is at 97
 
 # Example of multiple changes in mean and variance at 50,100,150 in simulated normal data
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,5,3),rnorm(50,10,1),rnorm(50,3,10))
-cpt.meanvar(x,penalty="Manual",pen.value="4*log(n)",method="BinSeg",Q=5,class=FALSE) # returns optimal number of changepoints is 4, locations are 50,100,150,152.
+cpt.meanvar(x,penalty="Manual",pen.value="4*log(n)",method="BinSeg",Q=5,class=FALSE) # returns
+#optimal number of changepoints is 4, locations are 50,100,150,152.
 
-# Example multiple datasets where the first row has multiple changes in mean and variance and the second row has no change in mean or variance
+# Example multiple datasets where the first row has multiple changes in mean and variance and the
+#second row has no change in mean or variance
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,5,3),rnorm(50,10,1),rnorm(50,3,10))
 y=rnorm(200,0,1)
 z=rbind(x,y)
-cpt.meanvar(z,penalty="Asymptotic",pen.value=0.01,method="SegNeigh",Q=5,class=FALSE) # returns list that has two elements, the first has 3 changes in mean and variance at 50,100,150 and the second has no changes in mean or variance
+cpt.meanvar(z,penalty="Asymptotic",pen.value=0.01,method="SegNeigh",Q=5,class=FALSE) # returns list
+#that has two elements, the first has 3 changes in mean and variance at 50,100,150 and the second
+#has no changes in mean or variance
 ans=cpt.meanvar(z,penalty="Asymptotic",pen.value=0.01,method="PELT") 
 cpts(ans[[1]]) # same results as for the SegNeigh method.
 cpts(ans[[2]]) # same results as for the SegNeigh method.

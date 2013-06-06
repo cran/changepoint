@@ -48,7 +48,9 @@ Rebecca Killick
 set.seed(10)
 x=c(rnorm(50,0,1),rnorm(50,0,10),rnorm(50,0,5),rnorm(50,0,1))
 segneigh.var.css(x,Q=5, pen=1.368) # returns optimal number as 3 and the locations as c(52,100,149)
-segneigh.var.css(x,Q=3, pen=1.368) # returns optimal number as 2 as this is the maximum number of changepoints it can find.  If you get the maximum number, you need to increase Q until this is not the case.
+segneigh.var.css(x,Q=3, pen=1.368) # returns optimal number as 2 as this is the maximum number of
+#changepoints it can find.  If you get the maximum number, you need to increase Q until this is not
+#the case.
 # 1.358 is the asymptotic value of the penalty for 95% confidence
 
 # Example no change in variance

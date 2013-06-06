@@ -46,8 +46,11 @@ Rebecca Killick
 # Example of multiple changes in mean and variance at 50,100,150 in simulated Exponential data
 set.seed(1)
 x=c(rexp(50,rate=1),rexp(50,rate=5),rexp(50,rate=1),rexp(50,rate=10))
-binseg.meanvar.exp(x,Q=5,pen=2*log(200)) # returns optimal number as 3 and the locations as c(50,100,150)
-binseg.meanvar.exp(x,Q=2,pen=2*log(200)) # returns optimal number as 2 as this is the maximum number of changepoints it can find.  If you get the maximum number, you need to increase Q until this is not the case.
+binseg.meanvar.exp(x,Q=5,pen=2*log(200)) # returns optimal number as 3 and the locations as
+#c(50,100,150)
+binseg.meanvar.exp(x,Q=2,pen=2*log(200)) # returns optimal number as 2 as this is the maximum number
+#of changepoints it can find.  If you get the maximum number, you need to increase Q until this is
+#not the case.
 
 # Example no change in mean or variance
 set.seed(1)

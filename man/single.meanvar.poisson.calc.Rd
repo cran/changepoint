@@ -51,13 +51,15 @@ Rebecca Killick
 set.seed(10)
 x=c(rpois(100,lambda=1),rpois(100,lambda=5))
 single.meanvar.poisson.calc(x,extrainf=FALSE) # finds change at 99
-single.meanvar.poisson.calc(x) # finds change at 99 and gives null likelihood as -1243.330 and alternative likelihood as -1580.522
+single.meanvar.poisson.calc(x) # finds change at 99 and gives null likelihood as -1243.330 and
+#alternative likelihood as -1580.522
 
 
 # Example of no change in parameter (mean or variance) in simulated Poisson data
 set.seed(10)
 x=rpois(100,lambda=1)
-single.meanvar.poisson.calc(x,extrainf=FALSE) # finds change at 17, this is the most probable point of change but if a changepoint test is performed then no change will be found.
+single.meanvar.poisson.calc(x,extrainf=FALSE) # finds change at 17, this is the most probable point
+#of change but if a changepoint test is performed then no change will be found.
 single.meanvar.poisson.calc(x)# change at 17, null liklihood is 34.13681 and alternative is 31.20430
 }
 

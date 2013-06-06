@@ -51,13 +51,15 @@ Rebecca Killick
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,10,1))
 single.mean.norm.calc(x,extrainf=FALSE) # finds change at 100
-single.mean.norm.calc(x) # finds change at 100 and gives null likelihood as 5025.0857 and alternative likelihood as 170.7051
+single.mean.norm.calc(x) # finds change at 100 and gives null likelihood as 5025.0857 and
+#alternative likelihood as 170.7051
 
 
 # Example of no change in mean in simulated normal data
 set.seed(1)
 x=rnorm(100,0,1)
-single.mean.norm.calc(x,extrainf=FALSE) # finds change at 96, this is the most probable point of change but if a changepoint test is performed then no change will be found.
+single.mean.norm.calc(x,extrainf=FALSE) # finds change at 96, this is the most probable point of
+#change but if a changepoint test is performed then no change will be found.
 single.mean.norm.calc(x)# change at 96, null liklihood is 79.86945 and alternative is 75.73725
 }
 

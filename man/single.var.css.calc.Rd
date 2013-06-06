@@ -55,7 +55,8 @@ single.var.css.calc(x) # finds change at 105 and gives test statistic as 4.97977
 # Example of no change in variance in simulated normal data
 set.seed(1)
 x=rnorm(100,0,1)
-single.var.css.calc(x,extrainf=FALSE) # finds change at 53, this is the most probable point of change but if a changepoint test is performed then no change will be found.
+single.var.css.calc(x,extrainf=FALSE) # finds change at 53, this is the most probable point of
+#change but if a changepoint test is performed then no change will be found.
 single.var.css.calc(x)# change at 53, test statistic is 0.6922931
 }
 

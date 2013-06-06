@@ -7,7 +7,8 @@ Multiple Changes in Mean and Variance - Poisson Data
 Calculates the optimal positioning and number of changepoints for Poisson data using the user specified method.
 }
 \usage{
-multiple.meanvar.poisson(data,mul.method="PELT",penalty="SIC",pen.value=0,Q=5,class=TRUE,param.estimates=TRUE)
+multiple.meanvar.poisson(data,mul.method="PELT",penalty="SIC",pen.value=0,Q=5,class=TRUE,
+param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
@@ -72,14 +73,18 @@ Rebecca Killick
 # Example of multiple changes in mean and variance at 50,100,150 in simulated Poisson data
 set.seed(1)
 x=c(rpois(50,lambda=1),rpois(50,lambda=5),rpois(50,lambda=1),rpois(50,lambda=10))
-multiple.meanvar.poisson(x,mul.method="BinSeg",penalty="Manual",pen.value="2*log(n)",Q=5,class=FALSE) # returns optimal number of changepoints is 3, locations are 50,100,150.
+multiple.meanvar.poisson(x,mul.method="BinSeg",penalty="Manual",pen.value="2*log(n)",Q=5,
+class=FALSE) # returns optimal number of changepoints is 3, locations are 50,100,150.
 
-# Example multiple datasets where the first row has multiple changes in mean and variance and the second row has no change in mean or variance
+# Example multiple datasets where the first row has multiple changes in mean and variance and the
+#second row has no change in mean or variance
 set.seed(1)
 x=c(rpois(50,lambda=1),rpois(50,lambda=5),rpois(50,lambda=1),rpois(50,lambda=10))
 y=rpois(200,lambda=1)
 z=rbind(x,y)
-multiple.meanvar.poisson(z,mul.method="SegNeigh",penalty="Manual",pen.value=2*log(200),Q=5,class=FALSE) # returns list that has two elements, the first has 3 changes in mean and variance at 50,100,150 and the second has no changes in mean or variance
+multiple.meanvar.poisson(z,mul.method="SegNeigh",penalty="Manual",pen.value=2*log(200),Q=5,
+class= FALSE) # returns list that has two elements, the first has 3 changes in mean and variance at
+#50,100,150 and the second has no changes in mean or variance
 ans=multiple.meanvar.poisson(z,mul.method="PELT",penalty="Manual",pen.value=2*log(200)) 
 cpts(ans[[1]]) # same results as for the SegNeigh method.
 cpts(ans[[2]]) # same results as for the SegNeigh method.

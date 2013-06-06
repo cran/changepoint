@@ -7,7 +7,8 @@ Single Change in Variance - Normal Data
 Calculates the scaled log-likelihood (assuming the data is normally distributed) for all possible changepoint locations and returns the single most probable (max).
 }
 \usage{
-single.var.norm(data,penalty="SIC",pen.value=0,know.mean=FALSE,mu=NA,class=TRUE,param.estimates=TRUE)
+single.var.norm(data,penalty="SIC",pen.value=0,know.mean=FALSE,mu=NA,class=TRUE,
+param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
@@ -58,16 +59,21 @@ Rebecca Killick
 # Example of a change in variance at 100 in simulated normal data
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,0,10))
-single.var.norm(x,penalty="SIC",class=FALSE) # returns 100 to show that the null hypothesis was rejected and the change in variance is at 100
+single.var.norm(x,penalty="SIC",class=FALSE) # returns 100 to show that the null hypothesis was
+#rejected and the change in variance is at 100
 ans=single.var.norm(x,penalty="Asymptotic",pen.value=0.01) 
-cpts(ans) # returns 100 to show that the null hypothesis was rejected, the change in variance is at 100 and we are 99% confident of this result
+cpts(ans) # returns 100 to show that the null hypothesis was rejected, the change in variance is at
+#100 and we are 99% confident of this result
 
-# Example of a data matrix containing 2 rows, row 1 has a change in variance and row 2 had no change in variance
+# Example of a data matrix containing 2 rows, row 1 has a change in variance and row 2 had no change
+#in variance
 set.seed(10)
 x=c(rnorm(100,0,1),rnorm(100,0,10))
 y=rnorm(200,0,1)
 z=rbind(x,y)
-single.var.norm(z,penalty="SIC",class=FALSE) # returns vector c(100,200) which shows that the first dataset has a change in variance at 100 and the second dataset rejected H1 and has no change in variance
+single.var.norm(z,penalty="SIC",class=FALSE) # returns vector c(100,200) which shows that the first
+#dataset has a change in variance at 100 and the second dataset rejected H1 and has no change in
+#variance
 ans=single.var.norm(z,penalty="Manual",pen.value="diffparam*log(n)") 
 cpts(ans[[1]]) # test using a manual penalty which is the same as the SIC penalty for this example
 cpts(ans[[2]]) # result is the same as above, c(100, 200)

@@ -46,7 +46,8 @@ PELT.meanvar.exp(x,pen=2*log(200)) # returns c(53,100,150,200)
 # Example no change in rate parameter
 set.seed(1)
 x=rexp(200,rate=1)
-PELT.meanvar.exp(x,pen=2*log(200)) # returns 200 to show no change in mean or variance has been found
+PELT.meanvar.exp(x,pen=2*log(200)) # returns 200 to show no change in mean or variance has been
+#found
 }
 
 \keyword{methods}

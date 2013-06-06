@@ -46,8 +46,11 @@ Rebecca Killick
 # Example of multiple changes in mean and variance at 50,100,150 in simulated normal data
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,5,3),rnorm(50,10,1),rnorm(50,3,10))
-segneigh.meanvar.norm(x,Q=5, pen=4*log(200)) # returns optimal number as 3 and the locations as c(50,100,150)
-segneigh.meanvar.norm(x,Q=3, pen=4*log(200)) # returns optimal number as 2 as this is the maximum number of changepoints it can find.  If you get the maximum number, you need to increase Q until this is not the case.
+segneigh.meanvar.norm(x,Q=5, pen=4*log(200)) # returns optimal number as 3 and the locations as
+#c(50,100,150)
+segneigh.meanvar.norm(x,Q=3, pen=4*log(200)) # returns optimal number as 2 as this is the maximum
+#number of changepoints it can find.  If you get the maximum number, you need to increase Q until
+#this is not the case.
 
 # Example no change in mean or variance
 set.seed(1)

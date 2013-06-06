@@ -52,18 +52,24 @@ Rebecca Killick
 # Example of a change in mean and variance at 100 in simulated Poisson data
 set.seed(10)
 x=c(rpois(100,lambda=1),rpois(100,lambda=5))
-single.meanvar.poisson(x,penalty="SIC",class=FALSE) # returns 99 to show that the null hypothesis was rejected and the change in mean and variance is at 99
+single.meanvar.poisson(x,penalty="SIC",class=FALSE) # returns 99 to show that the null hypothesis
+#was rejected and the change in mean and variance is at 99
 ans=single.meanvar.poisson(x,penalty="AIC")
-cpts(ans) # returns 99 to show that the null hypothesis was rejected, the change in mean and variance is at 99
+cpts(ans) # returns 99 to show that the null hypothesis was rejected, the change in mean and
+#variance is at 99
 
-# Example of a data matrix containing 2 rows, row 1 has a change in parameter and row 2 had no change in parameter
+# Example of a data matrix containing 2 rows, row 1 has a change in parameter and row 2 had no
+#change in parameter
 set.seed(1)
 x=c(rpois(100,lambda=1),rpois(100,lambda=10))
 y=rpois(200,lambda=1)
 z=rbind(x,y)
-single.meanvar.poisson(z,penalty="SIC",class=FALSE) # returns vector c(99,200) which shows that the first dataset has a change in scale parameter at 99 and the second dataset rejected H1 and has no change in scale parameter
+single.meanvar.poisson(z,penalty="SIC",class=FALSE) # returns vector c(99,200) which shows that the
+#first dataset has a change in scale parameter at 99 and the second dataset rejected H1 and has no
+#change in scale parameter
 ans=single.meanvar.poisson(z,penalty="Manual",pen.value="diffparam*log(n)") # list returned
-cpts(ans[[1]]) # test using a manual penalty which is the same as the SIC penalty for this example.  The same changepoint is detected for the first dataset 
+cpts(ans[[1]]) # test using a manual penalty which is the same as the SIC penalty for this example. 
+#The same changepoint is detected for the first dataset.
 cpts(ans[[2]]) # same as above, no change found
 }
 

@@ -12,14 +12,14 @@
 \describe{
 
 \item{\code{signature(object = "ANY")}}{
-	Generic summary function, see base package description using ?summary
+  Generic summary function, see base package description using ?summary
 }
 
 \item{\code{signature(object = "cpt")}}{
-	Prints out a summary of the object to the terminal.
+  Prints out a summary of the object to the terminal.
 }
 \item{\code{signature(object = "cpt.reg")}}{
-	Prints out a summary of the object to the terminal.
+  Prints out a summary of the object to the terminal.
 }
 }}
 \keyword{methods}

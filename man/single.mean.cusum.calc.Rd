@@ -55,7 +55,8 @@ single.mean.cusum.calc(x) # finds change at 101 and gives the test statistic as 
 # Example of no change in mean in simulated data
 set.seed(1)
 x=rnorm(100,0,1)
-single.mean.cusum.calc(x,extrainf=FALSE) # finds change at 97, this is the most probable point of change but if a changepoint test is performed then no change will be found.
+single.mean.cusum.calc(x,extrainf=FALSE) # finds change at 97, this is the most probable point of
+#change but if a changepoint test is performed then no change will be found.
 single.mean.cusum.calc(x)# change at 97, test statistic is 0.0398342
 }
 

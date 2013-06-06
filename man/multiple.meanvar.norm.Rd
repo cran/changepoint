@@ -7,7 +7,8 @@ Multiple Changes in Mean and Variance - Normal Data
 Calculates the optimal positioning and number of changepoints for Normal data using the user specified method.
 }
 \usage{
-multiple.meanvar.norm(data,mul.method="PELT",penalty="SIC",pen.value=0,Q=5,class=TRUE,param.estimates=TRUE)
+multiple.meanvar.norm(data,mul.method="PELT",penalty="SIC",pen.value=0,Q=5,class=TRUE,
+param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
@@ -72,14 +73,18 @@ Rebecca Killick
 # Example of multiple changes in mean and variance at 50,100,150 in simulated normal data
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,5,3),rnorm(50,10,1),rnorm(50,3,10))
-multiple.meanvar.norm(x,mul.method="BinSeg",penalty="Manual",pen.value="4*log(n)",Q=5,class=FALSE) # returns optimal number of changepoints is 4, locations are 50,100,150,152.
+multiple.meanvar.norm(x,mul.method="BinSeg",penalty="Manual",pen.value="4*log(n)",Q=5,class=FALSE)
+# returns optimal number of changepoints is 4, locations are 50,100,150,152.
 
-# Example multiple datasets where the first row has multiple changes in mean and variance and the second row has no change in mean or variance
+# Example multiple datasets where the first row has multiple changes in mean and variance and the
+#second row has no change in mean or variance
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,5,3),rnorm(50,10,1),rnorm(50,3,10))
 y=rnorm(200,0,1)
 z=rbind(x,y)
-multiple.meanvar.norm(z,mul.method="SegNeigh",penalty="Asymptotic",pen.value=0.01,Q=5,class=FALSE) # returns list that has two elements, the first has 3 changes in mean and variance at 50,100,150 and the second has no changes in mean or variance
+multiple.meanvar.norm(z,mul.method="SegNeigh",penalty="Asymptotic",pen.value=0.01,Q=5,class=FALSE)
+# returns list that has two elements, the first has 3 changes in mean and variance at 50,100,150 and
+#the second has no changes in mean or variance
 ans=multiple.meanvar.norm(z,mul.method="PELT",penalty="Asymptotic",pen.value=0.01) 
 cpts(ans[[1]]) # same results as for the SegNeigh method.
 cpts(ans[[2]]) # same results as for the SegNeigh method.

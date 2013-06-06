@@ -51,13 +51,15 @@ Rebecca Killick
 set.seed(10)
 x=c(rexp(100,rate=1),rexp(100,rate=5))
 single.meanvar.exp.calc(x,extrainf=FALSE) # finds change at 99
-single.meanvar.exp.calc(x) # finds change at 99 and gives null likelihood as -192.5052 and alternative likelihood as -299.7263
+single.meanvar.exp.calc(x) # finds change at 99 and gives null likelihood as -192.5052 and
+#alternative likelihood as -299.7263
 
 
 # Example of no change in rate parameter (mean or variance) in simulated Exponential data
 set.seed(10)
 x=rexp(100,rate=1)
-single.meanvar.exp.calc(x,extrainf=FALSE) # finds change at 90, this is the most probable point of change but if a changepoint test is performed then no change will be found.
+single.meanvar.exp.calc(x,extrainf=FALSE) # finds change at 90, this is the most probable point of
+#change but if a changepoint test is performed then no change will be found.
 single.meanvar.exp.calc(x)# change at 90, null liklihood is 3.196690 and alternative is 1.060281
 }
 

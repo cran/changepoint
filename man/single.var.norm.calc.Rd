@@ -56,13 +56,15 @@ Rebecca Killick
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,0,10))
 single.var.norm.calc(x,extrainf=FALSE) # finds change at 100
-single.var.norm.calc(x) # finds change at 100 and gives null likelihood as 765.1905 and alternative likelihood as 435.6529
+single.var.norm.calc(x) # finds change at 100 and gives null likelihood as 765.1905 and alternative
+#likelihood as 435.6529
 
 
 # Example of no change in variance in simulated normal data
 set.seed(1)
 x=rnorm(100,0,1)
-single.var.norm.calc(x,extrainf=FALSE) # finds change at 53, this is the most probable point of change but if a changepoint test is performed then no change will be found.
+single.var.norm.calc(x,extrainf=FALSE) # finds change at 53, this is the most probable point of
+#change but if a changepoint test is performed then no change will be found.
 single.var.norm.calc(x)# change at 53, null liklihood is -22.47768 and alternative is -24.39894. 
 }
 

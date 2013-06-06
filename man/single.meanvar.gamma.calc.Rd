@@ -54,13 +54,15 @@ Rebecca Killick
 set.seed(1)
 x=c(rgamma(100,shape=1,rate=1),rgamma(100,shape=1,rate=5))
 single.meanvar.gamma.calc(x,extrainf=FALSE) # finds change at 97
-single.meanvar.gamma.calc(x) # finds change at 97 and gives null likelihood as -230.8446 and alternative likelihood as -318.8848
+single.meanvar.gamma.calc(x) # finds change at 97 and gives null likelihood as -230.8446 and
+#alternative likelihood as -318.8848
 
 
 # Example of no change in scale parameter (mean or variance) in simulated gamma data
 set.seed(10)
 x=rgamma(100,shape=1,rate=1)
-single.meanvar.gamma.calc(x,extrainf=FALSE) # finds change at 72, this is the most probable point of change but if a changepoint test is performed then no change will be found.
+single.meanvar.gamma.calc(x,extrainf=FALSE) # finds change at 72, this is the most probable point of
+#change but if a changepoint test is performed then no change will be found.
 single.meanvar.gamma.calc(x)# change at 72, null liklihood is -13.28644 and alternative is -16.27421
 }
 

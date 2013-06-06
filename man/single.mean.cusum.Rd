@@ -7,7 +7,8 @@ Single Change in Mean - Cumulative Sums
 Calculates the cumulative sums (cusum) test statistic for all possible changepoint locations and returns the single most probable (max).
 }
 \usage{
-single.mean.cusum(data,penalty="Asymptotic",pen.value=0.05,class=TRUE,param.estimates=TRUE)
+single.mean.cusum(data,penalty="Asymptotic",pen.value=0.05,class=TRUE,
+param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
@@ -56,19 +57,24 @@ Rebecca Killick
 # Example of a change in mean at 100 in simulated normal data
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,10,1))
-single.mean.cusum(x,penalty="Manual",pen.value=1,class=FALSE) # returns 101 to show that the null hypothesis was rejected and the change in mean is at 101
+single.mean.cusum(x,penalty="Manual",pen.value=1,class=FALSE) # returns 101 to show that the null
+#hypothesis was rejected and the change in mean is at 101
 ans=single.mean.cusum(x,penalty="Manual",pen.value=1) 
 cpts(ans) # returns 101 to show that the null hypothesis was rejected, the change in mean is at 101
 
 
-# Example of a data matrix containing 2 rows, row 1 has a change in mean and row 2 had no change in mean
+# Example of a data matrix containing 2 rows, row 1 has a change in mean and row 2 had no change in
+#mean
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,10,1))
 y=rnorm(200,0,1)
 z=rbind(x,y)
-single.mean.cusum(z,penalty="Manual",pen.value=1,class=FALSE) # returns vector c(101,200) which shows that the first dataset has a change in mean at 101 and the second dataset rejected H1 and has no change in mean
+single.mean.cusum(z,penalty="Manual",pen.value=1,class=FALSE) # returns vector c(101,200) which
+#shows that the first dataset has a change in mean at 101 and the second dataset rejected H1 and has
+#no change in mean
 ans=single.mean.cusum(z,penalty="Manual",pen.value="log(log(n))") 
-cpts(ans[[1]]) # test using a manual penalty which is the log(SIC) penalty and gives the same values for this example 
+cpts(ans[[1]]) # test using a manual penalty which is the log(SIC) penalty and gives the same values
+#for this example 
 cpts(ans[[2]]) # result is the same as above, c(101, 200)
 }
 

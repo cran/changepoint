@@ -7,7 +7,8 @@ Single Change in Mean and Variance - Gamma Data (i.e. change in scale parameter)
 Calculates the scaled log-likelihood (assuming the data is Gamma distributed) for all possible changepoint locations and returns the single most probable (max).
 }
 \usage{
-single.meanvar.gamma(data, shape=1, penalty="SIC",pen.value=0,class=TRUE,param.estimates=TRUE)
+single.meanvar.gamma(data,shape=1,penalty="SIC",pen.value=0,class=TRUE,
+param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
@@ -55,18 +56,24 @@ Rebecca Killick
 # Example of a change in scale parameter (mean and variance) at 100 in simulated gamma data
 set.seed(1)
 x=c(rgamma(100,shape=1,rate=1),rgamma(100,shape=1,rate=5))
-single.meanvar.gamma(x,penalty="SIC",class=FALSE) # returns 97 to show that the null hypothesis was rejected and the change in scale parameter is at 97
+single.meanvar.gamma(x,penalty="SIC",class=FALSE) # returns 97 to show that the null hypothesis was
+#rejected and the change in scale parameter is at 97
 ans=single.meanvar.gamma(x,penalty="AIC")
-cpts(ans) # returns 97 to show that the null hypothesis was rejected, the change in scale parameter is at 97
+cpts(ans) # returns 97 to show that the null hypothesis was rejected, the change in scale parameter
+#is at 97
 
-# Example of a data matrix containing 2 rows, row 1 has a change in scale parameter and row 2 had no change in scale parameter
+# Example of a data matrix containing 2 rows, row 1 has a change in scale parameter and row 2 had no
+#change in scale parameter
 set.seed(10)
 x=c(rgamma(100,shape=1,rate=1),rgamma(100,shape=1,rate=10))
 y=rgamma(200,shape=1,rate=1)
 z=rbind(x,y)
-single.meanvar.gamma(z,penalty="SIC",class=FALSE) # returns vector c(99,200) which shows that the first dataset has a change in scale parameter at 99 and the second dataset rejected H1 and has no change in scale parameter
+single.meanvar.gamma(z,penalty="SIC",class=FALSE) # returns vector c(99,200) which shows that the
+#first dataset has a change in scale parameter at 99 and the second dataset rejected H1 and has no
+#change in scale parameter
 ans=single.meanvar.gamma(z,penalty="Manual",pen.value="diffparam*log(n)") # list returned
-cpts(ans[[1]]) # test using a manual penalty which is the same as the SIC penalty for this example.  The same changepoint is detected for the first dataset 
+cpts(ans[[1]]) # test using a manual penalty which is the same as the SIC penalty for this example. 
+#The same changepoint is detected for the first dataset 
 cpts(ans[[2]]) # same as above, no change found
 }
 
