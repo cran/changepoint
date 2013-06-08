@@ -7,7 +7,8 @@ Multiple Changes in Mean - Normal Data
 Calculates the optimal positioning and number of changepoints for Normal data using the user specified method.
 }
 \usage{
-multiple.mean.norm(data,mul.method="PELT",penalty="SIC",pen.value=0,Q=5,class=TRUE,param.estimates=TRUE)
+multiple.mean.norm(data,mul.method="PELT",penalty="SIC",pen.value=0,Q=5,class=TRUE,
+param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
@@ -72,14 +73,18 @@ Rebecca Killick
 # Example of multiple changes in mean at 50,100,150 in simulated normal data
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,5,1),rnorm(50,10,1),rnorm(50,3,1))
-multiple.mean.norm(x,mul.method="BinSeg",penalty="Manual",pen.value="2*log(n)",Q=5,class=FALSE) # returns optimal number of changepoints is 3, locations are 50,100,150.
+multiple.mean.norm(x,mul.method="BinSeg",penalty="Manual",pen.value="2*log(n)",Q=5,class=FALSE)
+# returns optimal number of changepoints is 3, locations are 50,100,150.
 
-# Example multiple datasets where the first row has multiple changes in mean and the second row has no change in mean
+# Example multiple datasets where the first row has multiple changes in mean and the second row has
+#no change in mean
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,5,1),rnorm(50,10,1),rnorm(50,3,1))
 y=rnorm(200,0,1)
 z=rbind(x,y)
-multiple.mean.norm(z,mul.method="SegNeigh",penalty="Asymptotic",pen.value=0.01,Q=5,class=FALSE) # returns list that has two elements, the first has 3 changes in mean at 50,100,150 and the second has no changes in mean
+multiple.mean.norm(z,mul.method="SegNeigh",penalty="Asymptotic",pen.value=0.01,Q=5,class=FALSE)
+# returns list that has two elements, the first has 3 changes in mean at 50,100,150 and the second
+#has no changes in mean
 ans=multiple.mean.norm(z,mul.method="PELT",penalty="Asymptotic",pen.value=0.01) 
 cpts(ans[[1]]) # same results as for the SegNeigh method.
 cpts(ans[[2]]) # same results as for the SegNeigh method.

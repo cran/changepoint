@@ -7,7 +7,8 @@ Identifying Changes in Mean
 Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
 }
 \usage{
-cpt.mean(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,test.stat="Normal",class=TRUE,param.estimates=TRUE)
+cpt.mean(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,test.stat="Normal",class=TRUE,
+param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
@@ -80,22 +81,29 @@ Rebecca Killick
 # Example of a change in mean at 100 in simulated normal data
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,10,1))
-cpt.mean(x,penalty="SIC",method="AMOC",class=FALSE) # returns 100 to show that the null hypothesis was rejected and the change in mean is at 100
+cpt.mean(x,penalty="SIC",method="AMOC",class=FALSE) # returns 100 to show that the null hypothesis
+#was rejected and the change in mean is at 100
 ans=cpt.mean(x,penalty="Asymptotic",pen.value=0.01,method="AMOC") 
-cpts(ans)# returns 100 to show that the null hypothesis was rejected, the change in mean is at 100 and we are 99% confident of this result
-ans=cpt.mean(x,penalty="Manual",pen.value=0.8,method="AMOC",test.stat="CUSUM") # returns 101 as the changepoint location
+cpts(ans)# returns 100 to show that the null hypothesis was rejected, the change in mean is at 100
+#and we are 99% confident of this result
+ans=cpt.mean(x,penalty="Manual",pen.value=0.8,method="AMOC",test.stat="CUSUM") # returns 101 as the
+#changepoint location
 
 # Example of multiple changes in mean at 50,100,150 in simulated normal data
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,5,1),rnorm(50,10,1),rnorm(50,3,1))
-cpt.mean(x,penalty="Manual",pen.value="2*log(n)",method="BinSeg",Q=5,class=FALSE) # returns optimal number of changepoints is 3, locations are 50,100,150.
+cpt.mean(x,penalty="Manual",pen.value="2*log(n)",method="BinSeg",Q=5,class=FALSE) # returns optimal
+#number of changepoints is 3, locations are 50,100,150.
 
-# Example multiple datasets where the first row has multiple changes in mean and the second row has no change in mean
+# Example multiple datasets where the first row has multiple changes in mean and the second row has
+#no change in mean
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,5,1),rnorm(50,10,1),rnorm(50,3,1))
 y=rnorm(200,0,1)
 z=rbind(x,y)
-cpt.mean(z,penalty="Asymptotic",pen.value=0.01,method="SegNeigh",Q=5,class=FALSE) # returns list that has two elements, the first has 3 changes in mean and variance at 50,100,150 and the second has no changes in variance
+cpt.mean(z,penalty="Asymptotic",pen.value=0.01,method="SegNeigh",Q=5,class=FALSE) # returns list
+#that has two elements, the first has 3 changes in mean and variance at 50,100,150 and the second
+#has no changes in variance
 ans=cpt.mean(z,penalty="Asymptotic",pen.value=0.01,method="PELT") 
 cpts(ans[[1]]) # same results as for the SegNeigh method.
 cpts(ans[[2]]) # same results as for the SegNeigh method.

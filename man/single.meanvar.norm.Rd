@@ -52,19 +52,27 @@ Rebecca Killick
 # Example of a change in mean and variance at 100 in simulated normal data
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,1,10))
-single.meanvar.norm(x,penalty="SIC",class=FALSE) # returns 99 to show that the null hypothesis was rejected and the change in mean and variance is at 99
+single.meanvar.norm(x,penalty="SIC",class=FALSE) # returns 99 to show that the null hypothesis was
+#rejected and the change in mean and variance is at 99
 ans=single.meanvar.norm(x,penalty="Asymptotic",pen.value=0.01) 
-cpts(ans) # returns 99 to show that the null hypothesis was rejected, the change in mean and variance is at 99 and we are 99% confident of this result
+cpts(ans) # returns 99 to show that the null hypothesis was rejected, the change in mean and
+#variance is at 99 and we are 99% confident of this result
 
-# Example of a data matrix containing 2 rows, row 1 has a change in mean and variance and row 2 had no change in mean or variance
+# Example of a data matrix containing 2 rows, row 1 has a change in mean and variance and row 2 had
+#no change in mean or variance
 set.seed(10)
 x=c(rnorm(100,0,1),rnorm(100,1,10))
 y=rnorm(200,0,1)
 z=rbind(x,y)
-single.meanvar.norm(z,penalty="Asymptotic",pen.value=0.01,class=FALSE) # returns vector c(99,200) which shows that the first dataset has a change in mean and variance at 99 and the second dataset rejected H1 and has no change in mean or variance
+single.meanvar.norm(z,penalty="Asymptotic",pen.value=0.01,class=FALSE) # returns vector c(99,200)
+#which shows that the first dataset has a change in mean and variance at 99 and the second dataset
+#rejected H1 and has no change in mean or variance
 ans=single.meanvar.norm(z,penalty="Manual",pen.value="diffparam*log(n)") # list returned
-cpts(ans[[1]]) # test using a manual penalty which is the same as the SIC penalty for this example, result shows that the penalty is too small.  The same changepoint is detected for the first dataset 
-cpts(ans[[2]]) # but the second dataset returns a change in mean and variance at 198 which was rejected under the asymptotic penalty above.
+cpts(ans[[1]]) # test using a manual penalty which is the same as the SIC penalty for this example,
+#result shows that the penalty is too small.  The same changepoint is detected for the first
+#dataset 
+cpts(ans[[2]]) # but the second dataset returns a change in mean and variance at 198 which was
+#rejected under the asymptotic penalty above.
 }
 
 \keyword{methods}

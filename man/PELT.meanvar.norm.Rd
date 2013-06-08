@@ -46,7 +46,8 @@ PELT.meanvar.norm(x,pen=4*log(200)) # returns c(50,100,150,200)
 # Example no change in mean or variance
 set.seed(1)
 x=rnorm(200,0,1)
-PELT.meanvar.norm(x,pen=4*log(200)) # returns 200 to show no change in mean or variance has been found
+PELT.meanvar.norm(x,pen=4*log(200)) # returns 200 to show no change in mean or variance has been
+#found
 }
 
 \keyword{methods}

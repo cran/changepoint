@@ -1,3 +1,9 @@
+Version 1.0.6
+*************
+Changes to previous version
+- Fixed bug where the likelihood & logLik generics returns an error when there are no changes.  This was due to using the cpts generic which no longer returns the length of the data as a change (since version 1.0).  Thanks go to Gia-Thuy Pham for highlighting this bug.
+- Corrected calculation of segment scale parameter estimates for Gamma models (used in cpt.meanvar(...,test.stat='Gamma')).  Previously this was dividing by seg.length+1 when it should be dividing by seg.length.  Thanks go to Martyn Byng for highlighting the error.
+
 Version 1.0.5
 *************
 Changes to previous version

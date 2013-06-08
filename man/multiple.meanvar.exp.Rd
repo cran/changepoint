@@ -7,7 +7,8 @@ Multiple Changes in Mean and Variance - Exponential Data
 Calculates the optimal positioning and number of changepoints for Exponential data using the user specified method.
 }
 \usage{
-multiple.meanvar.exp(data,mul.method="PELT",penalty="SIC",pen.value=0,Q=5,class=TRUE,param.estimates=TRUE)
+multiple.meanvar.exp(data,mul.method="PELT",penalty="SIC",pen.value=0,Q=5,class=TRUE,
+param.estimates=TRUE)
 }
 \arguments{
   \item{data}{
@@ -72,14 +73,18 @@ Rebecca Killick
 # Example of multiple changes in mean and variance at 50,100,150 in simulated Exponential data
 set.seed(1)
 x=c(rexp(50,rate=1),rexp(50,rate=5),rexp(50,rate=1),rexp(50,rate=10))
-multiple.meanvar.exp(x,mul.method="BinSeg",penalty="Manual",pen.value="2*log(n)",Q=5,class=FALSE) # returns optimal number of changepoints is 3, locations are 50,100,150.
+multiple.meanvar.exp(x,mul.method="BinSeg",penalty="Manual",pen.value="2*log(n)",Q=5,class=FALSE)
+# returns optimal number of changepoints is 3, locations are 50,100,150.
 
-# Example multiple datasets where the first row has multiple changes in mean and variance and the second row has no change in mean or variance
+# Example multiple datasets where the first row has multiple changes in mean and variance and the
+#second row has no change in mean or variance
 set.seed(1)
 x=c(rexp(50,rate=1),rexp(50,rate=5),rexp(50,rate=1),rexp(50,rate=10))
 y=rexp(200,rate=1)
 z=rbind(x,y)
-multiple.meanvar.exp(z,mul.method="SegNeigh",penalty="Manual",pen.value=2*log(200),Q=5,class=FALSE) # returns list that has two elements, the first has 3 changes in mean and variance at 50,100,150 and the second has no changes in mean or variance
+multiple.meanvar.exp(z,mul.method="SegNeigh",penalty="Manual",pen.value=2*log(200),Q=5,class=FALSE)
+# returns list that has two elements, the first has 3 changes in mean and variance at 50,100,150 and
+#the second has no changes in mean or variance
 ans=multiple.meanvar.exp(z,mul.method="PELT",penalty="Manual",pen.value=2*log(200)) 
 cpts(ans[[1]]) # same results as for the SegNeigh method.
 cpts(ans[[2]]) # same results as for the SegNeigh method.

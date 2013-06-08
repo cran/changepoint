@@ -48,9 +48,13 @@ Rebecca Killick
 \examples{
 # Example of multiple changes in mean and variance at 50,100,150 in simulated Gamma data
 set.seed(1)
-x=c(rgamma(50,shape=1,rate=1),rgamma(50,shape=1,rate=3),rgamma(50,shape=1,rate=1),rgamma(50,shape=1,rate=10))
-binseg.meanvar.gamma(x,shape=1,Q=5,pen=2*log(200)) # returns optimal number as 3 and the locations as c(47,104,150,152)
-binseg.meanvar.gamma(x,shape=1,Q=2,pen=2*log(200)) # returns optimal number as 2 as this is the maximum number of changepoints it can find.  If you get the maximum number, you need to increase Q until this is not the case.
+x=c(rgamma(50,shape=1,rate=1),rgamma(50,shape=1,rate=3),rgamma(50,shape=1,rate=1),rgamma(50,shape=1,
+rate=10))
+binseg.meanvar.gamma(x,shape=1,Q=5,pen=2*log(200)) # returns optimal number as 3 and the locations
+#as c(47,104,150,152)
+binseg.meanvar.gamma(x,shape=1,Q=2,pen=2*log(200)) # returns optimal number as 2 as this is the
+#maximum number of changepoints it can find.  If you get the maximum number, you need to increase Q
+#until this is not the case.
 
 # Example no change in mean or variance
 set.seed(1)

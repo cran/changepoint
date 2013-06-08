@@ -11,11 +11,11 @@
 \describe{
 
 \item{\code{signature(x = "cpt")}}{
-	Assigns the value following <- to the test.stat slot in x
+  Assigns the value following <- to the test.stat slot in x
 }
 
 \item{\code{signature(x = "cpt.reg")}}{
-	Assigns the value following <- to the test.stat slot in x
+  Assigns the value following <- to the test.stat slot in x
 }
 }}
 \keyword{methods}

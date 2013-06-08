@@ -54,16 +54,21 @@ Rebecca Killick
 # Example of a change in variance at 100 in simulated normal data
 set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,0,10))
-single.var.css(x,penalty="Asymptotic",pen.value=0.05,class=FALSE) # returns 105 to show that the null hypothesis was rejected and the change in variance is at 105
+single.var.css(x,penalty="Asymptotic",pen.value=0.05,class=FALSE) # returns 105 to show that the
+#null hypothesis was rejected and the change in variance is at 105
 ans=single.var.css(x,penalty="Asymptotic",pen.value=0.01) 
-cpts(ans) # returns 105 to show that the null hypothesis was rejected, the change in variance is at 105 and we are 99% confident of this result
+cpts(ans) # returns 105 to show that the null hypothesis was rejected, the change in variance is at
+#105 and we are 99% confident of this result
 
-# Example of a data matrix containing 2 rows, row 1 has a change in variance and row 2 had no change in variance
+# Example of a data matrix containing 2 rows, row 1 has a change in variance and row 2 had no change
+#in variance
 set.seed(10)
 x=c(rnorm(100,0,1),rnorm(100,0,10))
 y=rnorm(200,0,1)
 z=rbind(x,y)
-single.var.css(z,penalty="Asymptotic",pen.value=0.05,class=FALSE) # returns vector c(102,200) which shows that the first dataset has a change in variance at 102 and the second dataset rejected H1 and has no change in variance
+single.var.css(z,penalty="Asymptotic",pen.value=0.05,class=FALSE) # returns vector c(102,200) which
+#shows that the first dataset has a change in variance at 102 and the second dataset rejected H1 and
+#has no change in variance
 ans=single.var.css(z,penalty="Manual",pen.value=2) 
 cpts(ans[[1]]) # test using a manual penalty which is the same as the AIC penalty for this example
 cpts(ans[[2]]) # result is the same as above, c(102, 200)

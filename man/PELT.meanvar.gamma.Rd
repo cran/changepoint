@@ -43,13 +43,15 @@ Rebecca Killick
 \examples{
 # Example of multiple changes in scale parameter at 50,100,150 in simulated gamma data
 set.seed(1)
-x=c(rgamma(50,shape=1,rate=1),rgamma(50,shape=1,rate=3),rgamma(50,shape=1,rate=1),rgamma(50,shape=1,rate=10))
+x=c(rgamma(50,shape=1,rate=1),rgamma(50,shape=1,rate=3),rgamma(50,shape=1,rate=1),rgamma(50,shape=1,
+rate=10))
 PELT.meanvar.gamma(x,pen=2*log(200)) # returns c(47,102,150,200)
 
 # Example no change in scale parameter
 set.seed(1)
 x=rgamma(200,shape=1,rate=1)
-PELT.meanvar.gamma(x,pen=2*log(200)) # returns 200 to show no change in mean or variance has been found
+PELT.meanvar.gamma(x,pen=2*log(200)) # returns 200 to show no change in mean or variance has been
+#found
 }
 
 \keyword{methods}

@@ -326,7 +326,7 @@
 			y=c(0,cumsum(data))
 			tmpscale=NULL
 			for(j in 1:nseg){
-				tmpscale[j]=(y[(cpts[j+1]+1)]-y[(cpts[j]+1)])/((cpts[j+1]-cpts[j]+1)*shape)
+				tmpscale[j]=(y[(cpts[j+1]+1)]-y[(cpts[j]+1)])/((cpts[j+1]-cpts[j])*shape)
 			}
 			return(tmpscale)			
 		}
@@ -500,7 +500,7 @@
 				}
 				y2=c(0,cumsum(data.set(object)^2))
 				y=c(0,cumsum(data.set(object)))
-				cpts=c(0,cpts(object))
+				cpts=c(0,object@cpts)
 				nseg=length(cpts)-1
 				tmplike=0
 				for(j in 1:nseg){
@@ -516,7 +516,7 @@
 					return( n*(log(2*pi)+log(x/n)+1))
 				}
 				y2=c(0,cumsum(data.set(object)^2))
-				cpts=c(0,cpts(object))
+				cpts=c(0,object@cpts)
 				nseg=length(cpts)-1
 				tmplike=0
 				for(j in 1:nseg){
@@ -534,7 +534,7 @@
 				}
 				y2=c(0,cumsum(data.set(object)^2))
 				y=c(0,cumsum(data.set(object)))
-				cpts=c(0,cpts(object))
+				cpts=c(0,object@cpts)
 				nseg=length(cpts)-1
 				tmplike=0
 				for(j in 1:nseg){
@@ -557,7 +557,7 @@
 			  }
 				y=c(0,cumsum(data.set(object)))
 				shape=param.est(object)$shape
-				cpts=c(0,cpts(object))
+				cpts=c(0,object@cpts)
 				nseg=length(cpts)-1
 				tmplike=0
 				for(j in 1:nseg){
@@ -576,7 +576,7 @@
 			    return(n*log(n)-n*log(x))
 			  }
 				y=c(0,cumsum(data.set(object)))
-				cpts=c(0,cpts(object))
+				cpts=c(0,object@cpts)
 				nseg=length(cpts)-1
 				tmplike=0
 				for(j in 1:nseg){
@@ -595,7 +595,7 @@
 		      return(x*log(x)-x*log(n))
 		    }
 		    y=c(0,cumsum(data.set(object)))
-		    cpts=c(0,cpts(object))
+		    cpts=c(0,object@cpts)
 		    nseg=length(cpts)-1
 		    tmplike=0
 		    for(j in 1:nseg){

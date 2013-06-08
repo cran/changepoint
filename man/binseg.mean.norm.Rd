@@ -48,8 +48,11 @@ Rebecca Killick
 # Example of multiple changes in mean at 50,100,150 in simulated normal data
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,5,1),rnorm(50,10,1),rnorm(50,3,1))
-binseg.mean.norm(x,Q=5,pen=2*log(200)) # returns optimal number as 3 and the locations as c(50,100,150)
-binseg.mean.norm(x,Q=2,pen=2*log(200)) # returns optimal number as 2 as this is the maximum number of changepoints it can find.  If you get the maximum number, you need to increase Q until this is not the case.
+binseg.mean.norm(x,Q=5,pen=2*log(200)) # returns optimal number as 3 and the locations as
+#c(50,100,150)
+binseg.mean.norm(x,Q=2,pen=2*log(200)) # returns optimal number as 2 as this is the maximum number
+#of changepoints it can find.  If you get the maximum number, you need to increase Q until this is
+#not the case.
 
 # Example no change in mean
 set.seed(10)

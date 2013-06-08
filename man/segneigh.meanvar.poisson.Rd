@@ -46,8 +46,11 @@ Rebecca Killick
 # Example of multiple changes in mean and variance at 50,100,150 in simulated Poisson data
 set.seed(1)
 x=c(rpois(50,lambda=1),rpois(50,lambda=5),rpois(50,lambda=1),rpois(50,lambda=10))
-segneigh.meanvar.poisson(x,Q=5, pen=2*log(200)) # returns optimal number as 3 and the locations as c(50,100,150)
-segneigh.meanvar.poisson(x,Q=3, pen=2*log(200)) # returns optimal number as 2 as this is the maximum number of changepoints it can find.  If you get the maximum number, you need to increase Q until this is not the case.
+segneigh.meanvar.poisson(x,Q=5, pen=2*log(200)) # returns optimal number as 3 and the locations as
+#c(50,100,150)
+segneigh.meanvar.poisson(x,Q=3, pen=2*log(200)) # returns optimal number as 2 as this is the maximum
+#number of changepoints it can find.  If you get the maximum number, you need to increase Q until
+#this is not the case.
 
 # Example no change in mean or variance
 set.seed(1)
