@@ -54,7 +54,7 @@ single.mean.norm<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.estim
 		if(penalty=="Asymptotic"){
 			alpha=pen.value
 			alogn=(2*log(log(n)))^(-(1/2))
-			blogn=(alogn^(-1))+(1/2)*alogn*log(log(log(n)))
+			blogn=(alogn^(-1))+(1/2)*alogn*log(log(log(n)))  # Chen & Gupta (2000) pg10
 			pen.value=(-alogn*log(log((1-alpha+exp(-2*(pi^(1/2))*exp(blogn/alogn)))^(-1/(2*(pi^(1/2))))))+blogn)^2
 		}
 		tmp=single.mean.norm.calc(coredata(data),extrainf=TRUE)
@@ -69,7 +69,13 @@ single.mean.norm<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.estim
 			}
 			return(out)
 		}
-		else{ return(ans$cpt)}
+		else{ 
+		  alogn=(2*log(log(n)))^(-(1/2))
+		  blogn=(alogn^(-1))+(1/2)*alogn*log(log(log(n)))  # Chen & Gupta (2000) pg10
+		  out=c(ans$cpt,exp(-2*(pi^(1/2))*exp(-alogn*sqrt(abs(tmp[2]-tmp[3]))+(alogn^{-1})*blogn))-exp(-2*(pi^(1/2))*exp((alogn^{-1})*blogn)))
+		  names(out)=c('cpt','p value')
+		  return(out)
+		}
 	}
 	else{ 
 		n=ncol(data)
@@ -97,7 +103,14 @@ single.mean.norm<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.estim
 			}
 			return(out)
 		}
-		else{ return(ans$cpt)}
+		else{ 
+		  alogn=(2*log(log(n)))^(-(1/2))
+		  blogn=(alogn^(-1))+(1/2)*alogn*log(log(log(n)))  # Chen & Gupta (2000) pg10
+		  out=cbind(ans$cpt,exp(-2*(pi^(1/2))*exp(-alogn*sqrt(abs(tmp[,2]-tmp[,3]))+(alogn^{-1})*blogn))-exp(-2*(pi^(1/2))*exp((alogn^{-1})*blogn)))
+		  colnames(out)=c('cpt','p value')
+      rownames(out)=NULL
+		  return(out)
+		}
 	}
 }
 
@@ -174,7 +187,7 @@ single.var.norm<-function(data,penalty="SIC",pen.value=0,know.mean=FALSE,mu=NA,c
 			alpha=pen.value
 			alogn=sqrt(2*log(log(n)))
 			blogn=2*log(log(n))+ (log(log(log(n))))/2 - log(gamma(1/2))
-			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
+			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2  # Chen & Gupta (2000) pg27
 		}
 		tmp=single.var.norm.calc(coredata(data),know.mean,mu,extrainf=TRUE)
 		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=1,pen.value)
@@ -188,7 +201,13 @@ single.var.norm<-function(data,penalty="SIC",pen.value=0,know.mean=FALSE,mu=NA,c
 			}
 			return(out)
 		}
-		else{ return(ans$cpt)}
+		else{ 
+		  alogn=sqrt(2*log(log(n)))
+		  blogn=2*log(log(n))+ (log(log(log(n))))/2 - log(gamma(1/2))
+		  out=c(ans$cpt,exp(-2*exp(-alogn*sqrt(abs(tmp[2]-tmp[3]))+blogn))-exp(-2*exp(blogn)))  # Chen & Gupta (2000) pg27
+		  names(out)=c('cpt','p value')
+		  return(out)
+		}
 	}
 	else{ 
 		n=ncol(data)
@@ -198,7 +217,7 @@ single.var.norm<-function(data,penalty="SIC",pen.value=0,know.mean=FALSE,mu=NA,c
 			alpha=pen.value
 			alogn=sqrt(2*log(log(n)))
 			blogn=2*log(log(n))+ (log(log(log(n))))/2 - log(gamma(1/2))
-			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
+			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2   # Chen & Gupta (2000) pg27
 		}
 		tmp=single.var.norm.calc(data,know.mean,mu,extrainf=TRUE)
 		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=1,pen.value)
@@ -216,7 +235,14 @@ single.var.norm<-function(data,penalty="SIC",pen.value=0,know.mean=FALSE,mu=NA,c
 			}
 			return(out)
 		}
-		else{ return(ans$cpt)}
+		else{ 
+		  alogn=sqrt(2*log(log(n)))
+		  blogn=2*log(log(n))+ (log(log(log(n))))/2 - log(gamma(1/2))
+		  out=cbind(ans$cpt,exp(-2*exp(-alogn*sqrt(abs(tmp[,2]-tmp[,3]))+blogn))-exp(-2*exp(blogn)))  # Chen & Gupta (2000) pg27
+		  colnames(out)=c('cpt','p value')
+      rownames(out)=NULL
+		  return(out)
+		}
 	}
 }
 
@@ -288,7 +314,7 @@ single.meanvar.norm<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.es
 			alpha=pen.value
 			alogn=sqrt(2*log(log(n)))
 			blogn=2*log(log(n))+ log(log(log(n)))
-			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
+			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2   # Chen & Gupta (2000) pg54
 		}
 		tmp=single.meanvar.norm.calc(coredata(data),extrainf=TRUE)
 		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=2,pen.value)
@@ -302,7 +328,13 @@ single.meanvar.norm<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.es
 			}
 			return(out)
 		}
-		else{ return(ans$cpt)}
+		else{ 
+		  alogn=sqrt(2*log(log(n)))
+		  blogn=2*log(log(n))+ (log(log(log(n))))
+		  out=c(ans$cpt,exp(-2*exp(-alogn*sqrt(abs(tmp[2]-tmp[3]))+blogn))-exp(-2*exp(blogn)))   # Chen & Gupta (2000) pg54
+		  names(out)=c('cpt','p value')
+		  return(out)
+		}
 	}
 	else{ 
 		n=ncol(data)
@@ -312,7 +344,7 @@ single.meanvar.norm<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.es
 			alpha=pen.value
 			alogn=sqrt(2*log(log(n)))
 			blogn=2*log(log(n))+ log(log(log(n)))
-			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
+			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2   # Chen & Gupta (2000) pg54
 		}
 		tmp=single.meanvar.norm.calc(data,extrainf=TRUE)
 		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=2,pen.value)
@@ -330,7 +362,14 @@ single.meanvar.norm<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.es
 			}
 			return(out)
 		}
-		else{ return(ans$cpt)}
+		else{ 
+		  alogn=sqrt(2*log(log(n)))
+		  blogn=2*log(log(n))+ (log(log(log(n))))
+		  out=cbind(ans$cpt,exp(-2*exp(-alogn*sqrt(abs(tmp[,2]-tmp[,3]))+blogn))-exp(-2*exp(blogn)))   # Chen & Gupta (2000) pg54
+		  colnames(out)=c('cpt','p value')
+      rownames(out)=NULL
+		  return(out)
+		}
 	}
 }
 

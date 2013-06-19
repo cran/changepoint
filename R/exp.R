@@ -56,7 +56,7 @@ single.meanvar.exp<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.est
 			alpha=pen.value
 			an=(2*log(log(n)))^(1/2)
 			bn=2*log(log(n))+(1/2)*log(log(log(n)))-(1/2)*log(pi)
-			pen.value=(-1/an)*log(-0.5*log(1-alpha))+bn
+			pen.value=(-1/an)*log(-0.5*log(1-alpha))+bn # Chen & Gupta (2000) pg149
 		}
 		tmp=single.meanvar.exp.calc(coredata(data),extrainf=TRUE)
 		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=1,pen.value)
@@ -70,7 +70,13 @@ single.meanvar.exp<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.est
 			}
 			return(out)
 		}
-		else{ return(ans$cpt)}
+		else{ 
+		  an=(2*log(log(n)))^(1/2)
+		  bn=2*log(log(n))+(1/2)*log(log(log(n)))-(1/2)*log(pi)
+      out=c(ans$cpt,exp(-2*exp(-an*sqrt(abs(tmp[2]-tmp[3]))+an*bn))-exp(-2*exp(an*bn)))  # Chen & Gupta (2000) pg149
+      names(out)=c('cpt','p value')
+      return(out)
+		}
 	}
 	else{ 
 		n=ncol(data)
@@ -80,7 +86,7 @@ single.meanvar.exp<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.est
 			alpha=pen.value
 			an=(2*log(log(n)))^(1/2)
 			bn=2*log(log(n))+(1/2)*log(log(log(n)))-(1/2)*log(pi)
-			pen.value=(-1/an)*log(-0.5*log(1-alpha))+bn
+			pen.value=(-1/an)*log(-0.5*log(1-alpha))+bn  # Chen & Gupta (2000) pg149
 		}
 		tmp=single.meanvar.exp.calc(data,extrainf=TRUE)
 		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=1,pen.value)
@@ -98,7 +104,14 @@ single.meanvar.exp<-function(data,penalty="SIC",pen.value=0,class=TRUE,param.est
 			}
 			return(out)
 		}
-		else{ return(ans$cpt)}
+		else{ 
+		  an=(2*log(log(n)))^(1/2)
+		  bn=2*log(log(n))+(1/2)*log(log(log(n)))-(1/2)*log(pi)
+      out=cbind(ans$cpt,exp(-2*exp(-an*sqrt(abs(tmp[,2]-tmp[,3]))+bn))-exp(-2*exp(bn)))  # Chen & Gupta (2000) pg149
+		  colnames(out)=c('cpt','p value')
+      rownames(out)=NULL
+		  return(out)
+		}
 	}
 }
 
@@ -228,7 +241,8 @@ segneigh.meanvar.exp=function(data,Q=5,pen=0){
 
     op.cps=c(op.cps,which(criterion==min(criterion,na.rm=T))-1)
   }
-  return(list(cps=cps.Q,op.cpts=op.cps,pen=pen,like=criterion[op.cps+1]))
+	if(op.cps==(Q-1)){warning('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')}
+	return(list(cps=cps.Q,op.cpts=op.cps,pen=pen,like=criterion[op.cps+1]))
 }
 
 
@@ -292,7 +306,8 @@ binseg.meanvar.exp=function(data,Q=5,pen=0){
   op_cps=0
   
   answer=.C('binseg_meanvar_exp',y,as.integer(n),as.double(pen),as.integer(Q),as.integer(cptsout),likeout,as.integer(op_cps),PACKAGE='changepoint')
-  return(list(cps=rbind(answer[[5]],answer[[6]]),op.cpts=answer[[7]],pen=pen))
+	if(answer[[7]]==Q){warning('The number of changepoints identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')}
+	return(list(cps=rbind(answer[[5]],answer[[6]]),op.cpts=answer[[7]],pen=pen))
 }
 
 

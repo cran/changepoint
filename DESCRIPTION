@@ -1,8 +1,8 @@
 Package: changepoint
 Type: Package
 Title: An R package for changepoint analysis
-Version: 1.0.6
-Date: 2013-06-06
+Version: 1.1
+Date: 2013-06-19
 Authors@R: c(person("Rebecca", "Killick",
         role=c("aut","cre"),email="r.killick@lancs.ac.uk"),
         person("Idris", "Eckley", role="aut"),
@@ -18,7 +18,7 @@ Description: Implements various mainstream and specialised changepoint
 Depends: R(>= 2.12), methods, zoo
 License: GPL
 LazyLoad: yes
-Packaged: 2013-06-08 11:22:04 UTC; killick
+Packaged: 2013-06-20 10:40:13 UTC; killick
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2013-06-08 15:39:03
+Date/Publication: 2013-06-20 13:27:41
