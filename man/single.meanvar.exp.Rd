@@ -30,7 +30,7 @@ single.meanvar.exp(data,penalty="SIC",pen.value=0,class=TRUE,param.estimates=TRU
 	This function is used to find a single change in scale parameter (mean and variance) for data that is assumed to be Exponential distributed.  The value returned is the result of testing H0:no change in mean or variance against H1: single change in mean and/or variance using the log of the likelihood ratio statistic coupled with the penalty supplied.
 }
 \value{
-	If class=TRUE then an object of S4 class "cpt" is returned.  The slot \code{cpts} contains the changepoints that are solely returned if class=FALSE.  The structure of \code{cpts} is as follows.
+	If class=TRUE then an object of S4 class "cpt" is returned.  The slot \code{cpts} contains the changepoints that are returned (with p-value) if class=FALSE.  The structure of \code{cpts} is as follows.
 
 	If data is a vector (single dataset) then a single value is returned:
 	\item{cpt}{The most probable location of a changepoint if H0 was rejected or NA if H1 was rejected.}

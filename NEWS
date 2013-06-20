@@ -1,3 +1,9 @@
+Version 1.1
+***********
+Changes to previous version
+- Adding printing of p-value to single changepoint likelihood-based functions.  Thanks go to anonymous reviewers for this suggestion.
+- Changed all Segment Neighbourhood and Binary Segmentation functions to print a warning if the number of changes/segments identified equals Q.
+
 Version 1.0.6
 *************
 Changes to previous version

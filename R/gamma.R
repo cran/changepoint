@@ -70,7 +70,9 @@ single.meanvar.gamma<-function(data,shape=1,penalty="SIC",pen.value=0,class=TRUE
 			}
 			return(out)
 		}
-		else{ return(ans$cpt)}
+		else{ 
+      return(ans$cpt)
+		}
 	}
 	else{ 
 		n=ncol(data)
@@ -226,7 +228,8 @@ segneigh.meanvar.gamma=function(data,shape=1,Q=5,pen=0){
 
     op.cps=c(op.cps,which(criterion==min(criterion,na.rm=T))-1)
   }
-  return(list(cps=cps.Q,op.cpts=op.cps,pen=pen,like=criterion[op.cps+1]))
+	if(op.cps==(Q-1)){warning('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')}
+	return(list(cps=cps.Q,op.cpts=op.cps,pen=pen,like=criterion[op.cps+1]))
 }
 
 
@@ -290,7 +293,8 @@ binseg.meanvar.gamma=function(data,shape=1,Q=5,pen=0){
   op_cps=0
   
   answer=.C('binseg_meanvar_gamma',y,as.integer(n),as.double(pen),as.integer(Q),as.integer(cptsout),likeout,as.integer(op_cps),as.double(shape),PACKAGE='changepoint')
-  return(list(cps=rbind(answer[[5]],answer[[6]]),op.cpts=answer[[7]],pen=pen))
+	if(answer[[7]]==Q){warning('The number of changepoints identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')}
+	return(list(cps=rbind(answer[[5]],answer[[6]]),op.cpts=answer[[7]],pen=pen))
 }
 
 

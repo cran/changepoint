@@ -46,7 +46,7 @@ segneigh.var.css=function(data,Q=5,pen=0){
 		}
 		op.cps=op.cps+1
 	}
-
+  if(op.cps==(Q-1)){warning('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')}
   return(list(cps=cps.Q,op.cpts=op.cps,pen=pen))
 }
 
@@ -89,6 +89,7 @@ binseg.var.css=function(data,Q=5,pen=0){
       op.cps=c(op.cps,max(which((criterion)==TRUE)))
     }
   }
+  if(op.cps==Q){warning('The number of changepoints identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')}
   return(list(cps=cpt,op.cpts=op.cps,pen=pen))
 }
 
@@ -273,6 +274,7 @@ segneigh.mean.cusum=function(data,Q=5,pen=0){
 		op.cps=op.cps+1
 	}
 
+  if(op.cps==(Q-1)){warning('The number of segments identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')}
   return(list(cps=cps.Q,op.cpts=op.cps,pen=pen))
 }
 
@@ -314,6 +316,7 @@ binseg.mean.cusum=function(data,Q=5,pen=0){
       op.cps=c(op.cps,max(which((criterion)==TRUE)))
     }
   }
+  if(op.cps==Q){warning('The number of changepoints identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')}
   return(list(cps=cpt,op.cpts=op.cps,pen=pen))
 }
 
