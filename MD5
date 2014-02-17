@@ -1,8 +1,8 @@
-ac98b2c85dffb3dff26e53b23ed61da7 *DESCRIPTION
-bbe37fa045be9486c0e3a58ce4edf7e9 *NAMESPACE
-c6ab884118919c9d9d509de88dc19050 *NEWS
+2e7b7ce6a810fee8c483c32235f08c7a *DESCRIPTION
+c7e5503af3955b6268bb14eee9fa1882 *NAMESPACE
+e2439e519179a16853d0ff0de89b1f79 *NEWS
 df4f8565433919495a0beffc25d0b624 *R/cpt.R
-a7bb2987c2b504d7b2d49432874b8cd2 *R/cpt.class.R
+fb2e22cf031204b1feb36d2458496787 *R/cpt.class.R
 181eefc81680356fa4adb549a662e649 *R/decision.R
 5e7be83e63bed60eee1e4629cabfe516 *R/exp.R
 7b40c87a568c2cdf1cc5ddd55ddfaa7d *R/gamma.R
@@ -36,6 +36,7 @@ a95a4e4a8ef065da6586fa0ce12e41b6 *man/binseg.meanvar.poisson.Rd
 cccc0ef6c05d2b050a0551533ee0813f *man/binseg.var.norm.Rd
 7ce5101818b64d321f73ed6e0ac34868 *man/changepoint-package.Rd
 113950514e3cbadac02ddb930bf5756d *man/coef-methods.Rd
+d6e74de351183832a3d9915bec704dad *man/coef.Rd
 97644ac0731cfa5c35908a41ffd08c5c *man/cpt-class.Rd
 0818c9a8a225c8cc77342ce1f256af2e *man/cpt.mean.Rd
 126b99c4b1226d54bb99f4165008a1ec *man/cpt.meanvar.Rd
@@ -66,6 +67,7 @@ aecb6d0977df7526020892bf70c14f88 *man/distribution--methods.Rd
 105979e6381f7fe89eafc7fbf585b1fc *man/likelihood-methods.Rd
 93a2dbb81e6f3dadc8d8541a35efda83 *man/likelihood.Rd
 8cdec5494318c22b1934d54ab48e18ea *man/logLik-methods.Rd
+652c871dc2b0ad649489e3f1a84f0d75 *man/logLik.Rd
 997040a5f277ed34826a43d27979c27c *man/method--methods.Rd
 02d0d9dc415afece15a409e466d6063d *man/method-.Rd
 a2f0911b0e678804e0f7755b525b7e64 *man/method-methods.Rd

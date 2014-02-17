@@ -160,6 +160,18 @@
 	setMethod("param.est","cpt",function(object) object@param.est)
 	setMethod("param.est","cpt.reg",function(object) object@param.est)
 
+	# need below to be compatible with previous versions of R where coef is not a generic
+	if(!isGeneric("coef")) {
+		if (is.function("coef")){
+			fun <- coef
+		}
+		else {fun <- function(object){
+				standardGeneric("coef")
+			}
+		}
+		setGeneric("coef", fun)
+	}
+
   setMethod("coef","cpt",function(object) object@param.est)
 	setMethod("coef","cpt.reg",function(object) object@param.est)
 	
@@ -492,6 +504,19 @@
 	})
 
 # likelihood functions
+
+  # for backwards compatability for previous versions of R where logLik is not a generic
+  if(!isGeneric("logLik")) {
+	  if (is.function("logLik")){
+	    fun <- logLik
+	  }
+	  else {fun <- function(object){
+	    standardGeneric("logLik")
+	  }
+	  }
+	  setGeneric("logLik", fun)
+	}
+	
 	setMethod("logLik", "cpt", function(object) {
 		if(test.stat(object)=="Normal"){
 			if(cpttype(object)=="mean"){
