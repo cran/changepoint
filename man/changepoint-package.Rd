@@ -12,15 +12,15 @@ Implements various mainstream and specialised changepoint methods for finding si
 \tabular{ll}{
 Package: \tab changepoint\cr
 Type: \tab Package\cr
-Version: \tab 1.0.6 \cr
-Date: \tab 2013-06-06\cr
+Version: \tab 1.1.2 \cr
+Date: \tab 2014-02-25\cr
 License: \tab GPL\cr
 LazyLoad: \tab yes\cr
 }
 
 }
 \author{
-Rebecca Killick <r.killick@lancs.ac.uk>, Idris A. Eckley <i.eckley@lancs.ac.uk> with contributions from Paul Fearnhead <p.fearnhead@lancs.ac.uk>.
+Rebecca Killick <r.killick@lancs.ac.uk>, Kaylea Haynes <k.haynes1@lancs.ac.uk> with contributions from Idris A. Eckley <i.eckley@lancs.ac.uk>, Paul Fearnhead <p.fearnhead@lancs.ac.uk>.
 
 Maintainer: Rebecca Killick <r.killick@lancs.ac.uk>
 }

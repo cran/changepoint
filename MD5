@@ -1,8 +1,8 @@
-2e7b7ce6a810fee8c483c32235f08c7a *DESCRIPTION
+2ba28d8bae2dfb8cd5bd38f01d12986e *DESCRIPTION
 c7e5503af3955b6268bb14eee9fa1882 *NAMESPACE
-e2439e519179a16853d0ff0de89b1f79 *NEWS
+09d836552b377c1298b1c3c914b40f64 *NEWS
 df4f8565433919495a0beffc25d0b624 *R/cpt.R
-fb2e22cf031204b1feb36d2458496787 *R/cpt.class.R
+bef264ca921a2a6dc6bc112b328aa9ad *R/cpt.class.R
 181eefc81680356fa4adb549a662e649 *R/decision.R
 5e7be83e63bed60eee1e4629cabfe516 *R/exp.R
 7b40c87a568c2cdf1cc5ddd55ddfaa7d *R/gamma.R
@@ -11,7 +11,7 @@ fb2e22cf031204b1feb36d2458496787 *R/cpt.class.R
 adabc0774ed29d50c9f13134cce402ba *R/poisson.R
 8a1330ddc45487af382890b6af44efc7 *R/single.nonparametric.R
 0794beaf53f30c74b7984189b37aa5f4 *R/single.norm.R
-0e9580461bf933ba4e8794d8b6a9318b *R/zzz.R
+b5f3f503dd5a9bb163b707fcab2c24f1 *R/zzz.R
 254504402721721c12541d5cedbca35f *data/HC1.RData
 39abcfdc4b7dd47490ed582ac49a0a1e *data/Lai2005fig3.RData
 839d1172da0cbc2b4aa46d30b0c2c59d *data/Lai2005fig4.RData
@@ -34,9 +34,8 @@ cb7979e633ca1e1160140e73d66ce93a *man/binseg.mean.cusum.Rd
 a95a4e4a8ef065da6586fa0ce12e41b6 *man/binseg.meanvar.poisson.Rd
 563103b59d06982858c00d55d3077271 *man/binseg.var.css.Rd
 cccc0ef6c05d2b050a0551533ee0813f *man/binseg.var.norm.Rd
-7ce5101818b64d321f73ed6e0ac34868 *man/changepoint-package.Rd
+3544ab1309e1fe7cf57c878325335638 *man/changepoint-package.Rd
 113950514e3cbadac02ddb930bf5756d *man/coef-methods.Rd
-d6e74de351183832a3d9915bec704dad *man/coef.Rd
 97644ac0731cfa5c35908a41ffd08c5c *man/cpt-class.Rd
 0818c9a8a225c8cc77342ce1f256af2e *man/cpt.mean.Rd
 126b99c4b1226d54bb99f4165008a1ec *man/cpt.meanvar.Rd
@@ -67,7 +66,6 @@ aecb6d0977df7526020892bf70c14f88 *man/distribution--methods.Rd
 105979e6381f7fe89eafc7fbf585b1fc *man/likelihood-methods.Rd
 93a2dbb81e6f3dadc8d8541a35efda83 *man/likelihood.Rd
 8cdec5494318c22b1934d54ab48e18ea *man/logLik-methods.Rd
-652c871dc2b0ad649489e3f1a84f0d75 *man/logLik.Rd
 997040a5f277ed34826a43d27979c27c *man/method--methods.Rd
 02d0d9dc415afece15a409e466d6063d *man/method-.Rd
 a2f0911b0e678804e0f7755b525b7e64 *man/method-methods.Rd

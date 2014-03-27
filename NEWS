@@ -1,3 +1,10 @@
+Version 1.1.2
+=============
+Changes to previous version
+
+* The check introduced in version 1.1.1 was causing problems in older versions as there was a mask between S3 and S4 generics.  Thus we removed the masking effect and incremented the minimum version of R to 3.0.  Thanks go to Philipp Boersch-Supan for highlighting the bug.
+* Added Kaylea Haynes as author of package.
+
 Version 1.1.1
 =============
 Changes to previous version
