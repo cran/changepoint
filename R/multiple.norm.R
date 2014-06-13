@@ -273,11 +273,16 @@ segneigh.var.norm=function(data,Q=5,pen=0,know.mean=FALSE,mu=NA){
   for(q in 2:Q){
     for(j in q:n){
       like=NULL
-      v=(q-1):(j-1)
-      like=like.Q[q-1,v]+all.seg[v+1,j]
-
+      if((j-2-q)<0){
+        like=-Inf
+      }
+      else{
+        v=(q):(j-2)
+        like=like.Q[q-1,v]+all.seg[v+1,j]
+      }
+      
       like.Q[q,j]= max(like,na.rm=TRUE)
-      cp[q,j]=which(like==max(like,na.rm=TRUE))[1]+(q-2)
+      cp[q,j]=which(like==max(like,na.rm=TRUE))[1]+(q-1)
     }
   }
   cps.Q=matrix(0,ncol=Q,nrow=Q)
@@ -375,9 +380,13 @@ segneigh.meanvar.norm=function(data,Q=5,pen=0){
   for(q in 2:Q){
     for(j in q:n){
       like=NULL
-      if((j-2-q)<0){v=q}
-      else{v=(q):(j-2)}
-      like=like.Q[q-1,v]+all.seg[v+1,j]
+      if((j-2-q)<0){
+        like=-Inf
+      }
+      else{
+        v=(q):(j-2)
+        like=like.Q[q-1,v]+all.seg[v+1,j]
+      }
 
       like.Q[q,j]= max(like,na.rm=TRUE)
       cp[q,j]=which(like==max(like,na.rm=TRUE))[1]+(q-1)

@@ -1,3 +1,12 @@
+Version 1.1.3
+=============
+Changes to previous version
+
+* Upgraded zoo from "imports" to "depends".  This is needed because more functionality from zoo is required and this also gives users access to the zoo features directly whereas previously they had to library the package separately.
+* The segment neighbourhood algorithm has now been updated to make sure that the changes in variance or mean and variance do not return segments of length 1.  This is now in line with the PELT and BinSeg algorithms.
+* Added citation information.
+* Documentation pages for cpt.mean, cpt.meanvar and cpt.var were updated to be clearer.  Thanks to Toby Hocking for highlighting this.
+
 Version 1.1.2
 =============
 Changes to previous version

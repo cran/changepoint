@@ -1,7 +1,6 @@
 import(methods)
-importFrom(graphics, plot)
-importFrom(zoo, coredata)
-importFrom(zoo, index)
+import(graphics)
+import(zoo)
 
 export("PELT.mean.norm", "PELT.meanvar.exp", "PELT.meanvar.poisson", "PELT.meanvar.gamma",
        "PELT.meanvar.norm", "PELT.var.norm", "binseg.mean.cusum",
