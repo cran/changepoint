@@ -1,6 +1,6 @@
-f3e0408835a4239c4ea7421db70f3553 *DESCRIPTION
+cde8969efbc58fb9ec86c3b68534893a *DESCRIPTION
 9d9381061f71521839fbe6213842831c *NAMESPACE
-c053d8b6fe487035abdb4bec2871e1d6 *NEWS
+cad63df8ecb25d90db79a711ab106c39 *NEWS
 df4f8565433919495a0beffc25d0b624 *R/cpt.R
 bef264ca921a2a6dc6bc112b328aa9ad *R/cpt.class.R
 181eefc81680356fa4adb549a662e649 *R/decision.R
@@ -17,7 +17,7 @@ b5f3f503dd5a9bb163b707fcab2c24f1 *R/zzz.R
 839d1172da0cbc2b4aa46d30b0c2c59d *data/Lai2005fig4.RData
 49186f91fbe1a6093df8ba56be7e0df0 *data/ftse100.RData
 f4da46937d67eaa7d2784cae4d9896b4 *data/wave.c44137.RData
-5ac1dfe3753af594e2a0569c1773e3d4 *inst/CITATION
+1113736230d6951a6ab774a4dbc30160 *inst/CITATION
 e8aa8332da00e6097860ab45bb21a5df *man/HC1.Rd
 7ec9ed8c770ad0bbb78eabf8a982154e *man/Lai2005fig3.Rd
 c93dceb293c63b6d1888eedfec3ecd71 *man/Lai2005fig4.Rd
@@ -35,7 +35,7 @@ cb7979e633ca1e1160140e73d66ce93a *man/binseg.mean.cusum.Rd
 a95a4e4a8ef065da6586fa0ce12e41b6 *man/binseg.meanvar.poisson.Rd
 563103b59d06982858c00d55d3077271 *man/binseg.var.css.Rd
 cccc0ef6c05d2b050a0551533ee0813f *man/binseg.var.norm.Rd
-4d0d0d2251571301ecde819f6c96aeb0 *man/changepoint-package.Rd
+d8570e41d55a0985a26996d3b1b59fa9 *man/changepoint-package.Rd
 113950514e3cbadac02ddb930bf5756d *man/coef-methods.Rd
 97644ac0731cfa5c35908a41ffd08c5c *man/cpt-class.Rd
 b3442c387cd8b686e2c6087a86a61c4d *man/cpt.mean.Rd
