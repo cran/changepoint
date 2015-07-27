@@ -7,18 +7,18 @@ Identifying Changes in Mean
 Calculates the optimal positioning and (potentially) number of changepoints for data using the user specified method.
 }
 \usage{
-cpt.mean(data,penalty="SIC",pen.value=0,method="AMOC",Q=5,test.stat="Normal",class=TRUE,
-param.estimates=TRUE)
+cpt.mean(data,penalty="MBIC",pen.value=0,method="AMOC",Q=5,test.stat="Normal",class=TRUE,
+param.estimates=TRUE,minseglen=1)
 }
 \arguments{
   \item{data}{
 	A vector, ts object or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
 }
   \item{penalty}{
-	Choice of "None", "SIC", "BIC", "AIC", "Hannan-Quinn", "Asymptotic" and "Manual" penalties.  If Manual is specified, the manual penalty is contained in the pen.value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen.value parameter.  The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+	Choice of "None", "SIC", "BIC", "MBIC", AIC", "Hannan-Quinn", "Asymptotic", "Manual" and "CROPS" penalties.  If Manual is specified, the manual penalty is contained in the pen.value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen.value parameter.  If CROPS is specified, the penalty range is contained in the pen.value parameter; note this is a vector of length 2 which contains the minimum and maximum penalty value.  Note CROPS can only be used if the method is "PELT". The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
 }
   \item{pen.value}{
-	The theoretical type I error e.g.0.05 when using the Asymptotic penalty.  The value of the penalty when using the Manual penalty option.  This can be a numeric value or text giving the formula to use.  Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.
+	The theoretical type I error e.g.0.05 when using the Asymptotic penalty.  A vector of length 2 (min,max) if using the CROPS penalty.  The value of the penalty when using the Manual penalty option - this can be a numeric value or text giving the formula to use.  Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.  
 }
   \item{method}{
 	Choice of "AMOC", "PELT", "SegNeigh" or "BinSeg".
@@ -35,7 +35,9 @@ param.estimates=TRUE)
   \item{param.estimates}{
 	Logical.  If TRUE and class=TRUE then parameter estimates are returned. If FALSE or class=FALSE no parameter estimates are returned.
 }
-
+  \item{minseglen}{
+  Positive integer giving the minimum segment length (no. of observations between changes), default is the minimum allowed by theory.
+  }
 }
 \details{
 	This function is used to find changes in mean for data using the test statistic specfified in the test.stat parameter.  The changes are found using the method supplied which can be single changepoint (AMOC) or multiple changepoints using exact (PELT or SegNeigh) or approximate (BinSeg) methods.  A changepoint is denoted as the first observation of the new segment / regime.
@@ -49,6 +51,9 @@ param.estimates=TRUE)
 	\item{cpt}{The most probable location of a changepoint if a change was identified or NA if no changepoint.}
   \item{p value}{The p-value of the identified changepoint.}
 	If method is PELT then a vector is returned containing the changepoint locations for the penalty supplied.  This always ends with n.
+  If the penalty is CROPS then a list is returned with elements:
+  \item{cpt.out}{A data frame containing the value of the penalty value where the number of segmentations changes, the number of segmentations and the value of the cost at that penalty value.}
+  \item{changepoints}{The optimal changepoint for the different penalty values starting with the lowest penalty value}
 	If method is SegNeigh then a list is returned with elements:
 	\item{cps}{Matrix containing the changepoint positions for 1,...,Q changepoints.}
 	\item{op.cpts}{The optimal changepoint locations for the penalty supplied.}
@@ -66,9 +71,13 @@ CUSUM Test: M. Csorgo, L. Horvath (1997) Limit Theorems in Change-Point Analysis
 
 PELT Algorithm: Killick R, Fearnhead P, Eckley IA (2012) Optimal detection of changepoints with a linear computational cost, \emph{JASA} \bold{107(500)}, 1590--1598
 
+CROPS: Haynes K, Eckley IA, Fearnhead P (2014) Efficient penalty search for multiple changepoint problems (in submission), arXiv:1412.3617
+
 Binary Segmentation: Scott, A. J. and Knott, M. (1974) A Cluster Analysis Method for Grouping Means in the Analysis of Variance, \emph{Biometrics} \bold{30(3)}, 507--512
 
 Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for the Optimal Identification of Segment Neighborhoods, \emph{Bulletin of Mathematical Biology} \bold{51(1)}, 39--54
+
+MBIC: Zhang, N. R. and Siegmund, D. O. (2007) A Modified Bayes Information Criterion with Applications to the Analysis of Comparative Genomic Hybridization Data. \emph{Biometrics} \bold{63}, 22-32.
 }
 \author{
 Rebecca Killick
@@ -88,7 +97,15 @@ ans=cpt.mean(x,penalty="Asymptotic",pen.value=0.01,method="AMOC")
 cpts(ans)# returns 100 to show that the null hypothesis was rejected, the change in mean is at 100
 #and we are 99% confident of this result
 ans=cpt.mean(x,penalty="Manual",pen.value=0.8,method="AMOC",test.stat="CUSUM") # returns 101 as the
-#changepoint location
+#changepoint location 
+
+# Example of using the CROPS penalty in data set above
+set.seed(1)
+x=c(rnorm(100,0,1),rnorm(100,10,1))
+out=cpt.mean(x, pen.value = c(3,10),penalty = "CROPS",method = "PELT") 
+cpts.full(out) # returns 6 segmentations for penalty values between 3 and 10.  
+# We find segmentations with 12, 10, 9, 8, 6 and 3 changepoints, inc 0 and n. 
+pen.value.full(out) # gives associated penalty transition points
 
 # Example of multiple changes in mean at 50,100,150 in simulated normal data
 set.seed(1)

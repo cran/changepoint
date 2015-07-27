@@ -1,3 +1,26 @@
+Version 2.0.1
+=============
+* Changed call_function in C to return INFINITY if cost function isn't present.  This is checked for in R but the C function might not have returned something. Requirement for CRAN submission.
+
+Version 2.0
+===========
+* Added new penalties:
+** MBIC, the new default penalty for all cpt.* functions.
+** CROPS, which is used to return multiple segmentations from PELT
+* Added minimum segment length argument to all cpt.* functions.  This lets the user set the minimum distance between changes, default to minimum allowed by theory which was used previously. Not yet implemented for SegNeigh method.
+* Added new cpt.range class which is a sub-class of cpt.  It has two additional slots, cpts.full and pen.value.full.  These contain multiple segmentations and their associated penalty values, as returned by BinSeg, SegNeigh and PELT when using CROPS penalty.
+* Added new nseg function that returns the number of segments (number of cpts +1).
+* Modified single method reporting when class=F to return label conf.level instead of pvalue. Thanks to Matthew Kowgier for the suggestion.
+* Complete back-end change to allow easier addition of penalty and cost functions in the future.  No affect on user interaction. Thanks to Martyn Byng for suggestions to improve this.
+* Thanks to Martyn Byng for suggesting a change to the Poisson cost function which now returns 0 when x=0 instead of previously when it returned Inf.
+* Tidied up the namespace so that only cpt.* functions and class related functions are exported.  The other functions are readily available by downloading the source.
+* Almost a complete back end re-write which includes now having 1 function for PELT and BinSeg regardless of the cost.  This has no effect on the user side but will make it easier to add new cost functions in the future. Thanks to Martyn Byng for many of the suggestions implemented.
+* Changed citation file to use bibentry format.
+* Added Jamie Lee as contractor on authorship list.
+* The Exponential test statistic was refusing to accept 0 values (i.e. data <=0 refused), this has now been changed so that 0 values are allowed (i.e. data <0 refused).  Thanks to Ilya Kipnis for reporting this bug.
+* Changed all "print" references to be "show" to avoid error with ESS.
+
+
 Version 1.1.5
 =============
 Changes to previous version
@@ -24,7 +47,7 @@ Version 1.1.1
 =============
 Changes to previous version
 
-* Added a check on the generics used to check if the generics "coef" and "logLik" exist and if not to create them.  This was creating problems with backwards R compatability as "coef" and "logLik" were only introduced as generics in recent versions of R.
+* Added a check on the generics used to check if the generics "coef" and "logLik" exist and if not to create them.  This was creating problems with backwards R compatibility as "coef" and "logLik" were only introduced as generics in recent versions of R.
 
 Version 1.1
 ===========
@@ -76,10 +99,10 @@ Version 1.0
 Changes to previous version
 
 * Removed printing and plotting of the last observation as the last cpt
-* The distribution class slot for the cpt class has been rename to test.stat (backwards compatability remains - for now)
-* Changed value parameter in all functions to be pen.value (no backwards compatability for named variables but ordering of arguments remains the same)
-* The data.set slot of the cpt class is now a ts object, the repurcusions of this are:
-		** the data.set() extractor function still returns a vector (for backwards compatability)
+* The distribution class slot for the cpt class has been rename to test.stat (backwards compatibility remains - for now)
+* Changed value parameter in all functions to be pen.value (no backwards compatibility for named variables but ordering of arguments remains the same)
+* The data.set slot of the cpt class is now a ts object, the repercussions of this are:
+		** the data.set() extractor function still returns a vector (for backwards compatibility)
 		** a new data.set.ts() extractor function has been created that returns the ts object
 		** the plot method associated with the cpt object uses the ts structure and thus the plot method for ts objects (i.e. automatic line plots)
 * Created a coef method for cpt objects that returns the same as the param.est() extractor function (which remains for backwards compatibility)

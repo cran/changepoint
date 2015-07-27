@@ -9,6 +9,7 @@
 \alias{cpt-method,test.stat}
 \alias{cpt-method,ncpts.max}
 \alias{cpt-method,method}
+\alias{cpt-method,minseglen}
 \alias{cpt-method,param.est}
 \alias{cpt-method,pen.type}
 \alias{cpt-method,pen.value}
@@ -18,6 +19,7 @@
 \alias{cpt-method,test.stat<-}
 \alias{cpt-method,ncpts.max<-}
 \alias{cpt-method,method<-}
+\alias{cpt-method,minseglen<-}
 \alias{cpt-method,param.est<-}
 \alias{cpt-method,pen.type<-}
 \alias{cpt-method,pen.value<-}
@@ -45,6 +47,7 @@ Objects can be created by calls of the form \code{new("cpt", ...)}.
     \item{\code{test.stat}:}{Object of class \code{"character"}, the test statistic for the analysis of the data }
     \item{\code{pen.type}:}{Object of class \code{"character"}, the penalty type specified in the analysis}
     \item{\code{pen.value}:}{Object of class \code{"numeric"}, the value of the penalty used in the analysis}
+    \item{\code{minseglen}:}{Object of class \code{"numeric"}, the minimum segment length (no. of observations between changepoints) used in the analysis}
     \item{\code{cpts}:}{Object of class \code{"numeric"}, vector of changepoints identified }
     \item{\code{ncpts.max}:}{Object of class \code{"numeric"}, maximum number of changepoint that can be identified }
     \item{\code{param.est}:}{Object of class \code{"list"}, list where each element is a vector of parameter estimates, if requested }
@@ -60,6 +63,7 @@ Objects can be created by calls of the form \code{new("cpt", ...)}.
     \item{test.stat}{\code{signature(object = "cpt")}: retrieves test.stat slot }
     \item{ncpts.max}{\code{signature(object = "cpt")}: retrieves ncpts.max slot }
     \item{method}{\code{signature(object = "cpt")}: retrieves method slot }
+    \item{minseglen}{\code{signature(object = "cpt")}: retrieves minseglen slot }
     \item{param.est}{\code{signature(object = "cpt")}: retrieves param.est slot }
     \item{pen.type}{\code{signature(object = "cpt")}: retrieves pen.type slot }
     \item{pen.value}{\code{signature(object = "cpt")}: retrieves pen.value slot }
@@ -69,12 +73,13 @@ Objects can be created by calls of the form \code{new("cpt", ...)}.
     \item{test.stat<-}{\code{signature(object = "cpt")}: replaces test.stat slot }
     \item{ncpts.max<-}{\code{signature(object = "cpt")}: replaces ncpts.max slot }
     \item{method<-}{\code{signature(object = "cpt")}: replaces method slot }
+    \item{minseglen<-}{\code{signature(object = "cpt")}: replaces minseglen slot }
     \item{param.est<-}{\code{signature(object = "cpt")}: replaces param.est slot }
     \item{pen.type<-}{\code{signature(object = "cpt")}: replaces pen.type slot }
     \item{pen.value<-}{\code{signature(object = "cpt")}: replaces pen.value slot }
     \item{print}{\code{signature(object = "cpt")}: prints details of the cpt object including summary}
     \item{summary}{\code{signature(object = "cpt")}: prints a summary of the cpt object }
-    \item{plot}{\code{signature(object = "cpt")}: plots the cpt object with changepoints highlighted }
+    \item{plot}{\code{signature(object = "cpt")}: plots the cpt object with changepoints highlighted}
     \item{param}{\code{signature(object = "cpt")}: calculates the parameter estimates for the cpt object}
     \item{logLik}{\code{signature(object = "cpt")}: returns the overall log-likelihood of the cpt object}
   }

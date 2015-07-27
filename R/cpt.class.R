@@ -1,6 +1,13 @@
-	setClass("cpt",representation(data.set="ts", cpttype="character", method="character", 	test.stat="character",pen.type="character",pen.value="numeric",cpts="numeric",ncpts.max="numeric",param.est="list",date="character"),prototype(date=date()))
+	setClass("cpt",representation(data.set="ts", cpttype="character", method="character", 	test.stat="character",pen.type="character",pen.value="numeric",minseglen="numeric",cpts="numeric",ncpts.max="numeric",param.est="list",date="character"),prototype(date=date()))
 
 	setClass("cpt.reg",representation(data.set="matrix", cpttype="character", method="character", test.stat="character",pen.type="character",pen.value="numeric",cpts="numeric",ncpts.max="numeric",param.est="list",date="character"),prototype(cpttype="regression",date=date()))
+  
+#   setClass("cpt", representation(), prototype())
+# # cpts is the optimal segementation
+#   
+  setClass("cpt.range",representation(cpts.full="matrix", pen.value.full="vector"), prototype(), contains="cpt")
+  # cpts.full is the entire matrix
+  # pen.value.full (beta) values as an extra slot (vector)
 
 # retrival functions for slots
 	if(!isGeneric("data.set")) {
@@ -107,6 +114,30 @@
 	}
 	setMethod("pen.value","cpt",function(object) object@pen.value)
 	setMethod("pen.value","cpt.reg",function(object) object@pen.value)
+
+	if(!isGeneric("pen.value.full")) {
+	  if (is.function("pen.value.full")){
+	    fun <- pen.value.full
+	  }
+	  else {fun <- function(object){
+	    standardGeneric("pen.value.full")
+	  }
+	  }
+	  setGeneric("pen.value.full", fun)
+	}
+	setMethod("pen.value.full","cpt.range",function(object) object@pen.value.full)
+
+  if(!isGeneric("minseglen")) {
+	  if (is.function("minseglen")){
+	    fun <- minseglen
+	  }
+	  else {fun <- function(object){
+	    standardGeneric("minseglen")
+	  }
+	  }
+	  setGeneric("minseglen", fun)
+	}
+	setMethod("minseglen","cpt",function(object) object@minseglen)
 	
 	if(!isGeneric("cpts")) {
 		if (is.function("cpts")){
@@ -121,7 +152,19 @@
 	setMethod("cpts","cpt",function(object) object@cpts[-length(object@cpts)])
 	setMethod("cpts","cpt.reg",function(object) object@cpts[-length(object@cpts)])
 	
-	if(!isGeneric("cpts.ts")) {
+	if(!isGeneric("cpts.full")) {
+	  if (is.function("cpts.full")){
+	    fun <- cpts.full
+	  }
+	  else {fun <- function(object){
+	    standardGeneric("cpts.full")
+	  }
+	  }
+	  setGeneric("cpts.full", fun)
+	}
+	setMethod("cpts.full","cpt.range",function(object) object@cpts.full)
+
+  if(!isGeneric("cpts.ts")) {
 		if (is.function("cpts.ts")){
 			fun <- cpts.ts
 		}
@@ -189,10 +232,27 @@
 		}
 		setGeneric("seg.len", fun)
 	}
-	setMethod("seg.len","cpt",function(object){object@cpts[1];if(ncpts(object)>=1){object@cpts[-1]-object@cpts[-length(object@cpts)]}})
-	setMethod("seg.len","cpt.reg",function(object){object@cpts[1];if(ncpts(object)>=1){object@cpts[-1]-object@cpts[-length(object@cpts)]}})
+	setMethod("seg.len","cpt",function(object){object@cpts-c(0,object@cpts[-length(object@cpts)])})
+	setMethod("seg.len","cpt.reg",function(object){object@cpts-c(0,object@cpts[-length(object@cpts)])})
 #i.e. if there is a changepoint in the data, return segment length. If not, return length of the data
-
+	
+  # nseg function
+	if(!isGeneric("nseg")) {
+	  if (is.function("nseg")){
+	    fun <- nseg
+	  }
+	  else {fun <- function(object){
+	    standardGeneric("nseg")
+	  }
+	  }
+	  setGeneric("nseg", fun)
+	}
+	setMethod("nseg","cpt",function(object){ncpts(object)+1})
+	setMethod("nseg","cpt.reg",function(object){ncpts(object)+1})
+  
+  
+  
+  
 # replacement functions for slots
 	setGeneric("data.set<-", function(object, value) standardGeneric("data.set<-"))
 	setReplaceMethod("data.set", "cpt", function(object, value) {
@@ -264,6 +324,12 @@
 		object@pen.value <- value
 		return(object)
 	})
+
+	setGeneric("minseglen<-", function(object, value) standardGeneric("minseglen<-"))
+	setReplaceMethod("minseglen", "cpt", function(object, value) {
+	  object@minseglen <- value
+	  return(object)
+	})
 	
 	setGeneric("cpts<-", function(object, value) standardGeneric("cpts<-"))
 	setReplaceMethod("cpts", "cpt", function(object, value) {
@@ -296,37 +362,54 @@
 		object@param.est <- value
 		return(object)
 	})
+  
+	setGeneric("cpts.full<-", function(object, value) standardGeneric("cpts.full<-"))
+	setReplaceMethod("cpts.full", "cpt.range", function(object, value) {
+	  object@cpts.full <- value
+	  return(object)
+	})
+	setGeneric("pen.value.full<-", function(object, value) standardGeneric("pen.value.full<-"))
+	setReplaceMethod("pen.value.full", "cpt.range", function(object, value) {
+	  object@pen.value.full <- value
+	  return(object)
+	})
+# 	setGeneric("pen.value.input<-", function(object, value) standardGeneric("pen.value.input<-"))
+# 	setReplaceMethod("pen.value.input", "cpt", function(object, value) {
+# 	  object@pen.value.input <- value
+# 	  return(object)
+# 	})
+  
 
 # parameter functions
 	setGeneric("param", function(object,...) standardGeneric("param"))
 	setMethod("param", "cpt", function(object,shape,...) {			
 		param.mean=function(object){
 			cpts=c(0,object@cpts)
-			nseg=length(cpts)-1
+			#nseg=length(cpts)-1
 			data=data.set(object)
 			tmpmean=NULL
-			for(j in 1:nseg){
+			for(j in 1:nseg(object)){
 				tmpmean[j]=mean(data[(cpts[j]+1):(cpts[j+1])])
 			}
 			return(tmpmean)
 		}
 		param.var=function(object){
 			cpts=c(0,object@cpts)
-			nseg=length(cpts)-1
+			#nseg=length(cpts)-1
 			data=data.set(object)
 			tmpvar=NULL
-			for(j in 1:nseg){
+			for(j in 1:nseg(object)){
 				tmpvar[j]=var(data[(cpts[j]+1):(cpts[j+1])])
 			}
 			return(tmpvar)
 		}
 		param.scale=function(object,shape){
 			cpts=c(0,object@cpts)
-			nseg=length(cpts)-1
+			#nseg=length(cpts)-1
 			data=data.set(object)
 			y=c(0,cumsum(data))
 			tmpscale=NULL
-			for(j in 1:nseg){
+			for(j in 1:nseg(object)){
 				tmpscale[j]=(y[(cpts[j+1]+1)]-y[(cpts[j]+1)])/((cpts[j+1]-cpts[j])*shape)
 			}
 			return(tmpscale)			
@@ -364,11 +447,11 @@
 	setMethod("param", "cpt.reg", function(object,shape,...) {			
 		param.norm=function(object){
 			cpts=c(0,cpts(object))
-			nseg=length(cpts)-1
+		#	nseg=length(cpts)-1 #nseg(object)
 			data=data.set(object)
 			p=ncol(data)-1
-			tmpbeta=matrix(NA,ncol=p,nrow=nseg)
-			for(j in 1:nseg){
+			tmpbeta=matrix(NA,ncol=p,nrow=nseg(object))
+			for(j in 1:nseg(object)){
 				tmpbeta[j,]=solve(t(data[(cpts[j]+1):cpts[j+1],2:(p+1)])%*%data[(cpts[j]+1):cpts[j+1],2:(p+1)],t(data[(cpts[j]+1):cpts[j+1],2:(p+1)])%*%data[(cpts[j]+1):cpts[j+1],1])
 			}
 			return(tmpbeta)
@@ -388,12 +471,26 @@
 	    cat("Method of analysis    :",method(object),"\n")
 	    cat("Test Statistic  :", test.stat(object),"\n")
 	    cat("Type of penalty       :", pen.type(object), "with value,",pen.value(object),"\n")
+      cat("Minimum Segment Length :", minseglen(object),"\n")
 	    cat("Maximum no. of cpts   :", ncpts.max(object),"\n")
 	    if(length(cpts(object))<=20){cat("Changepoint Locations :",cpts(object),"\n")}
 	    else{cat("Number of changepoints:", ncpts(object),"\n")}
 	})
 
-	setMethod("summary","cpt.reg",function(object){
+	setMethod("summary","cpt.range",function(object){
+	  cat("Changepoint type      : Change in",cpttype(object),'\n')
+	  cat("Method of analysis    :",method(object),"\n")
+	  cat("Test Statistic  :", test.stat(object),"\n")
+	  cat("Type of penalty       :", pen.type(object), "with value,",pen.value(object),"\n")
+	  cat("Minimum Segment Length :", minseglen(object),"\n")
+	  cat("Maximum no. of cpts   :", ncpts.max(object),"\n")
+	  if(length(cpts(object))<=20){cat("Changepoint Locations :",cpts(object),"\n")}
+	  else{cat("Number of changepoints:", ncpts(object),"\n")}
+    if((nrow(cpts.full(object))<=5)&(ncol(cpts.full(object)<=20))){cat("Range of segmentations:\n");print(cpts.full(object));cat("\n For penalty values:", pen.value.full(object),"\n")}
+    else{cat("Number of segmentations recorded:", nrow(cpts.full(object)), " with between ", sum(cpts.full(object)[nrow(cpts.full(object)),]>0,na.rm=T), " and ", sum(cpts.full(object)[1,]>0,na.rm=T), "changepoints.\n Penalty value ranges from:",min(pen.value.full(object))," to ",max(pen.value.full(object)))}
+	})
+
+  setMethod("summary","cpt.reg",function(object){
 	    cat("Changepoint type     : Change in",cpttype(object),'\n')
 	    cat("Method of analysis   :",method(object),"\n")
 	    cat("Test Statistic :", test.stat(object),"\n")
@@ -403,22 +500,22 @@
 	    else{cat("Number of changepoints:", ncpts(object),"\n")}
 	})
 
-# print functions
-	setMethod("print","cpt",function(x){
+# show functions
+	setMethod("show","cpt",function(object){
 	    cat("Class 'cpt' : Changepoint Object\n")
-	    cat("       ~~   : S4 class containing", length(attributes(x))-1, "slots with names\n")
-	    cat("             ", names(attributes(x))[1:(length(attributes(x))-1)], "\n\n")
-	    cat("Created on  :", x@date, "\n\n")
+	    cat("       ~~   : S4 class containing", length(attributes(object))-1, "slots with names\n")
+	    cat("             ", names(attributes(object))[1:(length(attributes(object))-1)], "\n\n")
+	    cat("Created on  :", object@date, "\n\n")
 	    cat("summary(.)  :\n----------\n")
-	    summary(x)
+	    summary(object)
 	})
-	setMethod("print","cpt.reg",function(x){
+	setMethod("show","cpt.reg",function(object){
 	    cat("Class 'cpt.reg' : Changepoint Regression Object\n")
-	    cat("       ~~   : S4 class containing", length(attributes(x))-1, "slots with names\n")
-	    cat("             ", names(attributes(x))[1:(length(attributes(x))-1)], "\n\n")
-	    cat("Created on  :", x@date, "\n\n")
+	    cat("       ~~   : S4 class containing", length(attributes(object))-1, "slots with names\n")
+	    cat("             ", names(attributes(object))[1:(length(attributes(object))-1)], "\n\n")
+	    cat("Created on  :", object@date, "\n\n")
 	    cat("summary(.)  :\n----------\n")
-	    summary(x)
+	    summary(object)
 	})
 
 # plot functions
@@ -428,7 +525,7 @@
 			abline(v=index(data.set.ts(x))[cpts(x)],col=cpt.col,lwd=cpt.width,lty=cpt.style)
 		}
 		else if(cpttype(x)=="mean"  ||  cpttype(x)=="mean and variance"){
-			nseg=length(cpts(x))+1
+			#nseg=length(cpts(x))+1
 			cpts=c(0,x@cpts)
 			if((test.stat(x)=="Normal")||(test.stat(x)=="CUSUM")){
 				means=param.est(x)$mean
@@ -445,7 +542,7 @@
 			else{
 				stop('Invalid Changepoint test statistic')
 			}
-			for(i in 1:nseg){
+			for(i in 1:nseg(x)){
 				segments(index(data.set.ts(x))[cpts[i]+1],means[i],index(data.set.ts(x))[cpts[i+1]],means[i],col=cpt.col,lwd=cpt.width,lty=cpt.style)
 			}
 		}
@@ -460,20 +557,20 @@
 		}
 		else if(dim(data.set(x))[2]==3){
 			if(data.set(x)[1,2]==1){
-				nseg=length(cpts(x))+1
+				#nseg=length(cpts(x))+1
 				cpts=c(0,x@cpts)
 				betas=param.est(x)$beta
 				plot(data.set(x[,3]),data.set(x[,1]),...)
-				for(i in 1:nseg){
+				for(i in 1:nseg(x)){
 					segments(cpts[i]+1,betas[i,1]*data.set(x)[cpts[i]+1,2]+betas[i,2]*data.set(x)[cpts[i]+1,3],cpts[i+1],betas[i,1]*data.set(x)[cpts[i+1],2]+betas[i,2]*data.set(x)[cpts[i+1],3],col=cpt.col,lwd=cpt.width,lty=cpt.style)
 				}
 			}
 			if(data.set(x)[1,3]==1){
-				nseg=length(cpts(x))+1
+				#nseg=length(cpts(x))+1
 				cpts=c(0,x@cpts)
 				betas=param.est(x)$beta
 				plot(data.set(x[,2]),data.set(x[,1]),...)
-				for(i in 1:nseg){
+				for(i in 1:nseg(x)){
 					segments(cpts[i]+1,betas[i,2]*data.set(x)[cpts[i]+1,3]+betas[i,1]*data.set(x)[cpts[i]+1,2],cpts[i+1],betas[i,2]*data.set(x)[cpts[i+1],3]+betas[i,1]*data.set(x)[cpts[i+1],2],col=cpt.col,lwd=cpt.width,lty=cpt.style)
 				}
 			}
@@ -482,18 +579,18 @@
 			}
 		}
 		else{
-			nseg=length(cpts(x))+1
+			#nseg=length(cpts(x))+1
 			cpts=c(0,x@cpts)
 			betas=param.est(x)$beta
 			plot(data.set(x[,2]),data.set(x[,1]),...)
-			for(i in 1:nseg){
+			for(i in 1:nseg(x)){
 				segments(cpts[i]+1,betas[i,1]*data.set(x)[cpts[i]+1,2],cpts[i+1],betas[i,2]+betas[i,1]*data.set(x)[cpts[i+1],2],col=cpt.col,lwd=cpt.width,lty=cpt.style)
 			}
 		}
 	})
 
 # likelihood functions
-
+#######if MBIC, -log(n)
 	setMethod("logLik", "cpt", function(object) {
 		if(test.stat(object)=="Normal"){
 			if(cpttype(object)=="mean"){
@@ -503,12 +600,17 @@
 				y2=c(0,cumsum(data.set(object)^2))
 				y=c(0,cumsum(data.set(object)))
 				cpts=c(0,object@cpts)
-				nseg=length(cpts)-1
+				#nseg=length(cpts)-1
 				tmplike=0
-				for(j in 1:nseg){
-			        	tmplike=tmplike+mll.mean(y2[cpts[j+1]+1]-y2[cpts[j]+1],y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
+				for(j in 1:nseg(object)){
+			    tmplike=tmplike+mll.mean(y2[cpts[j+1]+1]-y2[cpts[j]+1],y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
 				}
-				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
+				##c(tmplike, tmplike+(nseg-2)*pen.value(object)+sum(log(cpts[-1]-cpts[-(nseg+1)])))
+        if(pen.type(object)=="MBIC"){
+          like=c(tmplike, tmplike+(nseg(object)-2)*pen.value(object)+sum(log(cpts[-1]-cpts[-(nseg(object)+1)])))
+        }else{
+				  like=c(tmplike,tmplike+(nseg(object)-1)*pen.value(object))
+        }
 				names(like)=c("-like","-likepen")
 			}
 			else if(cpttype(object)=="variance"){
@@ -519,12 +621,16 @@
 				}
 				y2=c(0,cumsum(data.set(object)^2))
 				cpts=c(0,object@cpts)
-				nseg=length(cpts)-1
+				#nseg=length(cpts)-1
 				tmplike=0
-				for(j in 1:nseg){
+				for(j in 1:nseg(object)){
 					tmplike=tmplike+mll.var(y2[cpts[j+1]+1]-y2[cpts[j]+1],cpts[j+1]-cpts[j])
 				}
-				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
+				if(pen.type(object)=="MBIC"){
+				  like=c(tmplike, tmplike+(nseg(object)-2)*pen.value(object)+sum(log(cpts[-1]-cpts[-(nseg(object)+1)])))
+				}else{
+				  like=c(tmplike,tmplike+(nseg(object)-1)*pen.value(object))
+				}
 				names(like)=c("-like","-likepen")
 			}
 			else if(cpttype(object)=="mean and variance"){
@@ -537,12 +643,16 @@
 				y2=c(0,cumsum(data.set(object)^2))
 				y=c(0,cumsum(data.set(object)))
 				cpts=c(0,object@cpts)
-				nseg=length(cpts)-1
+				#nseg=length(cpts)-1
 				tmplike=0
-				for(j in 1:nseg){
+				for(j in 1:nseg(object)){
 					tmplike=tmplike+mll.meanvar(y2[cpts[j+1]+1]-y2[cpts[j]+1],y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
 				}
-				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
+				if(pen.type(object)=="MBIC"){
+				  like=c(tmplike, tmplike+(nseg(object)-2)*pen.value(object)+sum(log(cpts[-1]-cpts[-(nseg(object)+1)])))
+				}else{
+				  like=c(tmplike,tmplike+(nseg(object)-1)*pen.value(object))
+				}
 				names(like)=c("-like","-likepen")
 			}
 			else{
@@ -560,12 +670,16 @@
 				y=c(0,cumsum(data.set(object)))
 				shape=param.est(object)$shape
 				cpts=c(0,object@cpts)
-				nseg=length(cpts)-1
+				#nseg=length(cpts)-1
 				tmplike=0
-				for(j in 1:nseg){
+				for(j in 1:nseg(object)){
 					tmplike=tmplike+mll.meanvarg(y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j],shape)
 				}
-				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
+				if(pen.type(object)=="MBIC"){
+				  like=c(tmplike, tmplike+(nseg(object)-2)*pen.value(object)+sum(log(cpts[-1]-cpts[-(nseg(object)+1)])))
+				}else{
+				  like=c(tmplike,tmplike+(nseg(object)-1)*pen.value(object))
+				}
 				names(like)=c("-like","-likepen")
 			}
 		}
@@ -579,12 +693,16 @@
 			  }
 				y=c(0,cumsum(data.set(object)))
 				cpts=c(0,object@cpts)
-				nseg=length(cpts)-1
+				#nseg=length(cpts)-1
 				tmplike=0
-				for(j in 1:nseg){
+				for(j in 1:nseg(object)){
 					tmplike=tmplike+mll.meanvare(y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
 				}
-				like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
+				if(pen.type(object)=="MBIC"){
+				  like=c(tmplike, tmplike+(nseg(object)-2)*pen.value(object)+sum(log(cpts[-1]-cpts[-(nseg(object)+1)])))
+				}else{
+				  like=c(tmplike,tmplike+(nseg(object)-1)*pen.value(object))
+				}
 				names(like)=c("-like","-likepen")
 			}
 		}
@@ -598,12 +716,16 @@
 		    }
 		    y=c(0,cumsum(data.set(object)))
 		    cpts=c(0,object@cpts)
-		    nseg=length(cpts)-1
+		    #nseg=length(cpts)-1
 		    tmplike=0
-		    for(j in 1:nseg){
+		    for(j in 1:nseg(object)){
 		      tmplike=tmplike+mll.meanvarp(y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
 		    }
-		    like=c(tmplike,tmplike+(nseg-1)*pen.value(object))
+		    if(pen.type(object)=="MBIC"){
+		      like=c(tmplike, tmplike+(nseg(object)-2)*pen.value(object)+sum(log(cpts[-1]-cpts[-(nseg(object)+1)])))
+		    }else{
+		      like=c(tmplike,tmplike+(nseg(object)-1)*pen.value(object))
+		    }
 		    names(like)=c("-like","-likepen")
 		  }
 		}

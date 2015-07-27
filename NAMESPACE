@@ -1,26 +1,12 @@
 import(methods)
 import(graphics)
 import(zoo)
+import(stats)
 
-export("PELT.mean.norm", "PELT.meanvar.exp", "PELT.meanvar.poisson", "PELT.meanvar.gamma",
-       "PELT.meanvar.norm", "PELT.var.norm", "binseg.mean.cusum",
-       "binseg.mean.norm", "binseg.meanvar.exp", "binseg.meanvar.poisson", "binseg.meanvar.gamma",
-       "binseg.meanvar.norm", "binseg.var.css", "binseg.var.norm",
-       "cpt.mean", "cpt.meanvar", "cpt.var", "decision",
-       "method<-","multiple.mean.cusum", "multiple.mean.norm", "multiple.meanvar.exp", "multiple.meanvar.poisson",
-       "multiple.meanvar.gamma", "multiple.meanvar.norm", "multiple.var.css",
-       "multiple.var.norm", "param", "segneigh.mean.cusum","segneigh.mean.norm", "segneigh.meanvar.exp", "segneigh.meanvar.poisson",
-       "segneigh.meanvar.gamma", "segneigh.meanvar.norm", "segneigh.var.css",
-       "segneigh.var.norm", "single.mean.cusum", "single.mean.cusum.calc",
-       "single.mean.norm", "single.mean.norm.calc", "single.meanvar.exp", "single.meanvar.poisson",
-       "single.meanvar.exp.calc", "single.meanvar.poisson.calc", "single.meanvar.gamma",
-       "single.meanvar.gamma.calc", "single.meanvar.norm",
-       "single.meanvar.norm.calc", "single.var.css", "single.var.css.calc",
-       "single.var.norm", "single.var.norm.calc")
-exportClasses(cpt,cpt.reg)
-exportMethods(plot,summary,print,logLik,likelihood,data.set,data.set.ts,cpts,cpts.ts,cpttype,distribution,test.stat,
-	method,ncpts,ncpts.max,param.est,coef,pen.type,pen.value,seg.len,"cpts<-","cpttype<-",
-	"data.set<-","distribution<-","test.stat<-","ncpts.max<-","param.est<-","pen.type<-",
-	"pen.value<-")
+export("cpt.mean", "cpt.meanvar", "cpt.var")
+exportClasses(cpt,cpt.reg,cpt.range)
+exportMethods(plot,summary,show,nseg,logLik,likelihood,data.set,data.set.ts,cpts,cpts.full, cpts.ts,cpttype,distribution,test.stat,
+	method,ncpts,ncpts.max,param.est,param, coef,pen.type,pen.value,pen.value.full, minseglen, seg.len,"cpts<-","cpttype<-","data.set<-","distribution<-","test.stat<-","ncpts.max<-","param.est<-","pen.type<-",
+	"pen.value<-", "method<-", "cpts.full<-", "minseglen<-","pen.value.full<-")
 
 useDynLib(changepoint)
