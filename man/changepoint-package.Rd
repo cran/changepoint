@@ -6,14 +6,14 @@
 Contains funcions that run various single and multiple changepoint methods
 }
 \description{
-Implements various mainstream and specialised changepoint methods for finding single and multiple changepoints within data.  Many popular non-parametric and frequentist methods are included.  Users should start by looking at the documentation for cpt.mean, cpt.var and cpt.meanvar.
+Implements various mainstream and specialised changepoint methods for finding single and multiple changepoints within data.  Many popular non-parametric and frequentist methods are included.  Users should start by looking at the documentation for cpt.mean(), cpt.var() and cpt.meanvar().
 }
 \details{
 \tabular{ll}{
 Package: \tab changepoint\cr
 Type: \tab Package\cr
-Version: \tab 2.0.1 \cr
-Date: \tab 2015-07-27\cr
+Version: \tab 2.1.1 \cr
+Date: \tab 2015-09-30\cr
 License: \tab GPL\cr
 LazyLoad: \tab yes\cr
 }

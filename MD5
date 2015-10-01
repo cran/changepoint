@@ -1,6 +1,6 @@
-612bcac3de468840421fa25b4f9ec547 *DESCRIPTION
+5a19facc286b5b214e43c35ae0f5dd0e *DESCRIPTION
 d15ce474b169eac6f2aff5b260fbea4f *NAMESPACE
-0768c4547cfc17697642cabf1de4bc66 *NEWS
+528826a2941d4c1ba3f08daf6985f04d *NEWS
 2ed94f0c3c84251fe2c963e52b29b162 *R/BinSeg_one_func_minseglen.R
 91960f0bd62219c80fdb96dc2b93c4b7 *R/CROPS.R
 2dbb8337d8473b6f655cf4bf03cd8a0c *R/PELT_one_func_minseglen.R
@@ -14,12 +14,12 @@ ae077cdf5b8e6ef2e7acba51407efb12 *R/decision.R
 3df44fdf9e9a09fe5e7e61209993d5f4 *R/gamma.R
 5c47aa3156a7b63ac1a357d71ef7d100 *R/multiple.nonparametric.R
 d4d1db7975ab287e581a5a06b56d9a6b *R/multiple.norm.R
-8ea13ac1052f0b9db27039198c79a494 *R/penalty_decision.R
+644574ed8679b403e0807b39f047949d *R/penalty_decision.R
 0a8a586119a8d0be101c4678af230735 *R/poisson.R
-ec73549c8c46d20492ee7e218baf0772 *R/range_of_penalties.R
+9787aeaee4b0dcb32845a531a1fcdbbc *R/range_of_penalties.R
 40fc90a3debf484564c62f96d6fd5f60 *R/single.nonparametric.R
 62545b29972ff88ec9feffee8a4e30de *R/single.norm.R
-831020a5957af59d8bdf150bff7cdb80 *R/zzz.R
+f0e7c336ac93277ca77d6d1b57f2a730 *R/zzz.R
 254504402721721c12541d5cedbca35f *data/HC1.RData
 39abcfdc4b7dd47490ed582ac49a0a1e *data/Lai2005fig3.RData
 839d1172da0cbc2b4aa46d30b0c2c59d *data/Lai2005fig4.RData
@@ -29,7 +29,7 @@ f4da46937d67eaa7d2784cae4d9896b4 *data/wave.c44137.RData
 e8aa8332da00e6097860ab45bb21a5df *man/HC1.Rd
 7ec9ed8c770ad0bbb78eabf8a982154e *man/Lai2005fig3.Rd
 c93dceb293c63b6d1888eedfec3ecd71 *man/Lai2005fig4.Rd
-f6c1b6964ec0ae03be6218aa9d4772a8 *man/changepoint-package.Rd
+114963819718375abcab334ca2a9c85f *man/changepoint-package.Rd
 113950514e3cbadac02ddb930bf5756d *man/coef-methods.Rd
 a03b17636caca0dd8461f8430d9d5385 *man/cpt-class.Rd
 fa1f678a732e457674ecb910c8277a05 *man/cpt.mean.Rd
@@ -109,9 +109,9 @@ d7d632b1ea7d8a5669936f97a87ca2e1 *man/summary-methods.Rd
 f1b7bbc406c301df84d56ed5d74b4eab *man/test.stat-methods.Rd
 194c1516732f6082d6d51428573c4e5a *man/test.stat.Rd
 24cc0bffc1083bf391b50d678620c482 *man/wave.c44137.Rd
-a50b6275cb1b351b90435f91351f6f21 *src/BinSeg_one_func_minseglen.c
-bb9404590aa83e46766688a314f02d76 *src/PELT_one_func_minseglen.c
-dec45a8ffc0530038c04802d61becfff *src/cost_general_functions.c
+09b9a4e0b5f1df2784846461be94ed0a *src/BinSeg_one_func_minseglen.c
+04dae848b06f288cede5d55231c21e7a *src/PELT_one_func_minseglen.c
+537fc3db6521942ff9bc45ecd3b887a2 *src/cost_general_functions.c
 30504c3195dfb6db9fb6408bd9add7f8 *tests/testthat.R
 c0b92c043b1c3e453cb7890f104b7466 *tests/testthat/test-cptmean.R
 c9dc382d0c961b52a3d4878616a8ecba *tests/testthat/test-cptmeanvar.R

@@ -2,22 +2,22 @@ penalty_decision = function(penalty, pen.value, n, diffparam, asymcheck, method)
   
   
   if((penalty=="SIC") || (penalty=="BIC")){
-    pen.return=log(diffparam*log(n))
+    pen.return=diffparam*log(n)
   }
   else if((penalty=="SIC1") || (penalty=="BIC1") || (penalty=="MBIC")){
-    pen.return=log((diffparam+1)*log(n))
+    pen.return=(diffparam+1)*log(n)
   }
   else if(penalty=="AIC"){
-    pen.return=log(2*diffparam)
+    pen.return=2*diffparam
   }
   else if(penalty=="AIC1"){
-    pen.return=log(2*(diffparam+1))
+    pen.return=2*(diffparam+1)
   }
   else if(penalty=="Hannan-Quinn"){
-    pen.return=log(2*diffparam*log(log(n)))
+    pen.return=2*diffparam*log(log(n))
   }
   else if(penalty=="Hannan-Quinn1"){
-    pen.return=log(2*(diffparam+1)*log(log(n)))
+    pen.return=2*(diffparam+1)*log(log(n))
   }
   else if(penalty=="None"){
     pen.return=0

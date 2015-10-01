@@ -18,7 +18,7 @@ range_of_penalties <- function(sumstat,cost = "mean.norm",PELT = T,min_pen=log(l
   anslastchangelike<- NULL
   ansnumchangecpts <- NULL
   anslastchangecpts <- NULL
-  lastchangelike <- list(array(0,n+1),array(0,n+1))
+  lastchangelike <- list(array(0.0,n+1),array(0,n+1))
   numchangecpts <- list(array(0,n+1),array(0,n+1))
   lastchangecpts <- list(array(0,n+1),array(0,n+1))
   

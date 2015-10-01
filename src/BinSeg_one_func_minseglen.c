@@ -12,8 +12,8 @@
 //#include "cost_general_functions.c" // commented out as implicitly in the workspace as using the package.
 
 
-void binseg(cost_function,sumstat,n,pen,Q,cptsout,minseglen,likeout,op_cps, shape)
-     char **cost_function; //Descibe the cost function used i.e. norm.mean.cost (change in mean in normal distributed data)  
+void binseg(cost_func,sumstat,n,pen,Q,cptsout,minseglen,likeout,op_cps, shape)
+     char **cost_func; //Descibe the cost function used i.e. norm.mean.cost (change in mean in normal distributed data)  
      double *sumstat;  //array of summary statistics of the time series  
      int *n;			// Length of the time series 
      double *pen;  // Penalty used to decide if a changepoint is significant 
@@ -31,7 +31,57 @@ void binseg(cost_function,sumstat,n,pen,Q,cptsout,minseglen,likeout,op_cps, shap
      tau[0]=0;
      tau[1]= *n;
 
-     double call_function(); 
+double mll_var(); 
+double mll_mean(); 
+double mll_meanvar(); 
+double mll_meanvar_exp(); 
+double mll_meanvar_gamma(); 
+double mll_meanvar_poisson(); 
+double mbic_var(); 
+double mbic_mean(); 
+double mbic_meanvar(); 
+double mbic_meanvar_exp(); 
+double mbic_meanvar_gamma(); 
+double mbic_meanvar_poisson(); 
+
+     double (*costfunction)();
+     if (strcmp(*cost_func,"var.norm")==0){
+   costfunction = &mll_var;
+   }
+   else if (strcmp(*cost_func,"mean.norm")==0){
+   costfunction = &mll_mean;
+   }  
+    else if (strcmp(*cost_func,"meanvar.norm")==0){
+  costfunction = &mll_meanvar;
+   }
+   else if (strcmp(*cost_func,"meanvar.exp")==0){
+  costfunction = &mll_meanvar_exp;
+  }
+   else if (strcmp(*cost_func,"meanvar.gamma")==0){
+  costfunction = &mll_meanvar_gamma;
+  }
+   else if (strcmp(*cost_func,"meanvar.poisson")==0){
+  costfunction = &mll_meanvar_poisson;
+  }
+   else if (strcmp(*cost_func,"mean.norm.mbic")==0){
+  costfunction = &mbic_mean;
+  }
+ else if (strcmp(*cost_func,"var.norm.mbic")==0){
+  costfunction = &mbic_var;
+  }
+ else if (strcmp(*cost_func,"meanvar.norm.mbic")==0){
+  costfunction = &mbic_meanvar;
+}
+ else if (strcmp(*cost_func,"meanvar.exp.mbic")==0){
+  costfunction = &mbic_meanvar_exp;
+}
+ else if (strcmp(*cost_func,"meanvar.gamma.mbic")==0){
+  costfunction = &mbic_meanvar_gamma;
+}
+ else if (strcmp(*cost_func,"meanvar.poisson.mbic")==0){
+costfunction = &mbic_meanvar_poisson;
+} 
+
      void max_which();
      void order_vec();
 
@@ -42,19 +92,23 @@ void binseg(cost_function,sumstat,n,pen,Q,cptsout,minseglen,likeout,op_cps, shap
         st=tau[0]+1;
     		end=tau[1];
         //null= (-0.5) * mll_var(*(y2+end)-*(y2+st-1),end-st+1);
-          null = (-0.5)* call_function(*cost_function,n,sumstat,end,st-1,end-(st-1),*shape); 
+        //  null = (-0.5)* call_function(*cost_function,n,sumstat,end,st-1,end-(st-1),*shape); 
+        null = (-0.5)*costfunction(*(sumstat+end)-*(sumstat+st-1),*(sumstat + *n + 1 +end)-*(sumstat + *n + st),*(sumstat + *n + *n + 2 +end)-*(sumstat + *n + *n + 1 +st), end - st + 1, *shape);
         for(j=2;j<(*n-2);j++){
           if(j==end){
             st=end+1;
     				i=i+1;
     				end=tau[i];
             //null= (-0.5) * mll_var(*(y2+end)-*(y2+st-1),end-st+1);
-    	      null = (-0.5)* call_function(*cost_function,n,sumstat,end,st-1,end-(st-1),*shape);
+    	     // null = (-0.5)* call_function(*cost_function,n,sumstat,end,st-1,end-(st-1),*shape);
+           null = (-0.5)* costfunction(*(sumstat+end)-*(sumstat+st-1),*(sumstat + *n + 1 +end)-*(sumstat + *n + st),*(sumstat + *n + *n + 2 +end)-*(sumstat + *n + *n + 1 +st), end - st + 1, *shape);
           }
     			else{
     				if(((j-st)>=*minseglen)&&((end-j)>=*minseglen)){
     	        // lambda[j]= ((-0.5) * mll_var(*(y2+j)-*(y2+st-1),j-st+1)) + ((-0.5) * mll_var(*(y2+end)-*(y2+j),end-j)) - null; 
-    		      lambda[j] =  ((-0.5)*call_function(*cost_function,n,sumstat,j,st-1,j-(st-1),*shape)) + ((-0.5)*call_function(*cost_function,n,sumstat,end,j,end-j,*shape)) - null;
+    		      //lambda[j] =  ((-0.5)*call_function(*cost_function,n,sumstat,j,st-1,j-(st-1),*shape)) + ((-0.5)*call_function(*cost_function,n,sumstat,end,j,end-j,*shape)) - null;
+              lambda[j] =  ((-0.5)*costfunction(*(sumstat+j)-*(sumstat+st-1),*(sumstat + *n + 1 +j)-*(sumstat + *n + st),*(sumstat + *n + *n + 2 +j)-*(sumstat + *n + *n + 1 +st), j - st + 1, *shape)) + 
+              ((-0.5)*costfunction(*(sumstat+end)-*(sumstat+j),*(sumstat + *n + 1 +end)-*(sumstat + *n + j + 1),*(sumstat + *n + *n + 2 +end)-*(sumstat + *n + *n + 2 +j), end - j, *shape)) - null;
     				}
         }
     }
