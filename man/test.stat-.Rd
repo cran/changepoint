@@ -38,3 +38,4 @@ test.stat(x)<-"normal" # replaces the current test.stat slot of x with "normal"
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal} 

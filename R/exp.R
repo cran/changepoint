@@ -1,4 +1,3 @@
-
 single.meanvar.exp.calc <-
   function(data,extrainf=TRUE,minseglen){
     singledim=function(data,extrainf=TRUE,minseglen){
@@ -48,11 +47,6 @@ single.meanvar.exp.calc <-
 
 single.meanvar.exp<-function(data,penalty="MBIC",pen.value=0,class=TRUE,param.estimates=TRUE,minseglen){
   if(sum(data<0)>0){stop('Exponential test statistic requires positive data')}
-  if(penalty!="MBIC"){
-    costfunc = "meanvar.exp"
-  }else{
-    costfunc = "meanvar.exp.mbic"
-  }
   if(is.null(dim(data))==TRUE){
     # single dataset
     n=length(data)
@@ -61,30 +55,15 @@ single.meanvar.exp<-function(data,penalty="MBIC",pen.value=0,class=TRUE,param.es
     n=ncol(data)
   }
   if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
-  penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck=costfunc, method="AMOC")
+  penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck="meanvar.exp", method="AMOC")
   if(is.null(dim(data))==TRUE){
-  #  n=length(data)
-    
-    
-    
-    # 		if(penalty=="Asymptotic"){
-    # 			alpha=pen.value
-    # 			an=(2*log(log(n)))^(1/2)
-    # 			bn=2*log(log(n))+(1/2)*log(log(log(n)))-(1/2)*log(pi)
-    # 			pen.value=(-1/an)*log(-0.5*log(1-alpha))+bn # Chen & Gupta (2000) pg149
-    # 		}
     tmp=single.meanvar.exp.calc(coredata(data),extrainf=TRUE,minseglen)
+    if(penalty=="MBIC"){
+      tmp[3]=tmp[3]+log(tmp[1])+log(n-tmp[1]+1)
+    }
     ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=1,pen.value)
     if(class==TRUE){
       return(class_input(data, cpttype="mean and variance", method="AMOC", test.stat="Exponential", penalty=penalty, pen.value=ans$pen, minseglen=minseglen, param.estimates=param.estimates, out=c(0,ans$cpt)))
-#       out=new("cpt")
-#       data.set(out)=data;cpttype(out)="mean and variance";method(out)="AMOC";test.stat(out)="Exponential";pen.type(out)=penalty; pen.value(out)=ans$pen;ncpts.max(out)=1
-#       if(ans$cpt != n){cpts(out)=c(ans$cpt,n)}
-#       else{cpts(out)=ans$cpt}
-#       if(param.estimates==TRUE){
-#         out=param(out)
-#       }
-#       return(out)
     }
     else{ 
       an=(2*log(log(n)))^(1/2)
@@ -95,30 +74,16 @@ single.meanvar.exp<-function(data,penalty="MBIC",pen.value=0,class=TRUE,param.es
     }
   }
   else{ 
-#    n=ncol(data)
- #   if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
-    
-    #penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck="meanvar.exp")
-    # 		if(penalty=="Asymptotic"){
-    # 			alpha=pen.value
-    # 			an=(2*log(log(n)))^(1/2)
-    # 			bn=2*log(log(n))+(1/2)*log(log(log(n)))-(1/2)*log(pi)
-    # 			pen.value=(-1/an)*log(-0.5*log(1-alpha))+bn  # Chen & Gupta (2000) pg149
-    # 		}
     tmp=single.meanvar.exp.calc(data,extrainf=TRUE,minseglen)
+    if(penalty=="MBIC"){
+      tmp[,3]=tmp[,3]+log(tmp[,1])+log(n-tmp[,1]+1)
+    }
     ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=1,pen.value)
     if(class==TRUE){
       rep=nrow(data)
       out=list()
       for(i in 1:rep){
         out[[i]]=class_input(data[i,], cpttype="mean and variance", method="AMOC", test.stat="Exponential", penalty=penalty, pen.value=ans$pen, minseglen=minseglen, param.estimates=param.estimates, out=c(0,ans$cpt[i]))
-#         out[[i]]=new("cpt")
-#         data.set(out[[i]])=ts(data[i,]);cpttype(out[[i]])="mean and variance";method(out[[i]])="AMOC";test.stat(out[[i]])="Exponential"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
-#         if(ans$cpt[i] != n){cpts(out[[i]])=c(ans$cpt[i],n)}
-#         else{cpts(out[[i]])=ans$cpt[i]}
-#         if(param.estimates==TRUE){
-#           out[[i]]=param(out[[i]])
-#         }
       }
       return(out)
     }
@@ -188,32 +153,6 @@ single.meanvar.exp<-function(data,penalty="MBIC",pen.value=0,class=TRUE,param.es
 # }
 
 
-# PELT.meanvar.exp=function(data,pen=0){
-#   # function that uses the PELT method to calculate changes in mean & variance where the segments in the data are assumed to be Exponential
-# 	if(sum(data<=0)>0){stop('Exponential test statistic requires positive data')}
-#   n=length(data)
-# 	if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
-# 	
-#   y=c(0,cumsum(data))
-#   error=0
-#   
-#   storage.mode(y)='double'
-#   cptsout=rep(0,n) # sets up null vector for changepoint answer
-#   storage.mode(cptsout)='integer'
-#   
-# 	answer=list()
-# 	answer[[5]]=1
-# 	on.exit(.C("FreePELT",answer[[5]],PACKAGE='changepoint'))
-# 	answer=.C('PELT_meanvar_exp',y,as.integer(n),as.double(pen),cptsout,as.integer(error),PACKAGE='changepoint')
-# 	if(answer[[5]]>0){
-# 	  print("C code error:",answer[[5]])
-# 	  stop(call.=F)
-# 	}
-# 	
-#   return(sort(answer[[4]][answer[[4]]>0]))
-# }
-
-
 segneigh.meanvar.exp=function(data,Q=5,pen=0){
   if(sum(data<=0)>0){stop('Exponential test statistic requires positive data')}
   n=length(data)
@@ -230,7 +169,7 @@ segneigh.meanvar.exp=function(data,Q=5,pen=0){
   }
   like.Q=matrix(0,ncol=n,nrow=Q)
   like.Q[1,]=all.seg[1,]
-  cp=matrix(0,ncol=n,nrow=Q)
+  cp=matrix(NA,ncol=n,nrow=Q)
   for(q in 2:Q){
     for(j in q:n){
       like=NULL
@@ -243,7 +182,7 @@ segneigh.meanvar.exp=function(data,Q=5,pen=0){
     }
     
   }
-  cps.Q=matrix(0,ncol=Q,nrow=Q)
+  cps.Q=matrix(NA,ncol=Q,nrow=Q)
   for(q in 2:Q){
     cps.Q[q,1]=cp[q,n]
     for(i in 1:(q-1)){
@@ -264,7 +203,7 @@ segneigh.meanvar.exp=function(data,Q=5,pen=0){
   if(op.cps==0){cpts=n}
   else{cpts=c(sort(cps.Q[op.cps+1,][cps.Q[op.cps+1,]>0]),n)}
   
-  return(list(cps=cps.Q,cpts=cpts,op.cpts=op.cps,pen=pen,like=criterion[op.cps+1],like.Q=like.Q[,n]))
+  return(list(cps=t(apply(cps.Q,1,sort,na.last=TRUE)),cpts=cpts,op.cpts=op.cps,pen=pen,like=criterion[op.cps+1],like.Q=like.Q[,n]))
 }
 
 
@@ -312,33 +251,15 @@ segneigh.meanvar.exp=function(data,Q=5,pen=0){
 #   return(list(cps=cpt,op.cpts=op.cps,pen=pen))
 # }
 
-# binseg.meanvar.exp=function(data,Q=5,pen=0){
-#   # function that uses the BinSeg method to calculate changes in mean & variance where the segments in the data are assumed to be Exponential
-#   if(sum(data<=0)>0){stop('Exponential test statistic requires positive data')}
-#   
-#   n=length(data)
-#   if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
-#   if(Q>((n/2)+1)){stop(paste('Q is larger than the maximum number of segments',(n/2)+1))}
-#   y=c(0,cumsum(data))
-#   
-#   storage.mode(y)='double'
-#   cptsout=rep(0,Q) # sets up null vector for changepoint answer
-#   likeout=rep(0,Q) # sets up null vector for likelihood of changepoints in cptsout
-#   storage.mode(cptsout)='double'
-#   op_cps=0
-#   
-#   answer=.C('binseg_meanvar_exp',y,as.integer(n),as.double(pen),as.integer(Q),as.integer(cptsout),likeout,as.integer(op_cps),PACKAGE='changepoint')
-#   if(answer[[7]]==Q){warning('The number of changepoints identified is Q, it is advised to increase Q to make sure changepoints have not been missed.')}
-#   return(list(cps=rbind(answer[[5]],answer[[6]]),op.cpts=answer[[7]],pen=pen))
-# }
-
-
 multiple.meanvar.exp=function(data,mul.method="PELT",penalty="MBIC",pen.value=0,Q=5,class=TRUE,param.estimates=TRUE,minseglen){
   if(sum(data<0)>0){stop('Exponential test statistic requires positive data')}
   if(!((mul.method=="PELT")||(mul.method=="BinSeg")||(mul.method=="SegNeigh"))){
     stop("Multiple Method is not recognised")
   }
   if(penalty!="MBIC"){
+    if(mul.method=="SegNeigh"){
+      stop('MBIC penalty not implemented for SegNeigh method, please choose an alternative penalty')
+    }
     costfunc = "meanvar.exp"
   }else{
     costfunc = "meanvar.exp.mbic"
@@ -353,150 +274,32 @@ multiple.meanvar.exp=function(data,mul.method="PELT",penalty="MBIC",pen.value=0,
     n=ncol(data)
   }
   pen.value = penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck=costfunc, method=mul.method)
-  #penalty_decision(penalty, pen.value, n, diffparam, asymcheck = "meanvar.exp")
-  # 	if((penalty=="SIC") || (penalty=="BIC")){
-  # 		pen.value=diffparam*log(n)
-  # 	}
-  # 	else if((penalty=="SIC1") || (penalty=="BIC1")){
-  # 		pen.value=(diffparam+1)*log(n)
-  # 	}
-  # 	else if(penalty=="AIC"){
-  # 		pen.value=2*diffparam
-  # 	}
-  # 	else if(penalty=="AIC1"){
-  # 		pen.value=2*(diffparam+1)
-  # 	}
-  # 	else if(penalty=="Hannan-Quinn"){
-  # 		pen.value=2*diffparam*log(log(n))
-  # 	}
-  # 	else if(penalty=="Hannan-Quinn1"){
-  # 		pen.value=2*(diffparam+1)*log(log(n))
-  # 	}
-  # 	else if(penalty=="None"){
-  # 		pen.value=0
-  # 	}
-  # 	else if((penalty!="Manual")&&(penalty!="Asymptotic")){
-  # 		stop('Unknown Penalty')
-  # 	}
-  # 	if((penalty=="Manual")&&(is.numeric(pen.value)==FALSE)){
-  # 		pen.value=try(eval(parse(text=paste(pen.value))),silent=TRUE)
-  # 		if(class(pen.value)=='try-error'){
-  # 			stop('Your manual penalty cannot be evaluated')
-  # 		}
-  # 	}
-  # 	if(penalty=="Asymptotic"){
-  # 			alpha=pen.value
-  # 			an=(2*log(log(n)))^(1/2)
-  # 			bn=2*log(log(n))+(1/2)*log(log(log(n)))-(1/2)*log(pi)
-  # 			pen.value=(-1/an)*log(-0.5*log(1-alpha))+bn
-  # 	}
-  if(is.null(dim(data))==TRUE){
+
+    if(is.null(dim(data))==TRUE){
     # single dataset
     out = data_input(data=data,method=mul.method,pen.value=pen.value,costfunc=costfunc,minseglen=minseglen,Q=Q)
  
-#     mu <- mean(data)
-#     sumstat=cbind(c(0,cumsum(coredata(data))),c(0,cumsum(coredata(data)^2)),cumsum(c(0,(coredata(data)-mu)^2))) ## K NEW ## 
-#     if(mul.method=="PELT"){
-#       
-#       out=PELT(sumstat,pen=pen.value,cost_func = costfunc,minseglen=minseglen) ## K NEW ## 
-#       #	out=PELT.meanvar.exp(coredata(data),pen.value)
-#       cpts=out[[2]]
-#     }
-#     else if(mul.method=="BinSeg"){
-#       
-#       out=BINSEG(sumstat,pen=pen.value,cost_func = costfunc,minseglen=minseglen,Q=Q) ## K NEW ## 
-#       # 			out=binseg.meanvar.exp(coredata(data),Q,pen.value)
-#       # 			if(out$op.cpts==0){cpts=n}
-#       # 			else{cpts=c(sort(out$cps[1,1:out$op.cpts]),n)}
-#       cpts=out[[2]]  
-#       
-#       
-#     }
-#     else if(mul.method=="SegNeigh"){
-#       out=segneigh.meanvar.exp(coredata(data),Q,pen.value)
-#       if(out$op.cpts==0){cpts=n}
-#       else{cpts=c(sort(out$cps[out$op.cpts+1,][out$cps[out$op.cpts+1,]>0]),n)}
-#     }
     if(class==TRUE){
       return(class_input(data, cpttype="mean and variance", method=mul.method, test.stat="Exponential", penalty=penalty, pen.value=pen.value, minseglen=minseglen, param.estimates=param.estimates, out=out, Q=Q))
-#       ans=new("cpt")
-#       data.set(ans)=data;cpttype(ans)="mean and variance";method(ans)=mul.method; test.stat(ans)="Exponential";pen.type(ans)=penalty;pen.value(ans)=pen.value;cpts(ans)=cpts
-#       if(mul.method=="PELT"){
-#         ncpts.max(ans)=Inf
-#       }
-#       else{
-#         ncpts.max(ans)=Q
-#       }
-#       if(param.estimates==TRUE){
-#         ans=param(ans)
-#       }
-#       return(ans)
     }
     else{ return(out[[2]])}
   }
   else{
     rep=nrow(data)
     out=list()
-    #if(class==TRUE){cpts=list()}
     for(i in 1:rep){
       out[[i]]=data_input(data[i,],method=mul.method,pen.value=pen.value,costfunc=costfunc,minseglen=minseglen,Q=Q)
-      
-      
     }
     
     cpts=lapply(out, '[[', 2)
     
-#     if(mul.method=="PELT"){
-#       for(i in 1:rep){
-#         #n <- length(data[i,])
-#         mu <- mean(coredata(data[i,]))
-#         sumstat=cbind(c(0,cumsum(coredata(data[i,]))),c(0,cumsum(coredata(data[i,])^2)),cumsum(c(0,(coredata(data[i,])-mu)^2))) ## K NEW ## 
-#         out=c(out,list(PELT(sumstat,pen=pen.value,cost_func = costfunc,minseglen=minseglen)[[2]])) ## K NEW ## 
-#         #out=c(out,list(PELT.meanvar.exp(data[i,],pen.value)))
-#       }
-#       if(class==TRUE){cpts=out}
-#     }
-#     else if(mul.method=="BinSeg"){
-#       for(i in 1:rep){
-#         mu <- mean(coredata(data[i,]))
-#         sumstat=cbind(c(0,cumsum(coredata(data[i,]))),c(0,cumsum(coredata(data[i,])^2)),cumsum(c(0,(coredata(data[i,])-mu)^2))) ## K NEW ## 
-#         out=c(out,list(BINSEG(sumstat,pen=pen.value,cost_func = costfunc,minseglen=minseglen,Q=Q)[[2]])) ## K NEW ## 
-#         # 				out=c(out,list(binseg.meanvar.exp(data[i,],Q,pen.value)))
-#         # 				if(class==TRUE){
-#         # 					if(out[[i]]$op.cpts==0){cpts[[i]]=n}
-#         # 					else{cpts[[i]]=c(sort(out[[i]]$cps[1,1:out[[i]]$op.cpts]),n)}
-#         # 				}
-#       }
-#       if(class==TRUE){cpts=out}
-#     }
-#     else if(mul.method=="SegNeigh"){
-#       for(i in 1:rep){
-#         out=c(out,list(segneigh.meanvar.exp(data[i,],Q,pen.value)))
-#         if(class==TRUE){
-#           if(out[[i]]$op.cpts==0){cpts[[i]]=n}
-#           else{cpts[[i]]=c(sort(out[[i]]$cps[out[[i]]$op.cpts+1,][out[[i]]$cps[out[[i]]$op.cpts+1,]>0]),n)}
-#         }
-#       }
-#     }
     if(class==TRUE){
       ans=list()
       for(i in 1:rep){
         ans[[i]]=class_input(data[i,], cpttype="mean and variance", method=mul.method, test.stat="Exponential", penalty=penalty, pen.value=pen.value, minseglen=minseglen, param.estimates=param.estimates, out=out[[i]], Q=Q)
-#         ans[[i]]=new("cpt")
-#         data.set(ans[[i]])=ts(data[i,]);cpttype(ans[[i]])="mean and variance"; method(ans[[i]])=mul.method;test.stat(ans[[i]])="Exponential";pen.type(ans[[i]])=penalty;pen.value(ans[[i]])=pen.value;cpts(ans[[i]])=cpts[[i]]
-#         if(mul.method=="PELT"){
-#           ncpts.max(ans[[i]])=Inf
-#         }
-#         else{
-#           ncpts.max(ans[[i]])=Q
-#         }
-#         if(param.estimates==TRUE){
-#           ans[[i]]=param(ans[[i]])
-#         }
       }
       return(ans)
     }
     else{return(cpts)}
   }
 }
-

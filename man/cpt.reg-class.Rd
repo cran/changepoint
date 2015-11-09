@@ -42,10 +42,12 @@ Objects can be created by calls of the form \code{new("cpt", ...)}.
     \item{\code{test.stat}:}{Object of class \code{"character"}, the test statistic used to analyse the data }
     \item{\code{pen.type}:}{Object of class \code{"character"}, the penalty type specified in the analysis}
     \item{\code{pen.value}:}{Object of class \code{"numeric"}, the value of the penalty used in the analysis}
+    \item{\code{minseglen}:}{Object of class \code{"numeric"}, the minimum segment length (no. of observations between changepoints) used in the analysis.}
     \item{\code{cpts}:}{Object of class \code{"numeric"}, vector of changepoints identified }
     \item{\code{ncpts.max}:}{Object of class \code{"numeric"}, maximum number of changepoint that can be identified }
     \item{\code{param.est}:}{Object of class \code{"list"}, list where each element is a vector of parameter estimates, if requested }
     \item{\code{date}:}{Object of class \code{"character"}, date and time the changepoint analysis was run }
+    \item{\code{version}:}{Object of class \code{"character"}, version number of the package used when the analysis was run.}
   }
 }
 \section{Methods}{
@@ -56,6 +58,7 @@ Objects can be created by calls of the form \code{new("cpt", ...)}.
     \item{test.stat}{\code{signature(object = "cpt.reg")}: retrieves test.stat slot }
     \item{ncpts.max}{\code{signature(object = "cpt.reg")}: retrieves ncpts.max slot }
     \item{method}{\code{signature(object = "cpt.reg")}: retrieves method slot }
+    \item{minseglen}{\code{signature(object = "cpt")}: retrieves minseglen slot }
     \item{param.est}{\code{signature(object = "cpt.reg")}: retrieves param.est slot }
     \item{pen.type}{\code{signature(object = "cpt.reg")}: retrieves pen.type slot }
     \item{pen.value}{\code{signature(object = "cpt.reg")}: retrieves pen.value slot }
@@ -90,3 +93,4 @@ data.set(x)<-matrix(1:10,nrow=5,ncol=2) # replaces the data.set slot from x with
 }
 \keyword{classes}
 \keyword{cpt}
+\keyword{internal} 

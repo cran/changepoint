@@ -1,23 +1,35 @@
 penalty_decision = function(penalty, pen.value, n, diffparam, asymcheck, method){
   
   
-  if((penalty=="SIC") || (penalty=="BIC")){
+  if((penalty=="SIC0") || (penalty=="BIC0")){
     pen.return=diffparam*log(n)
   }
-  else if((penalty=="SIC1") || (penalty=="BIC1") || (penalty=="MBIC")){
+  else if((penalty=="SIC") || (penalty=="BIC")){
     pen.return=(diffparam+1)*log(n)
   }
-  else if(penalty=="AIC"){
+  else if(penalty=="MBIC"){
+    pen.return=(diffparam+2)*log(n)
+  }
+  else if((penalty=="SIC1") || (penalty=="BIC1")){
+    stop("SIC1 and BIC1 have been depreciated, use SIC or BIC for the same result.")
+  }
+  else if(penalty=="AIC0"){
     pen.return=2*diffparam
   }
-  else if(penalty=="AIC1"){
+  else if(penalty=="AIC"){
     pen.return=2*(diffparam+1)
   }
-  else if(penalty=="Hannan-Quinn"){
+  else if(penalty=="AIC1"){
+    stop("AIC1 has been depreciated, use AIC for the same result.")
+  }
+  else if(penalty=="Hannan-Quinn0"){
     pen.return=2*diffparam*log(log(n))
   }
-  else if(penalty=="Hannan-Quinn1"){
+  else if(penalty=="Hannan-Quinn"){
     pen.return=2*(diffparam+1)*log(log(n))
+  }
+  else if(penalty=="Hannan-Quinn1"){
+    stop("Hannan-Quinn1 has been depreciated, use Hannan-Quinn for the same result.")
   }
   else if(penalty=="None"){
     pen.return=0
@@ -61,6 +73,11 @@ penalty_decision = function(penalty, pen.value, n, diffparam, asymcheck, method)
       alogn=sqrt(2*log(log(n)))
       blogn=2*log(log(n))+ log(log(log(n)))
       pen.return=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2
+    }else if(asymcheck == "reg.norm"){
+      alpha=pen.value
+      top=-(log(log((1 - alpha + exp(-2*exp(2*(log(log(n)))+(diffparam/2)*(log(log(log(n))))- log(gamma(diffparam/2)))))^(-1/2))))  +  2*(log(log(n)))+(diffparam/2)*(log(log(log(n))))- log(gamma(diffparam/2))
+      bottom=(2*log(log(n)))^(1/2)
+      pen.return=(top/bottom)^2
     }else if(asymcheck == "var.css"){
       if(pen.value==0.01){pen.return=1.628}
       else if(pen.value==0.05){pen.return=1.358}

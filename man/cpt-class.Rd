@@ -41,17 +41,19 @@ Objects can be created by calls of the form \code{new("cpt", ...)}.
 }
 \section{Slots}{
   \describe{
-    \item{\code{data.set}:}{Object of class \code{"ts"}, a coerced time series of the original data }
-    \item{\code{cpttype}:}{Object of class \code{"character"}, the type of changepoint that was identified }
-    \item{\code{method}:}{Object of class \code{"character"}, the method that was used to search for changepoints }
-    \item{\code{test.stat}:}{Object of class \code{"character"}, the test statistic for the analysis of the data }
-    \item{\code{pen.type}:}{Object of class \code{"character"}, the penalty type specified in the analysis}
-    \item{\code{pen.value}:}{Object of class \code{"numeric"}, the value of the penalty used in the analysis}
-    \item{\code{minseglen}:}{Object of class \code{"numeric"}, the minimum segment length (no. of observations between changepoints) used in the analysis}
-    \item{\code{cpts}:}{Object of class \code{"numeric"}, vector of changepoints identified }
-    \item{\code{ncpts.max}:}{Object of class \code{"numeric"}, maximum number of changepoint that can be identified }
-    \item{\code{param.est}:}{Object of class \code{"list"}, list where each element is a vector of parameter estimates, if requested }
-    \item{\code{date}:}{Object of class \code{"character"}, date and time the changepoint analysis was run }
+    \item{\code{data.set}:}{Object of class \code{"ts"}, a coerced time series of the original data. }
+    \item{\code{cpttype}:}{Object of class \code{"character"}, the type of changepoint that was identified. }
+    \item{\code{method}:}{Object of class \code{"character"}, the method that was used to search for changepoints. }
+    \item{\code{test.stat}:}{Object of class \code{"character"}, the test statistic for the analysis of the data. }
+    \item{\code{pen.type}:}{Object of class \code{"character"}, the penalty type specified in the analysis.}
+    \item{\code{pen.value}:}{Object of class \code{"numeric"}, the value of the penalty used in the analysis.}
+    \item{\code{minseglen}:}{Object of class \code{"numeric"}, the minimum segment length (no. of observations between changepoints) used in the analysis.}
+    \item{\code{cpts}:}{Object of class \code{"numeric"}, vector of changepoints identified. }
+    \item{\code{ncpts.max}:}{Object of class \code{"numeric"}, maximum number of changepoint that can be identified. }
+    \item{\code{param.est}:}{Object of class \code{"list"}, list where each element is a vector of parameter estimates, if requested. }
+    \item{\code{date}:}{Object of class \code{"character"}, date and time the changepoint analysis was run. }
+        \item{\code{version}:}{Object of class \code{"character"}, version number of the package used when the analysis was run.}
+
   }
 }
 \section{Methods}{
@@ -110,3 +112,4 @@ logLik(ans) # raw likelihood of the data with changepoints, second value is like
 }
 \keyword{classes}
 \keyword{cpt}
+\keyword{internal} 

@@ -36,3 +36,4 @@ cpts.ts(x) # retrieves the cpts slot from x but unlike cpts, displays the "date"
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal}

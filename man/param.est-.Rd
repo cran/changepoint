@@ -38,3 +38,4 @@ param.est(x)<-list(mean=0) # replaces the current param.est list in x with list(
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal} 

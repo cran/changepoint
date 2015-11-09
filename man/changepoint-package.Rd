@@ -3,7 +3,7 @@
 \alias{changepoint}
 \docType{package}
 \title{
-Contains funcions that run various single and multiple changepoint methods
+Methods for Changepoint Detection
 }
 \description{
 Implements various mainstream and specialised changepoint methods for finding single and multiple changepoints within data.  Many popular non-parametric and frequentist methods are included.  Users should start by looking at the documentation for cpt.mean(), cpt.var() and cpt.meanvar().
@@ -12,8 +12,8 @@ Implements various mainstream and specialised changepoint methods for finding si
 \tabular{ll}{
 Package: \tab changepoint\cr
 Type: \tab Package\cr
-Version: \tab 2.1.1 \cr
-Date: \tab 2015-09-30\cr
+Version: \tab 2.2 \cr
+Date: \tab 2015-10-23\cr
 License: \tab GPL\cr
 LazyLoad: \tab yes\cr
 }
@@ -42,10 +42,11 @@ Segment Neighbourhoods: Auger, I. E. And Lawrence, C. E. (1989) Algorithms for t
 }
 \examples{
 # change in variance
+set.seed(1)
 x=c(rnorm(100,0,1),rnorm(100,0,10))
 ansvar=cpt.var(x)
 plot(ansvar)
-print(ansvar)
+print(ansvar) # identifies 1 changepoint at 100
 
 # change in mean
 y=c(rnorm(100,0,1),rnorm(100,5,1))

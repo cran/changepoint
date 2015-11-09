@@ -38,3 +38,4 @@ pen.type(x)<-"SIC" # replaces the existing pen.type slot in x with "SIC"
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal} 

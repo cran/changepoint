@@ -38,3 +38,4 @@ data.set(x)<-c(1,2,3,4,5) # replaces the existing data.set slot in x with c(1,2,
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal} 

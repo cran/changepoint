@@ -1,18 +1,4 @@
 cpt.mean=function(data,penalty="MBIC",pen.value=0,method="AMOC",Q=5,test.stat="Normal",class=TRUE,param.estimates=TRUE,minseglen=1){
-#   if(!is.numeric(data)){
-#     if(is.list(data)){
-#       l = length(data)
-#       for(i in 1:l){
-#         if(!is.numeric(data[i])){
-#           stop("Only numeric data allowed")
-#         }
-#       }
-#     
-#     }else{
-#     stop("Only numeric data allowed")
-#     }
-#   }  
-#   if(is.element(NA, data)){stop("NA is not allowed in the data. See help file")}
   checkData(data)
   if(method=="SegNeigh" & minseglen>1){stop("minseglen not yet implemented for SegNeigh method, use PELT instead.")}
   if(minseglen<1){minseglen=1;warning('Minimum segment length for a change in mean is 1, automatically changed to be 1.')}
@@ -52,6 +38,7 @@ cpt.mean=function(data,penalty="MBIC",pen.value=0,method="AMOC",Q=5,test.stat="N
     }
   }
   else if(test.stat=="CUSUM"){
+    warning('Traditional penalty values are not appropriate for the CUSUM test statistic')
     if(method=="AMOC"){
       return(single.mean.cusum(data,penalty,pen.value,class,param.estimates,minseglen))
     }
@@ -82,20 +69,6 @@ cpt.mean=function(data,penalty="MBIC",pen.value=0,method="AMOC",Q=5,test.stat="N
 #}
 
 cpt.var=function(data,penalty="MBIC",pen.value=0,know.mean=FALSE, mu=NA,method="AMOC",Q=5,test.stat="Normal",class=TRUE,param.estimates=TRUE,minseglen=2){
-#   if(!is.numeric(data)){
-#     if(is.list(data)){
-#       l = length(data)
-#       for(i in 1:l){
-#         if(!is.numeric(data[i])){
-#           stop("Only numeric data allowed")
-#         }
-#       }
-#       
-#     }else{
-#       stop("Only numeric data allowed")
-#     }
-#   } 
-#   if(is.element(NA, data)){stop("NA is not allowed in the data. See help file")}
   checkData(data)
   if(method=="SegNeigh" & minseglen>2){stop("minseglen not yet implemented for SegNeigh method, use PELT instead.")}
   if(minseglen<2){minseglen=2;warning('Minimum segment length for a change in variance is 2, automatically changed to be 2.')}
@@ -116,8 +89,6 @@ cpt.var=function(data,penalty="MBIC",pen.value=0,know.mean=FALSE, mu=NA,method="
     }
   }
   
-  
-  
   if(test.stat =="Normal"){
     
     if(method=="AMOC"){
@@ -136,6 +107,7 @@ cpt.var=function(data,penalty="MBIC",pen.value=0,know.mean=FALSE, mu=NA,method="
     }
   }
   else if(test.stat=="CSS"){
+    warning('Traditional penalty values are not appropriate for the CSS test statistic')
     if(method=="AMOC"){
       return(single.var.css(data,penalty,pen.value,class,param.estimates,minseglen))
     }
@@ -152,32 +124,17 @@ cpt.var=function(data,penalty="MBIC",pen.value=0,know.mean=FALSE, mu=NA,method="
 }
 
 cpt.meanvar=function(data,penalty="MBIC",pen.value=0,method="AMOC",Q=5,test.stat="Normal",class=TRUE,param.estimates=TRUE,shape=1,minseglen=2){
-#   if(!is.numeric(data)){
-#     if(is.list(data)){
-#       l = length(data)
-#       for(i in 1:l){
-#         if(!is.numeric(data[i])){
-#           stop("Only numeric data allowed")
-#         }
-#       }
-#       
-#     }else{
-#       stop("Only numeric data allowed")
-#     }
-#   } 
-#   if(is.element(NA, data)){stop("NA is not allowed in the data. See help file")}
   checkData(data)
   if(method=="SegNeigh" & minseglen>2){stop("minseglen not yet implemented for SegNeigh method, use PELT instead.")}
   if(minseglen<2){minseglen=2;warning('Minimum segment length for a change in mean and variance is 2, automatically changed to be 2.')}
   if(penalty == "CROPS"){
-    # browser()
     if(is.numeric(pen.value)){
       if(length(pen.value) == 2){
         if(pen.value[2] < pen.value[1]){
           pen.value = rev(pen.value)
         }
         #run range of penalties
-        return(CROPS(data=data, method=method,pen.value=pen.value, test.stat=test.stat, class=class, param.est=param.estimates, minseglen=minseglen, func="meanvar"))
+        return(CROPS(data=data, method=method,pen.value=pen.value, test.stat=test.stat, class=class, param.est=param.estimates, minseglen=minseglen, shape=shape, func="meanvar"))
       }else{
         stop('The length of pen.value must be 2')
       }

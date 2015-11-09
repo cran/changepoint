@@ -1,7 +1,7 @@
 \name{pen.value<-}
 \alias{pen.value<-}
 \title{
-Generic Function - pen.value<-
+Generic Function - pen.value
 }
 \description{
 Generic function
@@ -38,3 +38,4 @@ pen.value(x)<-5 # replaces the existing pen.value slot in x with 5
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal} 

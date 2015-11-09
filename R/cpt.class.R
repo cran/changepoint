@@ -1,11 +1,11 @@
-	setClass("cpt",representation(data.set="ts", cpttype="character", method="character", 	test.stat="character",pen.type="character",pen.value="numeric",minseglen="numeric",cpts="numeric",ncpts.max="numeric",param.est="list",date="character"),prototype(date=date()))
+	setClass("cpt",slots=list(data.set="ts", cpttype="character", method="character", 	test.stat="character",pen.type="character",pen.value="numeric",minseglen="numeric",cpts="numeric",ncpts.max="numeric",param.est="list",date="character",version="character"),prototype=prototype(date=date(),version=as(packageVersion("changepoint"),'character')))
 
-	setClass("cpt.reg",representation(data.set="matrix", cpttype="character", method="character", test.stat="character",pen.type="character",pen.value="numeric",cpts="numeric",ncpts.max="numeric",param.est="list",date="character"),prototype(cpttype="regression",date=date()))
+	setClass("cpt.reg",slots=list(data.set="matrix", cpttype="character", method="character", test.stat="character",pen.type="character",pen.value="numeric",minseglen="numeric",cpts="numeric",ncpts.max="numeric",param.est="list",date="character",version="character"),prototype=prototype(cpttype="regression",date=date(),version=as(packageVersion("changepoint"),"character")))
   
 #   setClass("cpt", representation(), prototype())
 # # cpts is the optimal segementation
 #   
-  setClass("cpt.range",representation(cpts.full="matrix", pen.value.full="vector"), prototype(), contains="cpt")
+  setClass("cpt.range",slots=list(cpts.full="matrix", pen.value.full="numeric"), prototype=prototype(), contains="cpt")
   # cpts.full is the entire matrix
   # pen.value.full (beta) values as an extra slot (vector)
 
@@ -14,7 +14,7 @@
 		if (is.function("data.set")){
 			fun <- data.set
 		}
-		else {fun <- function(object){
+	  else {fun <- function(object){
 				standardGeneric("data.set")
 			}
 		}
@@ -34,7 +34,6 @@
 	  setGeneric("data.set.ts", fun)
 	}
 	setMethod("data.set.ts","cpt",function(object) object@data.set)
-	setMethod("data.set.ts","cpt.reg",function(object) object@data.set)
 
   if(!isGeneric("cpttype")) {
 		if (is.function("cpttype")){
@@ -175,11 +174,10 @@
 		setGeneric("cpts.ts", fun)
 	}
 	setMethod("cpts.ts","cpt",function(object) index(data.set.ts(object))[cpts(object)] )
-	setMethod("cpts.ts","cpt.reg",function(object) index(data.set.ts(object))[cpts(object)] )
 
 	if(!isGeneric("ncpts.max")) {
 		if (is.function("ncpts.max")){
-			fun <- cpts
+			fun <- ncpts.max
 		}
 		else {fun <- function(object){
 				standardGeneric("ncpts.max")
@@ -251,8 +249,6 @@
 	setMethod("nseg","cpt.reg",function(object){ncpts(object)+1})
   
   
-  
-  
 # replacement functions for slots
 	setGeneric("data.set<-", function(object, value) standardGeneric("data.set<-"))
 	setReplaceMethod("data.set", "cpt", function(object, value) {
@@ -260,7 +256,7 @@
 		return(object)
 	})
 	setReplaceMethod("data.set", "cpt.reg", function(object, value) {
-		if(is.ts(value)){object@data.set <- value}else{object@data.set <- ts(value)}
+		object@data.set <- value
 		return(object)
 	})
 	
@@ -330,6 +326,14 @@
 	  object@minseglen <- value
 	  return(object)
 	})
+	setReplaceMethod("minseglen", "cpt.range", function(object, value) {
+	  object@minseglen <- value
+	  return(object)
+	})
+	setReplaceMethod("minseglen", "cpt.reg", function(object, value) {
+	  object@minseglen <- value
+	  return(object)
+	})
 	
 	setGeneric("cpts<-", function(object, value) standardGeneric("cpts<-"))
 	setReplaceMethod("cpts", "cpt", function(object, value) {
@@ -338,8 +342,8 @@
 		return(object)
 	})
 	setReplaceMethod("cpts", "cpt.reg", function(object, value) {
-	  if(value[length(value)]==length(object@data.set)){object@cpts <- value}
-	  else{  	object@cpts <- c(value,length(object@data.set))  }
+	  if(value[length(value)]==nrow(object@data.set)){object@cpts <- value}
+	  else{  	object@cpts <- c(value,nrow(object@data.set))  }
 	  return(object)
 	})
 
@@ -443,7 +447,83 @@
 		return(object)
 	})
 
-
+	setMethod("param", "cpt.range", function(object,ncpts=NA,shape,...) {
+	  if(is.na(ncpts)){
+	    cpts=c(0,object@cpts)
+	  }
+	  else{
+	    ncpts.full=apply(cpts.full(object),1,function(x){sum(x>0,na.rm=TRUE)})
+	    row=try(which(ncpts.full==ncpts),silent=TRUE)
+	    if(class(row)=='try-error'){
+	      stop("Your input object doesn't have a segmentation with the requested number of changepoints.")
+	    }
+	    cpts=c(0,cpts.full(object)[row,1:ncpts],length(data.set(object)))
+	  }
+	  
+	 	param.mean=function(object,cpts){
+	 	  nseg=length(cpts)-1
+	    data=data.set(object)
+	    tmpmean=NULL
+	    for(j in 1:nseg){
+	      tmpmean[j]=mean(data[(cpts[j]+1):(cpts[j+1])])
+	    }
+	    return(tmpmean)
+	  }
+	  param.var=function(object,cpts){
+	    nseg=length(cpts)-1
+	    data=data.set(object)
+	    tmpvar=NULL
+	    for(j in 1:nseg){
+	      tmpvar[j]=var(data[(cpts[j]+1):(cpts[j+1])])
+	    }
+	    return(tmpvar)
+	  }
+	  param.scale=function(object,cpts,shape){
+	    nseg=length(cpts)-1
+	    data=data.set(object)
+	    y=c(0,cumsum(data))
+	    tmpscale=NULL
+	    for(j in 1:nseg){
+	      tmpscale[j]=(y[(cpts[j+1]+1)]-y[(cpts[j]+1)])/((cpts[j+1]-cpts[j])*shape)
+	    }
+	    return(tmpscale)			
+	  }
+	  
+	  if(cpttype(object)=="mean"){
+	    param.est<-list(mean=param.mean(object,cpts))
+	  }
+	  else if(cpttype(object)=="variance"){
+	    param.est<-list(variance=param.var(object,cpts))
+	  }
+	  else if(cpttype(object)=="mean and variance"){
+	    if(test.stat(object)=="Normal"){
+	      param.est<-list(mean=param.mean(object,cpts),variance=param.var(object,cpts))
+	    }
+	    else if(test.stat(object)=="Gamma"){
+	      param.est<-list(scale=param.scale(object,cpts,shape=shape),shape=shape)
+	    }
+	    else if(test.stat(object)=="Exponential"){
+	      param.est<-list(rate=1/param.mean(object,cpts))
+	    }
+	    else if(test.stat(object)=="Poisson"){
+	      param.est<-list(lambda=param.mean(object,cpts))
+	    }
+	    else{
+	      stop("Unknown test statistic for a change in mean and variance")
+	    }
+	  }
+	  else{
+	    stop("Unknown changepoint type, must be 'mean', 'variance' or 'mean and variance'")
+	  }
+	  if(is.na(ncpts)){
+	    param.est(object)=param.est
+	    return(object)
+	  }
+	  out=new('cpt.range')
+	  param.est(out)=param.est
+	  return(out)
+	})
+	
 	setMethod("param", "cpt.reg", function(object,shape,...) {			
 		param.norm=function(object){
 			cpts=c(0,cpts(object))
@@ -467,6 +547,7 @@
 
 # summary functions
 	setMethod("summary","cpt",function(object){
+	    cat("Created Using changepoint version",object@version,'\n')
 	    cat("Changepoint type      : Change in",cpttype(object),'\n')
 	    cat("Method of analysis    :",method(object),"\n")
 	    cat("Test Statistic  :", test.stat(object),"\n")
@@ -478,6 +559,7 @@
 	})
 
 	setMethod("summary","cpt.range",function(object){
+	  cat("Created Using changepoint version",object@version,'\n')
 	  cat("Changepoint type      : Change in",cpttype(object),'\n')
 	  cat("Method of analysis    :",method(object),"\n")
 	  cat("Test Statistic  :", test.stat(object),"\n")
@@ -491,7 +573,8 @@
 	})
 
   setMethod("summary","cpt.reg",function(object){
-	    cat("Changepoint type     : Change in",cpttype(object),'\n')
+    cat("Created Using changepoint version",object@version,'\n')
+    cat("Changepoint type     : Change in",cpttype(object),'\n')
 	    cat("Method of analysis   :",method(object),"\n")
 	    cat("Test Statistic :", test.stat(object),"\n")
 	    cat("Type of penalty      :", pen.type(object), "with value,",pen.value(object),"\n")
@@ -551,6 +634,62 @@
 		}
 	})
 
+	setMethod("plot","cpt.range",function(x,ncpts=NA,diagnostic=FALSE,cpt.col='red',cpt.width=1,cpt.style=1,...){
+	  if(diagnostic==TRUE){
+      return(plot(apply(cpts.full(x),1,function(x){sum(x>0,na.rm=TRUE)}),pen.value.full(x),type='l',xlab='Number of Changepoints',ylab='Difference in Test Statistic'))
+	  }
+	  plot(data.set.ts(x),...)
+	  if(is.na(ncpts)){
+	    if(pen.type(x)=="CROPS"){
+	      stop('CROPS does not supply an optimal set of changepoints, set ncpts to the desired segmentation to plot or use diagnostic=TRUE to identify an appropriate number of changepoints')
+	    }
+	    cpts.to.plot=cpts(x)
+	    param.est=x
+	  }
+	  else{
+	    ncpts.full=apply(cpts.full(x),1,function(x){sum(x>0,na.rm=TRUE)})
+	    row=which(ncpts.full==ncpts)
+	    if(length(row)==0){
+	      stop(paste("Your input object doesn't have a segmentation with the requested number of changepoints.\n Possible ncpts are: "),paste(ncpts.full,collapse=','))
+	    }
+	    cpts.to.plot=cpts.full(x)[row,1:ncpts]
+	    if(test.stat(x)=="Gamma"){
+	      param.est=param(x,ncpts,shape=param.est(x)$shape)
+	    }
+	    else{
+	      param.est=param(x,ncpts)
+	    }
+	  }
+	  if(cpttype(x)=="variance"){
+	    abline(v=index(data.set.ts(x))[cpts.to.plot],col=cpt.col,lwd=cpt.width,lty=cpt.style)
+	  }
+	  else if(cpttype(x)=="mean"  ||  cpttype(x)=="mean and variance"){
+	    if((test.stat(x)=="Normal")||(test.stat(x)=="CUSUM")){
+	      means=param.est(param.est)$mean
+	    }
+	    else if(test.stat(x)=="Gamma"){
+	      means=param.est(param.est)$scale*param.est(param.est)$shape
+	    }
+	    else if(test.stat(x)=="Exponential"){
+	      means=1/param.est(param.est)$rate
+	    }
+	    else if(test.stat(x)=="Poisson"){
+	      means=param.est(param.est)$lambda
+	    }
+	    else{
+	      stop('Invalid Changepoint test statistic')
+	    }
+	    nseg=ncpts+1
+	    cpts.to.plot=c(0,cpts.to.plot,length(data.set(x)))
+	    for(i in 1:nseg){
+	      segments(index(data.set.ts(x))[cpts.to.plot[i]+1],means[i],index(data.set.ts(x))[cpts.to.plot[i+1]],means[i],col=cpt.col,lwd=cpt.width,lty=cpt.style)
+	    }
+	  }
+	  else{
+	    stop('Invalid Changepoint Type for plotting.\n Can only plot mean, variance, mean and variance')
+	  }
+	})
+	
 	setMethod("plot","cpt.reg",function(x,cpt.col='red',cpt.width=1,cpt.style=1,...){
 		if(dim(data.set(x))[2]>3){
 			stop("A plot function for regression of more than one regressor is not available")
@@ -590,7 +729,6 @@
 	})
 
 # likelihood functions
-#######if MBIC, -log(n)
 	setMethod("logLik", "cpt", function(object) {
 		if(test.stat(object)=="Normal"){
 			if(cpttype(object)=="mean"){
@@ -731,6 +869,160 @@
 		}
 		else{stop("logLik is only valid for distributional assumptions, not CUSUM or CSS")}
 		return(like)
+	})
+
+	setMethod("logLik", "cpt.range", function(object,ncpts=NA) {
+	  if(is.na(ncpts)){
+	    if(pen.type(object)=="CROPS"){
+	      stop('CROPS does not supply an optimal set of changepoints, set ncpts argument to the desired segmentation to plot or use diagnostic=TRUE to identify an appropriate number of changepoints')
+	    }
+	    cpts=c(0,object@cpts)
+      pen.value=pen.value(object)
+	  }
+	  else{
+	    ncpts.full=apply(cpts.full(object),1,function(x){sum(x>0,na.rm=TRUE)})
+	    row=which(ncpts.full==ncpts)
+	    if(length(row)==0){
+	      stop(paste("Your input object doesn't have a segmentation with the requested number of changepoints.\n Possible ncpts are: "),paste(ncpts.full,collapse=','))
+	    }
+	    cpts=c(0,cpts.full(object)[row,1:ncpts],length(data.set(object)))
+      pen.value=pen.value.full(object)[row]
+	  }
+	  nseg=length(cpts)-1
+	  
+	  if(test.stat(object)=="Normal"){
+	    if(cpttype(object)=="mean"){
+	      mll.mean=function(x2,x,n){
+	        return( x2-(x^2)/n)
+	      }
+	      y2=c(0,cumsum(data.set(object)^2))
+	      y=c(0,cumsum(data.set(object)))
+	      tmplike=0
+	      for(j in 1:nseg){
+	        tmplike=tmplike+mll.mean(y2[cpts[j+1]+1]-y2[cpts[j]+1],y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
+	      }
+	      ##c(tmplike, tmplike+(nseg-2)*pen.value(object)+sum(log(cpts[-1]-cpts[-(nseg+1)])))
+	      if(pen.type(object)=="MBIC"){
+	        like=c(tmplike, tmplike+(nseg-2)*pen.value+sum(log(cpts[-1]-cpts[-(nseg+1)])))
+	      }else{
+	        like=c(tmplike,tmplike+(nseg-1)*pen.value)
+	      }
+	      names(like)=c("-like","-likepen")
+	    }
+	    else if(cpttype(object)=="variance"){
+	      mll.var=function(x,n){
+	        neg=x<=0
+	        x[neg==TRUE]=0.00000000001    
+	        return( n*(log(2*pi)+log(x/n)+1))
+	      }
+	      y2=c(0,cumsum((data.set(object)-param.est(object)$mean)^2))
+	      tmplike=0
+	      for(j in 1:nseg){
+	        tmplike=tmplike+mll.var(y2[cpts[j+1]+1]-y2[cpts[j]+1],cpts[j+1]-cpts[j])
+	      }
+	      if(pen.type(object)=="MBIC"){
+	        like=c(tmplike, tmplike+(nseg-2)*pen.value+sum(log(cpts[-1]-cpts[-(nseg+1)])))
+	      }else{
+	        like=c(tmplike,tmplike+(nseg-1)*pen.value)
+	      }
+	      names(like)=c("-like","-likepen")
+	    }
+	    else if(cpttype(object)=="mean and variance"){
+	      mll.meanvar=function(x2,x,n){
+	        sigmasq=(1/n)*(x2-(x^2)/n)
+	        neg=sigmasq<=0
+	        sigmasq[neg==TRUE]=0.00000000001
+	        return( n*(log(2*pi)+log(sigmasq)+1))
+	      }
+	      y2=c(0,cumsum(data.set(object)^2))
+	      y=c(0,cumsum(data.set(object)))
+	      tmplike=0
+	      for(j in 1:nseg){
+	        tmplike=tmplike+mll.meanvar(y2[cpts[j+1]+1]-y2[cpts[j]+1],y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
+	      }
+	      if(pen.type(object)=="MBIC"){
+	        like=c(tmplike, tmplike+(nseg-2)*pen.value+sum(log(cpts[-1]-cpts[-(nseg+1)])))
+	      }else{
+	        like=c(tmplike,tmplike+(nseg-1)*pen.value)
+	      }
+	      names(like)=c("-like","-likepen")
+	    }
+	    else{
+	      stop("Unknown changepoint type, must be 'mean', 'variance' or 'mean and variance'")
+	    }
+	  }
+	  else if(test.stat(object)=="Gamma"){
+	    if(cpttype(object)!="mean and variance"){
+	      stop("Unknown changepoint type for test.stat='Gamma', must be 'mean and variance'")
+	    }
+	    else{
+	      mll.meanvarg=function(x,n,shape){
+	        return(n*shape*log(n*shape)-n*shape*log(x))
+	      }
+	      y=c(0,cumsum(data.set(object)))
+	      shape=param.est(object)$shape
+	      cpts=c(0,object@cpts)
+	      #nseg=length(cpts)-1
+	      tmplike=0
+	      for(j in 1:nseg){
+	        tmplike=tmplike+mll.meanvarg(y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j],shape)
+	      }
+	      if(pen.type(object)=="MBIC"){
+	        like=c(tmplike, tmplike+(nseg-2)*pen.value+sum(log(cpts[-1]-cpts[-(nseg+1)])))
+	      }else{
+	        like=c(tmplike,tmplike+(nseg-1)*pen.value)
+	      }
+	      names(like)=c("-like","-likepen")
+	    }
+	  }
+	  else if(test.stat(object)=="Exponential"){
+	    if(cpttype(object)!="mean and variance"){
+	      stop("Unknown changepoint type for test.stat='Exponential', must be 'mean and variance'")
+	    }
+	    else{
+	      mll.meanvare=function(x,n){
+	        return(n*log(n)-n*log(x))
+	      }
+	      y=c(0,cumsum(data.set(object)))
+	      cpts=c(0,object@cpts)
+	      #nseg=length(cpts)-1
+	      tmplike=0
+	      for(j in 1:nseg){
+	        tmplike=tmplike+mll.meanvare(y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
+	      }
+	      if(pen.type(object)=="MBIC"){
+	        like=c(tmplike, tmplike+(nseg-2)*pen.value+sum(log(cpts[-1]-cpts[-(nseg+1)])))
+	      }else{
+	        like=c(tmplike,tmplike+(nseg-1)*pen.value)
+	      }
+	      names(like)=c("-like","-likepen")
+	    }
+	  }
+	  else if(test.stat(object)=="Poisson"){
+	    if(cpttype(object)!="mean and variance"){
+	      stop("Unknown changepoint type for test.stat='Poisson', must be 'mean and variance'")
+	    }
+	    else{
+	      mll.meanvarp=function(x,n){
+	        return(x*log(x)-x*log(n))
+	      }
+	      y=c(0,cumsum(data.set(object)))
+	      cpts=c(0,object@cpts)
+	      #nseg=length(cpts)-1
+	      tmplike=0
+	      for(j in 1:nseg){
+	        tmplike=tmplike+mll.meanvarp(y[cpts[j+1]+1]-y[cpts[j]+1],cpts[j+1]-cpts[j])
+	      }
+	      if(pen.type(object)=="MBIC"){
+	        like=c(tmplike, tmplike+(nseg-2)*pen.value+sum(log(cpts[-1]-cpts[-(nseg+1)])))
+	      }else{
+	        like=c(tmplike,tmplike+(nseg-1)*pen.value)
+	      }
+	      names(like)=c("-like","-likepen")
+	    }
+	  }
+	  else{stop("logLik is only valid for distributional assumptions, not CUSUM or CSS")}
+	  return(like)
 	})
 
 	setGeneric("likelihood", function(object) standardGeneric("likelihood"))

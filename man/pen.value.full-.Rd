@@ -38,3 +38,4 @@ pen.value.full(x)<-5 # replaces the existing pen.value.full slot in x with 5
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal} 

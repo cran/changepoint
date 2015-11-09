@@ -35,3 +35,4 @@ method(x) # retrieves the method slot from x
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal}

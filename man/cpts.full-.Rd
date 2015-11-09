@@ -39,3 +39,4 @@ cpts.full(x)<-matrix(c(10,20,10,NA),nrow=2,byrow=TRUE)
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal} 

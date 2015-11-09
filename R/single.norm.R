@@ -47,11 +47,6 @@ function(data,extrainf=TRUE,minseglen){
 }
 
 single.mean.norm<-function(data,penalty="MBIC",pen.value=0,class=TRUE,param.estimates=TRUE,minseglen){
-  if(penalty!="MBIC"){
-    costfunc = "mean.norm"
-  }else{
-    costfunc = "mean.norm.mbic"
-  }
   if(is.null(dim(data))==TRUE){
     # single dataset
     n=length(data)
@@ -60,31 +55,16 @@ single.mean.norm<-function(data,penalty="MBIC",pen.value=0,class=TRUE,param.esti
     n=ncol(data)
   }
   if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
-  pen.value = penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck=costfunc, method="AMOC")
+  pen.value = penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck="mean.norm", method="AMOC")
   if(is.null(dim(data))==TRUE){ # single dataset
-		#n=length(data)
-	
-    
-		
-# 		if(penalty=="Asymptotic"){
-# 			alpha=pen.value
-# 			alogn=(2*log(log(n)))^(-(1/2))
-# 			blogn=(alogn^(-1))+(1/2)*alogn*log(log(log(n)))  # Chen & Gupta (2000) pg10
-# 			pen.value=(-alogn*log(log((1-alpha+exp(-2*(pi^(1/2))*exp(blogn/alogn)))^(-1/(2*(pi^(1/2))))))+blogn)^2
-# 		}
 		tmp=single.mean.norm.calc(coredata(data),extrainf=TRUE,minseglen)
+		if(penalty=="MBIC"){
+		  tmp[3]=tmp[3]+log(tmp[1])+log(n-tmp[1]+1)
+		}
 		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=1,pen.value)
     
 		if(class==TRUE){
 		  return(class_input(data, cpttype="mean", method="AMOC", test.stat="Normal", penalty=penalty, pen.value=ans$pen, minseglen=minseglen, param.estimates=param.estimates, out=c(0, ans$cpt)))
-# 			out=new("cpt")
-# 			data.set(out)=data; cpttype(out)="mean"; method(out)="AMOC"; test.stat(out)="Normal"; pen.type(out)=penalty; pen.value(out)=ans$pen; ncpts.max(out)=1
-# 			if(ans$cpt != n){cpts(out)=c(ans$cpt,n)}
-# 			else{cpts(out)=ans$cpt}
-# 			if(param.estimates==TRUE){
-# 				out=param(out)
-# 			}
-# 			return(out)
 		}
 		else{ 
 		  alogn=(2*log(log(n)))^(-(1/2))
@@ -95,29 +75,16 @@ single.mean.norm<-function(data,penalty="MBIC",pen.value=0,class=TRUE,param.esti
 		}
 	}
 	else{ 
-		#n=ncol(data)
-		#if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
-	#	penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck="mean.norm")
-# 		if(penalty=="Asymptotic"){
-# 			alpha=pen.value
-# 			alogn=(2*log(log(n)))^(-(1/2))
-# 			blogn=(alogn^(-1))+(1/2)*alogn*log(log(log(n)))
-# 			pen.value=(-alogn*log(log((1-alpha+exp(-2*(pi^(1/2))*exp(blogn/alogn)))^(-1/(2*(pi^(1/2))))))+blogn)^2
-# 		}
 		tmp=single.mean.norm.calc(data,extrainf=TRUE,minseglen)
+		if(penalty=="MBIC"){
+		  tmp[,3]=tmp[,3]+log(tmp[,1])+log(n-tmp[,1]+1)
+		}
 		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=1,pen.value)
 		if(class==TRUE){
 			rep=nrow(data)
 			out=list()
 			for(i in 1:rep){
         out[[i]] = class_input(data, cpttype="mean", method="AMOC", test.stat="Normal", penalty=penalty, pen.value=ans$pen, minseglen=minseglen, param.estimates=param.estimates, out=c(0, ans$cpt[i]))
-# 				out[[i]]=new("cpt")
-# 				data.set(out[[i]])=ts(data[i,]);cpttype(out[[i]])="mean";method(out[[i]])="AMOC"; test.stat(out[[i]])="Normal"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
-# 				if(ans$cpt[i] != n){cpts(out[[i]])=c(ans$cpt[i],n)}
-# 				else{cpts(out[[i]])=ans$cpt[i]}
-# 				if(param.estimates==TRUE){
-# 					out[[i]]=param(out[[i]])
-# 				}
 			}
 			return(out)
 		}
@@ -141,7 +108,7 @@ function(data,know.mean=FALSE,mu=NA,extrainf=TRUE,minseglen){
   singledim=function(data,know.mean=FALSE,mu=-1000,extrainf=TRUE,minseglen){
     n=length(data)
     if((know.mean==FALSE)&(is.na(mu))){
-	mu=mean(data)
+    	mu=mean(data)
     }
     y=c(0,cumsum((data-mu)^2))
     null=n*log(y[n+1]/n)
@@ -176,7 +143,7 @@ function(data,know.mean=FALSE,mu=NA,extrainf=TRUE,minseglen){
     rep=nrow(data)
     n=ncol(data)
     if(length(mu)==1){
-	mu=rep(mu,rep)
+	    mu=rep(mu,rep)
     }
     cpt=NULL
     if(extrainf==FALSE){
@@ -197,11 +164,6 @@ function(data,know.mean=FALSE,mu=NA,extrainf=TRUE,minseglen){
 
 
 single.var.norm<-function(data,penalty="MBIC",pen.value=0,know.mean=FALSE,mu=NA,class=TRUE,param.estimates=TRUE,minseglen){
-  if(penalty!="MBIC"){
-    costfunc = "var.norm"
-  }else{
-    costfunc = "var.norm.mbic"
-  }
   if(is.null(dim(data))==TRUE){
     # single dataset
     n=length(data)
@@ -211,32 +173,16 @@ single.var.norm<-function(data,penalty="MBIC",pen.value=0,know.mean=FALSE,mu=NA,
   }
   if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
   
-  pen.value = penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck=costfunc, method="AMOC")
+  pen.value = penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck="var.norm", method="AMOC")
   
   if(is.null(dim(data))==TRUE){
-#		n=length(data)
-#		if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
-
-		#pen.value = penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck="var.norm")
-   
-# 		if(penalty=="Asymptotic"){
-# 			alpha=pen.value
-# 			alogn=sqrt(2*log(log(n)))
-# 			blogn=2*log(log(n))+ (log(log(log(n))))/2 - log(gamma(1/2))
-# 			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2  # Chen & Gupta (2000) pg27
-# 		}
 		tmp=single.var.norm.calc(coredata(data),know.mean,mu,extrainf=TRUE,minseglen)
+		if(penalty=="MBIC"){
+		  tmp[3]=tmp[3]+log(tmp[1])+log(n-tmp[1]+1)
+		}
 		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=1,pen.value)
 		if(class==TRUE){
 		  return(class_input(data, cpttype="variance", method="AMOC", test.stat="Normal", penalty=penalty, pen.value=pen.value, minseglen=minseglen, param.estimates=param.estimates, out=c(0, ans$cpt)))
-# 			out=new("cpt")
-# 			data.set(out)=data; cpttype(out)="variance"; method(out)="AMOC"; test.stat(out)="Normal"; pen.type(out)=penalty; pen.value(out)=ans$pen;ncpts.max(out)=1
-# 			if(ans$cpt != n){cpts(out)=c(ans$cpt,n)}
-# 			else{cpts(out)=ans$cpt}
-# 			if(param.estimates==TRUE){
-# 				out=param(out)
-# 			}
-# 			return(out)
 		}
 		else{ 
 		  alogn=sqrt(2*log(log(n)))
@@ -247,30 +193,16 @@ single.var.norm<-function(data,penalty="MBIC",pen.value=0,know.mean=FALSE,mu=NA,
 		}
 	}
 	else{ 
-#		n=ncol(data)
-#		if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
-		
-	#	penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck="var.norm")
-# 		if(penalty=="Asymptotic"){
-# 			alpha=pen.value
-# 			alogn=sqrt(2*log(log(n)))
-# 			blogn=2*log(log(n))+ (log(log(log(n))))/2 - log(gamma(1/2))
-# 			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2   # Chen & Gupta (2000) pg27
-# 		}
 		tmp=single.var.norm.calc(data,know.mean,mu,extrainf=TRUE,minseglen)
+		if(penalty=="MBIC"){
+		  tmp[,3]=tmp[,3]+log(tmp[,1])+log(n-tmp[,1]+1)
+		}
 		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=1,pen.value)
 		if(class==TRUE){
 			rep=nrow(data)
 			out=list()
 			for(i in 1:rep){
           out[[i]] = class_input(data, cpttype="variance", method="AMOC", test.stat="Normal", penalty=penalty, pen.value=ans$pen, minseglen=minseglen, param.estimates=param.estimates, out=c(0, ans$cpt[i]))
-# 				out[[i]]=new("cpt")
-# 				data.set(out[[i]])=ts(data[i,]); cpttype(out[[i]])="variance"; method(out[[i]])="AMOC"; test.stat(out[[i]])="Normal"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
-# 				if(ans$cpt[i] != n){cpts(out[[i]])=c(ans$cpt[i],n)}
-# 				else{cpts(out[[i]])=ans$cpt[i]}
-# 				if(param.estimates==TRUE){
-# 					out[[i]]=param(out[[i]])
-# 				}
  			}
 			return(out)
 		}
@@ -345,11 +277,6 @@ function(data,extrainf=TRUE,minseglen){
 }
 
 single.meanvar.norm<-function(data,penalty="MBIC",pen.value=0,class=TRUE,param.estimates=TRUE,minseglen){
-  if(penalty!="MBIC"){
-    costfunc = "meanvar.norm"
-  }else{
-    costfunc = "meanvar.norm.mbic"
-  }
   if(is.null(dim(data))==TRUE){
     # single dataset
     n=length(data)
@@ -358,31 +285,16 @@ single.meanvar.norm<-function(data,penalty="MBIC",pen.value=0,class=TRUE,param.e
     n=ncol(data)
   } 
   if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
-  pen.value = penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck=costfunc, method="AMOC")
+  pen.value = penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck="meanvar.norm", method="AMOC")
   
   if(is.null(dim(data))==TRUE){
-#		n=length(data)
-		
-		
-	#	penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck="meanvar.norm")
-# 		if(penalty=="Asymptotic"){
-# 			alpha=pen.value
-# 			alogn=sqrt(2*log(log(n)))
-# 			blogn=2*log(log(n))+ log(log(log(n)))
-# 			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2   # Chen & Gupta (2000) pg54
-# 		}
 		tmp=single.meanvar.norm.calc(coredata(data),extrainf=TRUE,minseglen)
+		if(penalty=="MBIC"){
+		  tmp[3]=tmp[3]+log(tmp[1])+log(n-tmp[1]+1)
+		}
 		ans=decision(tmp[1],tmp[2],tmp[3],penalty,n,diffparam=2,pen.value)
 		if(class==TRUE){
       return(class_input(data, cpttype="mean and variance", method="AMOC", test.stat="Normal", penalty=penalty, pen.value=ans$pen, minseglen=minseglen, param.estimates=param.estimates, out=c(0,ans$cpt)))
-# 			out=new("cpt")
-# 			data.set(out)=data;cpttype(out)="mean and variance";method(out)="AMOC";test.stat(out)="Normal";pen.type(out)=penalty; pen.value(out)=ans$pen;ncpts.max(out)=1
-# 			if(ans$cpt != n){cpts(out)=c(ans$cpt,n)}
-# 			else{cpts(out)=ans$cpt}
-# 			if(param.estimates==TRUE){
-# 				out=param(out)
-# 			}
-# 			return(out)
 		}
 		else{ 
 		  alogn=sqrt(2*log(log(n)))
@@ -393,30 +305,16 @@ single.meanvar.norm<-function(data,penalty="MBIC",pen.value=0,class=TRUE,param.e
 		}
 	}
 	else{ 
-#		n=ncol(data)
-#		if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
-		
-	#	penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck="meanvar.norm")
-# 		if(penalty=="Asymptotic"){
-# 			alpha=pen.value
-# 			alogn=sqrt(2*log(log(n)))
-# 			blogn=2*log(log(n))+ log(log(log(n)))
-# 			pen.value=(-(log(log((1-alpha+exp(-2*exp(blogn)))^(-1/2))))/alogn + blogn/alogn)^2   # Chen & Gupta (2000) pg54
-# 		}
 		tmp=single.meanvar.norm.calc(data,extrainf=TRUE,minseglen)
+		if(penalty=="MBIC"){
+		  tmp[,3]=tmp[,3]+log(tmp[,1])+log(n-tmp[,1]+1)
+		}
 		ans=decision(tmp[,1],tmp[,2],tmp[,3],penalty,n,diffparam=2,pen.value)
 		if(class==TRUE){
 			rep=nrow(data)
 			out=list()
 			for(i in 1:rep){
         out[[i]]= class_input(data[i,], cpttype="mean and variance", method="AMOC", test.stat="Normal", penalty=penalty, pen.value=ans$pen, minseglen=minseglen, param.estimates=param.estimates, out=c(0,ans$cpt[i]))
-# 				out[[i]]=new("cpt")
-# 				data.set(out[[i]])=ts(data[i,]);cpttype(out[[i]])="mean and variance";method(out[[i]])="AMOC";test.stat(out[[i]])="Normal"; pen.type(out[[i]])=penalty;pen.value(out[[i]])=ans$pen;ncpts.max(out[[i]])=1
-# 				if(ans$cpt[i] != n){cpts(out[[i]])=c(ans$cpt[i],n)}
-# 				else{cpts(out[[i]])=ans$cpt[i]}
-# 				if(param.estimates==TRUE){
-# 					out[[i]]=param(out[[i]])
-# 				}
 			}
 			return(out)
 		}

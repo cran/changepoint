@@ -35,3 +35,4 @@ param.est(x) # retrieves the param.est slot from x
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal}

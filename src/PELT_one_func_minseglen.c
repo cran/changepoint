@@ -125,13 +125,14 @@ costfunction = &mbic_meanvar_poisson;
   int nchecklist;
   double minout;
 
-  //double tmplike[*n];
+//double tmplike[*n];
   double *tmplike;
   tmplike = (double *)calloc(*n+1,sizeof(double));
   if (tmplike==NULL)   {
     *error = 2;
     goto err2;
   }
+  
   
   //int tmpt[*n];
   int *tmpt;
@@ -173,11 +174,11 @@ costfunction = &mbic_meanvar_poisson;
   checklist[0]=0;
   checklist[1]=*minseglen;
   
-   for(tstar=2*(*minseglen);tstar<(*n+1);tstar++){
+  for(tstar=2*(*minseglen);tstar<(*n+1);tstar++){
     R_CheckUserInterrupt(); /* checks if user has interrupted the R session and quits if true */
     
-    if ((lastchangelike[tstar]) == 0){ 
-      for(i=0;i<(nchecklist);i++){
+   if ((lastchangelike[tstar]) == 0){ 
+  for(i=0;i<(nchecklist);i++){
         tmplike[i]=lastchangelike[checklist[i]] + costfunction(*(sumstat+tstar)-*(sumstat+checklist[i]),*(sumstat + *n + 1 +tstar)-*(sumstat + *n + 1 +checklist[i]),*(sumstat + *n + *n + 2 +tstar)-*(sumstat + *n + *n + 2 +checklist[i]), tstar-checklist[i], *shape)+*pen;
       }
     min_which(tmplike,nchecklist,&minout,&whichout); /*updates minout and whichout with min and which element */
@@ -192,11 +193,13 @@ costfunction = &mbic_meanvar_poisson;
         nchecktmp+=1;
       }
      }
+     nchecklist = nchecktmp;
     }
     
-   *(checklist+nchecktmp)=tstar-(*minseglen-1);// atleast 1 obs per seg
-     nchecktmp+=1;
-     nchecklist=nchecktmp;
+    
+   *(checklist+nchecklist)=tstar-(*minseglen-1);// atleast 1 obs per seg
+     nchecklist+=1;
+  /*  nchecklist=nchecktmp;*/
   
   } // end taustar
   

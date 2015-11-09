@@ -35,3 +35,4 @@ cpttype(x) # retrieves the cpttype slot from x
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal} 

@@ -43,3 +43,4 @@ param.est(ans) # variance is 0.8067621
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal}

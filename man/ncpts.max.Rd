@@ -35,3 +35,4 @@ ncpts.max(x) # retrieves the ncpts.max slot from x
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal}

@@ -25,3 +25,4 @@
 \keyword{methods}
 \keyword{show}
 \keyword{cpt}
+\keyword{internal} 

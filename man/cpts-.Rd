@@ -38,3 +38,4 @@ cpts(x)<-10 # replaces the vector of changepoint in object x with 10
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal} 

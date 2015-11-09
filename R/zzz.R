@@ -3,5 +3,6 @@
 	f <- read.dcf(file.path(libname, pkgname, "DESCRIPTION"),
                       c("Version", "Date"))
         packageStartupMessage('Successfully loaded changepoint package version ',
-                              f[1,1],'\n Substantial changes to the structure of the package have occurred from version 1.1.5. Please see the package NEWS for details.\n NOTE: Default penalty has changed to MBIC so default code may return different segmentations.')
+                              f[1,1],'\n NOTE: Predefined penalty values have changed.  Previous penalty values with a postfix 1 i.e. SIC1 are now without i.e. SIC ', 
+                              'and previous penalties without a postfix i.e. SIC are now with a postfix 0 i.e. SIC0. See NEWS and help files for further details.')
 }

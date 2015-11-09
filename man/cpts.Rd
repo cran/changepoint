@@ -35,3 +35,4 @@ cpts(x) # retrieves the cpts slot from x
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal}

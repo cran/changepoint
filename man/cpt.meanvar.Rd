@@ -15,7 +15,7 @@ class=TRUE,param.estimates=TRUE,shape=1,minseglen=2)
 	A vector, ts object or matrix containing the data within which you wish to find a changepoint.  If data is a matrix, each row is considered a separate dataset.
 }
   \item{penalty}{
-  Choice of "None", "SIC", "BIC", "MBIC", AIC", "Hannan-Quinn", "Asymptotic", "Manual" and "CROPS" penalties.  If Manual is specified, the manual penalty is contained in the pen.value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen.value parameter.  If CROPS is specified, the penalty range is contained in the pen.value parameter; note this is a vector of length 2 which contains the minimum and maximum penalty value.  Note CROPS can only be used if the method is "PELT". The predefined penalties listed do NOT count the changepoint as a parameter, postfix a 1 e.g."SIC1" to count the changepoint as a parameter.
+  Choice of "None", "SIC", "BIC", "MBIC", AIC", "Hannan-Quinn", "Asymptotic", "Manual" and "CROPS" penalties.  If Manual is specified, the manual penalty is contained in the pen.value parameter. If Asymptotic is specified, the theoretical type I error is contained in the pen.value parameter.  If CROPS is specified, the penalty range is contained in the pen.value parameter; note this is a vector of length 2 which contains the minimum and maximum penalty value.  Note CROPS can only be used if the method is "PELT". The predefined penalties listed DO count the changepoint as a parameter, postfix a 0 e.g."SIC0" to NOT count the changepoint as a parameter.
 }
   \item{pen.value}{
   The theoretical type I error e.g.0.05 when using the Asymptotic penalty.  A vector of length 2 (min,max) if using the CROPS penalty.  The value of the penalty when using the Manual penalty option - this can be a numeric value or text giving the formula to use.  Available variables are, n=length of original data, null=null likelihood, alt=alternative likelihood, tau=proposed changepoint, diffparam=difference in number of alternatve and null parameters.  
@@ -101,24 +101,30 @@ x=c(rgamma(100,shape=1,rate=1),rgamma(100,shape=1,rate=5))
 cpt.meanvar(x,penalty="SIC",method="AMOC",test.stat="Gamma",class=FALSE,shape=1) # returns 97 to
 #show that the null hypothesis was rejected and the change in scale parameter is at 97
 ans=cpt.meanvar(x,penalty="AIC",method="AMOC",test.stat="Gamma",shape=1)
-cpts(ans) # returns 97 to show that the null hypothesis was rejected, the change in scale parameter
-#is at 97
+cpts(ans) 
+# returns 97 to show that the null hypothesis was rejected, the change in scale parameter is at 97
 
 
 # Example of multiple changes in mean and variance at 50,100,150 in simulated normal data
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,5,3),rnorm(50,10,1),rnorm(50,3,10))
-cpt.meanvar(x,penalty="Manual",pen.value="4*log(n)",method="BinSeg",Q=5,class=FALSE) # returns
-#optimal number of changepoints is 4, locations are 50,100,150,152.
+cpt.meanvar(x,penalty="Manual",pen.value="4*log(n)",method="BinSeg",Q=5,class=FALSE) 
+# returns optimal number of changepoints is 4, locations are 50,100,150,152.
 
 # Example of using the CROPS penalty in the above example
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,5,3),rnorm(50,10,1),rnorm(50,3,10))
-out=cpt.meanvar(x,pen.value=c(2*log(length(x)),10*log(length(x))),penalty="CROPS",method="PELT")
+out=cpt.meanvar(x,pen.value=c(2*log(length(x)),100*log(length(x))),penalty="CROPS",method="PELT")
 cpts.full(out)
-# returns 4 segmentations for penalty values between 2log(n) and 10log(n).
-# We find segmentations with 11, 9, 6 and 5 changepoints, inc 0 and n. 
+# returns 6 segmentations for penalty values between 2log(n) and 100log(n).
+# We find segmentations with 9, 7, 4, 3, 1 and 0 changepoints. 
+# Note that the empty final row indicates no changepoints.
 pen.value.full(out) # gives associated penalty transition points
+# CROPS does not give an optimal set of changepoints thus we may wish to explore further
+plot(out,diagnostic=TRUE) 
+# looks like the segmentation with 4 changepoints, 50,100,150,200 is the most appropriate
+plot(out,ncpts=3) 
+
 
 # Example multiple datasets where the first row has multiple changes in mean and variance and the
 #second row has no change in mean or variance

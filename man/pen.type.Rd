@@ -35,3 +35,4 @@ pen.type(x) # retrieves the pen.type slot from x
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal}

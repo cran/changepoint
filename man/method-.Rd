@@ -38,3 +38,4 @@ method(x)<-"mean" # replaces the existing method slot in x with "mean"
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal} 

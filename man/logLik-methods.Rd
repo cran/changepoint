@@ -2,6 +2,7 @@
 \docType{methods}
 \alias{logLik-methods}
 \alias{logLik,cpt-method}
+\alias{logLik,cpt.range-method}
 \title{ ~~ Methods for Function logLik  ~~}
 \description{
  ~~ Methods for function \code{logLik}  ~~
@@ -17,9 +18,10 @@
 set.seed(1)
 x=c(rnorm(50,0,1),rnorm(50,0,10),rnorm(50,0,5),rnorm(50,0,1))
 out=cpt.var(x,penalty="Manual",pen.value="2*log(n)",method="BinSeg",Q=5)
-likelihood(out) # returns the raw scaled negative likelihood (783.9144) and the scaled negative
-#likelihood + penalty (805.1076)
+logLik(out) # returns the raw scaled negative likelihood (925.8085) and the scaled negative
+#likelihood + penalty (957.5984)
 }
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal} 

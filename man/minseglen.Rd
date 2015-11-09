@@ -35,3 +35,4 @@ minseglen(x) # retrieves the minseglen slot from x
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal}

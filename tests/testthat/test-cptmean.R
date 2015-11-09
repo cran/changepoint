@@ -256,7 +256,7 @@ for(d in 1:length(data)){
                         expect_that(cpt.mean(data=data[[d]], penalty=penalties[p], method=methods[m], Q=QValues[[v]], test.stat=testStats[ts], class=cl, param.estimates=pe), throws_error())
                       }else if(QValues[[v]] > (length(data[[d]]))/2+1){
                         expect_that(cpt.mean(data=data[[d]], penalty=penalties[p], method=methods[m], Q=QValues[[v]], test.stat=testStats[ts], class=cl, param.estimates=pe), throws_error())
-                        #specific user deined error "Q is larger than the maximum number of segments"
+                        #specific user defined error "Q is larger than the maximum number of segments"
                       }
                       t = t + 1
                     })
@@ -265,6 +265,12 @@ for(d in 1:length(data)){
                       checkManualPenalty(TRUE)
                     }else if(penalties[p] == "Asymptotic"){
                         checkAsymptoticPenalty(TRUE)
+                    }else if(penalties[p]=="MBIC"){
+                      if(testStats[ts]=="CUSUM"||testStats[ts]=="CSS"){
+                        test_that(paste0("Test #",t," :data=", d, "penalty=",penalties[p],", method=",methods[m],",class=",cl,", param=",pe,", test.stat=",testStats[ts],"QVal=",Qv),expect_error(cpt.mean(data=data[[d]],penalty=penalties[p],method=methods[m],Q=aQv,test.stat=testStats[ts],class=cl,param.estimates=pe)))
+                      }else{
+                        checkOtherPenalties(TRUE)
+                      }
                     }else{
                       checkOtherPenalties(TRUE)
                     }  
@@ -281,6 +287,12 @@ for(d in 1:length(data)){
                       checkManualPenalty(FALSE)
                     }else if(penalties[p] == "Asymptotic"){
                         checkAsymptoticPenalty(FALSE)
+                    }else if(penalties[p]=="MBIC"){
+                      if(testStats[ts]=="CUSUM"||testStats[ts]=="CSS"){
+                        test_that(paste0("Test #",t," :data=", d, "penalty=",penalties[p],", method=",methods[m],",class=",cl,", param=",pe,", test.stat=",testStats[ts],"QVal=",Qv),expect_error(cpt.mean(data=data[[d]],penalty=penalties[p],method=methods[m],Q=aQv,test.stat=testStats[ts],class=cl,param.estimates=pe)))
+                      }else{
+                        checkOtherPenalties(FALSE)
+                      }
                     }else{
                       checkOtherPenalties(FALSE)
                     }

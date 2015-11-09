@@ -38,3 +38,4 @@ minseglen(x)<-5 # replaces the existing minseglen slot in x with 5
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal} 

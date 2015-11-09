@@ -20,3 +20,4 @@
 }}
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal}

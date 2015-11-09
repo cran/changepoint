@@ -29,3 +29,4 @@
 \keyword{methods}
 \keyword{summary}
 \keyword{cpt}
+\keyword{internal} 

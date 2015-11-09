@@ -1,7 +1,7 @@
 \name{cpttype<-}
 \alias{cpttype<-}
 \title{
-Generic Function - cpttype<-
+Generic Function - cpttype
 }
 \description{
 Generic function
@@ -38,3 +38,4 @@ cpttype(x)<-"mean" # replaces the existing cpttype in object x with "mean"
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal}

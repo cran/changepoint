@@ -35,3 +35,4 @@ pen.value.full(x) # retrieves the pen.value.full slot from x
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal}

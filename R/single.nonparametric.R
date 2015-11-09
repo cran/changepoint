@@ -47,11 +47,7 @@ single.var.css.calc <-
 
 single.var.css<-function(data,penalty="MBIC",pen.value=0,class=TRUE,param.estimates=TRUE,minseglen){
   if(length(pen.value)>1){stop('Only one dimensional penalties can be used for CSS')}
-  if(penalty!="MBIC"){
-    costfunc = "var.css"
-  }else{
-    costfunc = "var.css.mbic"
-  }
+  if(penalty=="MBIC"){stop("MBIC penalty is not valid for nonparametric test statistics.")}
   diffparam=1
   if(is.null(dim(data))==TRUE){
     # single dataset
@@ -62,48 +58,7 @@ single.var.css<-function(data,penalty="MBIC",pen.value=0,class=TRUE,param.estima
   }
   if(n<4){stop('Data must have atleast 4 observations to fit a changepoint model.')}
   
-  pen.value = penalty_decision(penalty, pen.value, n, diffparam, asymcheck = costfunc, method="AMOC")
-  # 	if((penalty=="SIC") || (penalty=="BIC")){
-  # 		pen.value=log(diffparam*log(n))
-  # 	}
-  # 	else if((penalty=="SIC1") || (penalty=="BIC1")){
-  # 		pen.value=log((diffparam+1)*log(n))
-  # 	}
-  # 	else if(penalty=="AIC"){
-  # 		pen.value=log(2*diffparam)
-  # 	}
-  # 	else if(penalty=="AIC1"){
-  # 		pen.value=log(2*(diffparam+1))
-  # 	}
-  # 	else if(penalty=="Hannan-Quinn"){
-  # 		pen.value=log(2*diffparam*log(log(n)))
-  # 	}
-  # 	else if(penalty=="Hannan-Quinn1"){
-  # 		pen.value=log(2*(diffparam+1)*log(log(n)))
-  # 	}
-  # 	else if(penalty=="None"){
-  # 		pen.value=0
-  # 	}
-  # 	else if((penalty!="Manual")&&(penalty!="Asymptotic")){
-  # 		stop('Unknown Penalty')
-  # 	}
-  # 	if((penalty=="Manual")&&(is.numeric(pen.value)==FALSE)){
-  # 		pen.value=try(eval(parse(text=paste(pen.value))),silent=TRUE)
-  # 		if(class(pen.value)=='try-error'){
-  # 			stop('Your manual penalty cannot be evaluated')
-  # 		}
-  # 	}
-#   if(penalty=="Asymptotic"){
-#     if(pen.value==0.01){pen.value=1.628}
-#     else if(pen.value==0.05){pen.value=1.358}
-#     else if(pen.value==0.1){pen.value=1.224}
-#     else if(pen.value==0.25){pen.value=1.019}
-#     else if(pen.value==0.5){pen.value=0.828}
-#     else if(pen.value==0.75){pen.value=0.677}
-#     else if(pen.value==0.9){pen.value=0.571}
-#     else if(pen.value==0.95){pen.value=0.520}
-#     else{stop('Only alpha values of 0.01,0.05,0.1,0.25,0.5,0.75,0.9,0.95 are valid for CSS')}
-#   }
+  pen.value = penalty_decision(penalty, pen.value, n, diffparam, asymcheck = "var.css", method="AMOC")
   if(is.null(dim(data))==TRUE){
     tmp=single.var.css.calc(coredata(data),extrainf=TRUE,minseglen)
     ans=decision(tau=tmp[1],null=tmp[2],penalty="Manual",n=n,diffparam=1,pen.value=pen.value)
@@ -198,11 +153,8 @@ single.mean.cusum.calc <-
 
 single.mean.cusum<-function(data,penalty="Asymptotic",pen.value=0.05,class=TRUE,param.estimates=TRUE,minseglen){
   if(length(pen.value)>1){stop('Only one dimensional penalties can be used for CUSUM')}
-  if(penalty!="MBIC"){
-    costfunc = "mean.cusum"
-  }else{
-    costfunc = "mean.cusum.mbic"
-  }
+  if(penalty=="MBIC"){stop("MBIC penalty is not valid for nonparametric test statistics.")}
+
   if(is.null(dim(data))==TRUE){
     # single dataset
     n=length(data)
@@ -212,11 +164,8 @@ single.mean.cusum<-function(data,penalty="Asymptotic",pen.value=0.05,class=TRUE,
   }
   if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
   
-  pen.value = penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck=costfunc, method="AMOC")
+  pen.value = penalty_decision(penalty, pen.value, n, diffparam=1, asymcheck="mean.cusum", method="AMOC")
   if(is.null(dim(data))==TRUE){
-   # n=length(data)
-  #  if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
-    
     tmp=single.mean.cusum.calc(coredata(data),extrainf=TRUE,minseglen)
     ans=decision(tau=tmp[1],null=tmp[2],penalty=penalty,n=n,diffparam=1,pen.value=pen.value)
     if(class==TRUE){
@@ -232,9 +181,6 @@ single.mean.cusum<-function(data,penalty="Asymptotic",pen.value=0.05,class=TRUE,
     else{ return(ans$cpt)}
   }
   else{ 
-   # n=ncol(data)
-    #if(n<2){stop('Data must have atleast 2 observations to fit a changepoint model.')}
-    
     tmp=single.mean.cusum.calc(data,extrainf=TRUE,minseglen)
     ans=decision(tau=tmp[,1],null=tmp[,2],penalty=penalty,n=n,diffparam=1,pen.value=pen.value)
     if(class==TRUE){

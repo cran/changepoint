@@ -35,3 +35,4 @@ test.stat(x) # retrieves the test.stat slot from x
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal}

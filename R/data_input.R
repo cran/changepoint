@@ -3,7 +3,7 @@ data_input <- function(data, method, pen.value, costfunc, minseglen, Q, var=0, s
     mu<-var
   }else{
   mu <- mean(data)
-}
+  }
   sumstat=cbind(c(0,cumsum(coredata(data))),c(0,cumsum(coredata(data)^2)),cumsum(c(0,(coredata(data)-mu)^2)))
   if(method=="PELT"){
     #out=PELT.meanvar.norm(coredata(data),pen.value)

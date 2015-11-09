@@ -38,3 +38,4 @@ distribution(x)<-"normal" # replaces the current distribution slot of x with "no
 
 \keyword{methods}
 \keyword{cpt}
+\keyword{internal} 
