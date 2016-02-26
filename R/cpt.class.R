@@ -636,7 +636,7 @@
 
 	setMethod("plot","cpt.range",function(x,ncpts=NA,diagnostic=FALSE,cpt.col='red',cpt.width=1,cpt.style=1,...){
 	  if(diagnostic==TRUE){
-      return(plot(apply(cpts.full(x),1,function(x){sum(x>0,na.rm=TRUE)}),pen.value.full(x),type='l',xlab='Number of Changepoints',ylab='Difference in Test Statistic'))
+      return(plot(apply(cpts.full(x),1,function(x){sum(x>0,na.rm=TRUE)}),pen.value.full(x),type='l',xlab='Number of Changepoints',ylab='Difference in Test Statistic',...))
 	  }
 	  plot(data.set.ts(x),...)
 	  if(is.na(ncpts)){
@@ -679,7 +679,7 @@
 	    else{
 	      stop('Invalid Changepoint test statistic')
 	    }
-	    nseg=ncpts+1
+	    nseg=length(means)
 	    cpts.to.plot=c(0,cpts.to.plot,length(data.set(x)))
 	    for(i in 1:nseg){
 	      segments(index(data.set.ts(x))[cpts.to.plot[i]+1],means[i],index(data.set.ts(x))[cpts.to.plot[i+1]],means[i],col=cpt.col,lwd=cpt.width,lty=cpt.style)
